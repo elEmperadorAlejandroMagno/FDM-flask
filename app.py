@@ -2,7 +2,7 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from utils import get_products
+from utils.services import get_products
 
 app = Flask(__name__)
 
@@ -24,4 +24,4 @@ def after_request(response):
 @app.route('/')
 def hello():
   PRODUCTS = get_products()
-  return render_template("index.html", products = PRODUCTS)
+  return render_template("sauce.html" , products = PRODUCTS )

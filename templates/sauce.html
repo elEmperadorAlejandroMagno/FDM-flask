@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+
+{% block sauce %}
+  {% for  in  %}
+    <div class="sauce-container" data-id="{{ .id }}">
+      <img src="{{ .image }}" alt="{{ .title }}" class="img-sauce">
+      <h3 class="title">{{ .title }}</h3>
+      <p class="price">{{ .price }}</p>
+      <button class="addBtn">Agregar al carrito</button>
+    </div>
+  {% endfor %}
+{% endblock %}
+
+{% block MERCH %}
+
+    {% for  in  %}
+      <div class="merchant">
+        <img id="#a104" class="img-sauce-merchant" src="{{ .image }}" alt="{{ .title }}">
+        <div class="title">{{ .title }}</div>
+        <div class="price">{{ .price }}</div>
+      </div>
+    {% endfor %}
+
+{% endblock %}

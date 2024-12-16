@@ -1,0 +1,290 @@
+/* Contact */
+
+/* Primera parte */ 
+
+.contact-1{
+  background-color: #000;
+  border-top: 1px solid #9bf730;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.img-contact{
+  width: 35%;
+}
+#img4{
+  max-width: 90%;
+}
+.form-container{
+  width: 40%;
+}
+
+.h2-contact{
+  font-family: Oliver;
+  font-size: 50px;
+  letter-spacing: 3px;
+  color:#fff;
+  margin: 30px 0;
+  text-align: justify;
+  
+}
+
+form{
+  width: 100%;
+}
+
+.form-div{
+  max-width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-contact{
+  margin-top: 30px;
+  color: #fff;
+}
+
+#i1{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.input1{
+  color: #fff;
+  width: 45%;
+  padding: 10px 14px;
+}
+
+#i2{
+  width: 100%;
+}
+.input2{
+  color: #fff;
+  width: 100%;
+  padding: 10px 14px;
+}
+
+#i3{
+  width: 100%;
+}
+.input3{
+  color: #fff;
+  width: 100%;
+  padding: 10px 14px;
+  min-height: 130px;
+  resize: none;
+}
+#i4{
+  margin-top: 30px;
+}
+
+.send{
+  display: block;
+  width: 100%;
+  text-align: end;
+}
+
+#send{
+  font-size: 30px;
+  font-weight: 300;
+  font-family: Oliver;
+  width: 150px;
+  height: 50px;
+  border-radius: 18px;
+  background-color: #9bf730;
+  color: #000;
+  cursor: pointer;
+}
+#send:hover{
+  background-color: #5a3;
+  border: 1px solid #aaa;
+  color:  #ccc;
+
+}
+/* placeholder */
+
+#name::placeholder{
+  font-size: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: #939393;
+}
+#lastName::placeholder{
+  color: #939393;
+  font-size: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+#email::placeholder{
+  color: #939393;
+  font-size: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+#mensaje::placeholder{
+  color: #939393;
+  font-size: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+/* Border Input  */
+
+.input1{
+  background-color: #000;
+  border: 2px solid #fff;
+  border-radius: 14px 18px 28px  28px;
+}
+
+.input2{
+  background-color: #000;
+  border: 2px solid #fff;
+  border-radius: 18px 18px 30px 10px;
+}
+
+.input3{
+  background-color: #000;
+  border: 2px solid #fff;
+  border-radius: 20px 20px 18% 30px;
+}
+
+textarea:focus, input:focus, input[type]:focus {
+  border-color: #9bf730;
+  outline: 0 none;
+}
+
+/* Segunda parte */
+
+.contact-2{
+  width: 100%;
+  min-height: 600px;
+  background-color: inherit;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+
+}
+
+.contact-container{
+  display: flex;
+  margin: auto;
+  flex-wrap: wrap;
+}
+
+.fin-del-mundo{
+  width: 100%;
+  margin-bottom: 50px;
+}
+.info-contact{
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.info-contact i{
+  font-size: 5em;
+  color: #9bf730;
+  cursor: pointer;
+  &:hover{
+    color: #7fcc27;
+  }
+}
+
+.info-contact h3{
+  margin-top: 15px;
+  font-weight: 100;
+  font-size: 1.2em;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: #ccc
+}
+
+.map{
+  width: 480px;
+  height: 480px;
+  margin: auto;
+  padding: 24px;
+}
+
+.map img{
+  width: 100%;
+}
+
+/*  Responsive  */
+@media screen and (max-width: 886px) {
+  .contact-2 {
+    flex-wrap: wrap;
+  }
+  .contact-container {
+    width: 100%;
+    padding: 30px;
+  }
+  .map {
+    width: 600px;
+  }
+}
+
+@media screen and (max-width: 799px) {
+
+  /* parte uno */
+
+  .img-contact{
+    width: 60%;
+  }
+  .form-container{
+    width: 100%;
+  }
+
+  form{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .h2-contact{
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* parte dos */
+
+  .contact-2{
+    flex-wrap: wrap;
+  }
+
+  .contact-container{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .contact-container .info-contact{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  .contact-container .info-contact .contact{
+    padding: 8px;
+  }
+
+  .contact-container .fin-del-mundo{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 570px) {
+  
+  /* contact */
+  .info-contact{
+    flex-wrap: wrap;
+  }
+  .contact{
+    width: 100%;
+    margin-top: 10px;
+  }
+}
