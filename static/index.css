@@ -159,7 +159,7 @@ li a:hover{
 
 .slider-home{
   width: 100%;
-  max-height: 450px;
+  height: 500px;
   overflow: hidden;
 }
 .slider-home ul li{
@@ -167,7 +167,7 @@ li a:hover{
 }
 .slider-home ul{
   display: flex;
-  animation: sliderIntro 20s infinite linear;
+  animation: sliderIntro 10s infinite linear;
   width: 400%;
 }
 .slider-home li{
@@ -317,96 +317,6 @@ li a:hover{
 
 /* SLIDER FIN DEL MUNDO */ 
 /* ARREGLAR RESPONSIVE DESIGN */
-
-.recetas-finDelMundo{
-  width: 100%;
-}
-
-.recetas-finDelMundo h2{
-
-  text-align: center;
-  font-family: Oliver;
-  font-size: 3em;
-  letter-spacing: 6px;
-  word-spacing: 10px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-.recetas-finDelMundo h2 i{
-  font-size: 1.4em;
-  color: #f35;
-}
-
-
-.slider{
-  width: 640px;
-  max-width: 900px;
-  height: 500px;
-  margin: auto;
-  position: relative;
-  overflow: hidden;
-  padding: 20px;
-}
-.list{
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  display: flex;
-  width: calc(700px*3);
-  transition: 1s;
-}
-.list img{
-  width: 600px;
-  max-height: 100%;
-  margin: 0 20px;
-}
-.buttons{
-  position: absolute;
-  margin-top: 240px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-.buttons button{
-  width: 50px;
-  height: 50px;
-  margin: 0 40px;
-  border-radius: 50%;
-  background-color: #444;
-  opacity: .6;
-  color: #fff;
-  border: none;
-  font-family: monospace;
-  font-weight: bold;
-  cursor: pointer;
-}
-.buttons button:hover{
-  opacity: 1;
-}
-
-
-.dots{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 60px;
-}
-.dots li{
-  list-style-type: none;
-  text-decoration: none;
-  color: #500;
-  transition: .4s linear;
-  opacity: 0.6;
-  margin-bottom: 25px;
-}
-.dots li.active{
-  opacity: 1;
-  color: #000;
-}
-.dots li i{
-  font-size: 3em;
-}
 
 
 /* FOOTER */
@@ -568,3 +478,4 @@ li a:hover{
   font-family: Oliver;
   src: url(../static/Oliver-Regular.ttf);
 }
+

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fin Del Mundo Web</title>
-  <link rel="icon" type="image/x-icon" href="../static/image/assets/icon-web.png">
+  <link rel="icon" type="image/x-icon" href="../static/image/assets/Favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css??family=Sofia+Sans+Condensed">
   <link rel="stylesheet" href="../static/index.css">
   <link rel="stylesheet" href="../static/tienda.css">
   <link rel="stylesheet" href="../static/carteles.css">
@@ -26,11 +27,8 @@
   <div class="navbar">
     <ul class="navbar-items">
         <li class="navbar-item"><a class="nav-link a1" href="#home">Home</a></li>
-        <li class="dropdown"><a class="nav-link">Tienda</a>
-          <span class="dropdown-content"> 
-            <a class="nav-link a2" href="#picantes">Picantes</a>
-            <a class="nav-link b2" href="#merchant">Merchant</a>
-          </span>
+        <li class="navbar-item"><a class="nav-link a2" href="#picantes">Productos</a></li>
+        <li class="navbar-item"><a class="nav-link a2" href="#merchant">Merch</a></li>
         <li class="navbar-item"><a class="nav-link a3" href="#findelmundo">Fin Del Mundo</a></li>
         <li class="navbar-item"><a class="nav-link a4" href="#querido-satan">Querido Satán</a></li>
         <li class="navbar-item"><a class="nav-link a5" href="#contact">Contacto</a></li>
@@ -89,10 +87,10 @@
   <main class="main-content">
       <div class="slider-home" id="home">
           <ul>
-              <li><img src="../static/image/banner intro/ajies-imagen-1.png" alt="imgaen intro"></li>
-              <li><img src="../static/image/banner intro/ajies-imagen-2.png" alt="imagen intro"></li>
-              <li><img src="../static/image/banner intro/mezcla-imagen-3.png" alt="imagen intro"></li>
-              <li><img src="../static/image/banner intro/envasado-imagen-4.png" alt="imagen intro"></li>
+              <li><img src="../static/image/banner intro/BANNER-NAVIDAD-2024.png" alt="imgaen intro"></li>
+              <li><img src="../static/image/banner intro/ajies-imagen-1.png" alt=""></li>
+              <li><img src="../static/image/banner intro/mezcla-imagen-3.png" alt=""></li>
+              <li><img src="../static/image/banner intro/envasado-imagen-4.png" alt=""></li>
           </ul>
       </div>
     <div class="carteles-container">
@@ -114,37 +112,113 @@
     </div>
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="picantes">
-              {% block sauce %}{% endblock %}
+            {% for sauce in sauces %}
+              <div class="sauce-container" data-id="{{ sauce.id }}">
+                <img src="{{ sauce.image }}" alt="{{ sauce.title }}" class="img-product">
+                <h3 class="title">{{ sauce.title }}</h3>
+                <div class="divHrLine">
+                  <hr class="hrLine">
+                </div>
+                <p class="price">{{ sauce.price | uru }}</p>
+              </div>
+            {% endfor %}
           </div>
-          <button class="add-product">ver más</button>
       </div>
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merchant">
-          {% block merch %}{% endblock %}
-          <span class="btn-merchant"><button>Comprar</button></span>
+          {% for merch in merchandising %}
+            <div class="merchant">
+              <img id="#a104" class="img-product-merchant" src="{{ merch.image }}" alt="{{ merch.title }}">
+              <div class="title">{{ merch.title }}</div>
+              <div class="divHrLine">
+                <hr class="hrLine">
+              </div>
+              <div class="price">{{ merch.price | uru }}</div>
+            </div>
+          {% endfor %}
         </div>
       </div>
     <div class="info">
       <div class="carteles-container">
         <div class="carteles2">
           <div class="cartel-mov">
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
-            <div class="cartel-2"><i class="fa-solid fa-fire iconFire"></i>Hecho en Uruguay</div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
+            <div class="cartel-2">
+              <span>
+                <img src="../static/image/assets/Fueguito.png" alt="">
+                <p>Hecho en Uruguay</p>
+              </span>
+            </div>
           </div>
         </div>
       </div>
       <div class="imgExtra">
-        <img src="../static/image/banner intro/Producción de picantes.png" alt="Hombre rodeado de picantes">
+        <img src="../static/image/assets/FotoMorrones.png" alt="Hombre rodeado de picantes">
       </div>
       <div class="finDelMundo" id="findelmundo">
         <h2>Nuestra producción de picantes</h2>
@@ -187,7 +261,7 @@
           </div>
         </div>
       <div class="img-outer">
-        <img src="../static/image/banner intro/Ajies-super hot.png" alt="ajies picantes">
+        <img src="../static/image/assets/Ajies picantes-01.png" alt="ajies picantes">
       </div>
       <div class="recetas-finDelMundo" id="querido-satan">
         <!-- Libro fin del mundo -->
@@ -256,19 +330,19 @@
     <div class="contact-2">
       <div class="contact-container">
         <span class="fin-del-mundo">
-          <img id="img5" src="../static/image/assets/finDelMundoPicantes.png" alt="imagen de la empresa">
+          <img id="img5" src="../static/image/assets/Logo_edited.png" alt="imagen de la empresa">
         </span>
         <div class="info-contact">
           <div class="contact">
-            <a href="https://www.instagram.com/findelmundosalsas/" target="_blank"><i id="contact" class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.instagram.com/findelmundosalsas/" target="_blank"><img src="../static/image/assets/Instagram.png" alt=""></a>
             <h3 id="h3-contact"> <a href="https://www.instagram.com/findelmundosalsas/" target="_blank"></a>@findelmundosalsas</a></h3>
           </div>
           <div class="contact">
-            <a href=""><i id="contact" class="fa-regular fa-envelope"></a></i>
+            <a href=""><img src="../static/image/assets/Mail.png" alt=""></a>
             <h3 id="h3-contact">xxxxxxxxxx@gmail.com</h3>
           </div>
           <div class="contact">
-            </a><i id="contact" class="fa-solid fa-phone number-contact"></i>
+            </a><img src="../static/image/assets/Teléfono.png" alt=""></i>
             <h3 id="h3-contact">+589 91068092</h3>
           </div>
         </div>

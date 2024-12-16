@@ -1,6 +1,6 @@
 from functools import wraps
-
 from flask import session, redirect
+
 def login_required(f):
     """
     Decorate routes to require login.
@@ -16,6 +16,6 @@ def login_required(f):
 
     return decorated_function
 
-def usd(value):
+def uru(value):
     """Format value as USD."""
-    return f"${value:,.2f}"
+    return f"$U{value:,.2f}"

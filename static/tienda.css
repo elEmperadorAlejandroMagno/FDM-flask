@@ -13,7 +13,6 @@
 }
 
 .sauce-container{
-  margin-top: 18px;
   text-align: center;
   font-family: Oliver;
   margin: 18px 34px;
@@ -32,53 +31,15 @@
 }
 
 .title{
-  font-size: .9em;
-  font-weight: bolder;
-  letter-spacing: 3px;
-  font-family: Arial, Helvetica, sans-serif;
-  text-transform: uppercase;
-  margin-top: 8px;
+  font-size: 24px;
+  font-family: SofiaSans;
 }
 
 .price{
-  margin-top: 10px;
-  font-size: 1.8em;
-}
-
-.addBtn{
-  margin: 6px;
-  padding: 4px;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 15px;
+  font-size: 24px;
   font-weight: 600;
-  background-color: #4a4;
-  border-radius: 25% 25% 25% 25%;
-
-  &.addBtn:hover{
-    border-color: #888;
-    background-color: #6f6;
-    cursor: pointer;
-  }
+  font-family: Oswald;
 }
-
-
-.add-product{
-  margin-bottom: 14px;
-  margin-top: 15px; 
-  width: 210px;
-  padding: 8px;
-  font-size: 1.2em;
-  font-family: Oliver;
-  text-transform: uppercase;
-  background-color: #9bf730;
-  border-radius: 28px 10px 20px 10px;
-  &.add-product:hover{
-    background-color: #7ba307;
-    border: 2px solid #9bf730;
-    cursor: pointer;
-  }
-}
-
 
 /* merchant */
 
@@ -88,7 +49,7 @@
 
 .catalogo-merchant{
   width: 100%;
-  min-height: 800px;
+  min-height: 600px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -117,30 +78,21 @@
   border-color: #9bf730;
 }
 
-.btn-merchant{
+.divHrLine {
   width: 100%;
-  text-align: center;
+  padding: 8px;
 }
 
-.btn-merchant button{
-  font-family: Oliver;
-  font-size: 1.3em;
-  letter-spacing: 4px;
-  cursor: pointer;
-  color: #fff;
-  background-color: #000;
-  border-radius: 10px 10px;
-  outline: none;
-  border: 1px solid #9bf730;
-  padding: 8px 10px;
+.hrLine {
+  width: 20px;
+  border: solid 0.5px #000;
+  margin: 0 auto;
 }
-
-.btn-merchant button:hover{
-  background-color: #9bf730;
-  color: #000;
+.merchant .divHrLine .hrLine {
+  width: 20px;
+  border: solid 0.5px #fff;
+  margin: 0 auto;
 }
-
-
 
 /* HEADER CART ICON NOTIFICATION */
 
@@ -280,4 +232,19 @@
 @font-face {
   font-family: Oliver;
   src: url(Oliver-Regular.ttf);
+}
+
+@font-face {
+  font-family: SofiaSans;
+  src: url(../static/SofiaSansCondensed-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: SofiaSansItalic;
+  src: url(../static/SofiaSansCondensed-Italic-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: Oswald;
+  src: url(../static/Oswald-VariableFont_wght.ttf);
 }

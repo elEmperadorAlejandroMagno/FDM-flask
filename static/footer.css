@@ -27,7 +27,7 @@
   font-family: Oliver;
   font-size: 50px;
   letter-spacing: 3px;
-  color:#fff;
+  color:#9bf730;
   margin: 30px 0;
   text-align: justify;
   
@@ -38,6 +38,8 @@ form{
 }
 
 .form-div{
+  font-family: SofiaSans;
+  font-size: 18px;
   max-width: 80%;
   display: flex;
   flex-wrap: wrap;
@@ -111,23 +113,27 @@ form{
 
 #name::placeholder{
   font-size: 20px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  color: #939393;
+  font-weight: 600;
+  font-family: SofiaSans;
+  color: #ffff;
 }
 #lastName::placeholder{
-  color: #939393;
+  color: #ffff;
   font-size: 20px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-weight: 600;
+  font-family: SofiaSans;
 }
 #email::placeholder{
-  color: #939393;
+  color: #ffff;
   font-size: 20px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-weight: 600;
+  font-family: SofiaSans;
 }
 #mensaje::placeholder{
-  color: #939393;
+  color: #ffff;
   font-size: 20px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-weight: 600;
+  font-family: SofiaSans;
 }
 
 /* Border Input  */
@@ -169,6 +175,7 @@ textarea:focus, input:focus, input[type]:focus {
 
 .contact-container{
   display: flex;
+  max-width: 600px;
   margin: auto;
   flex-wrap: wrap;
 }
@@ -195,9 +202,8 @@ textarea:focus, input:focus, input[type]:focus {
 
 .info-contact h3{
   margin-top: 15px;
-  font-weight: 100;
-  font-size: 1.2em;
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: SofiaSans;
+  font-size: 26px;
   color: #ccc
 }
 
