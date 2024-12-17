@@ -168,80 +168,41 @@ li a:hover{
 .carteles-container{
   width: 100%;
   background-color: #9f4;
+    font-size: 38px;
+  font-family: SofiaSans;
+  font-weight: 600;
 }
 
 .carteles{
   background-color: #9f4;
   color: #000;
-  width: 86%;
-  height: auto;
+  width: 100%;
   margin: auto;
   overflow: hidden;
 }
 
 .carteles .cartel-mov{
   display: flex;
+  align-items: center;
   animation: slider 8s linear infinite;
   -webkit-animation: slider 8s linear infinite ;
   width: calc(500px * 14);
 }
 
 .carteles .cartel{
-  width: 500px;
-  user-select: none;
-  padding: 20px;
-  font-size: 34px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-weight: bolder;
-}
-
-.carteles2{
-  background-color: #9f4;
-  color: #000;
-  width: 86%;
-  height: auto;
-  margin: auto;
-  overflow: hidden;
-}
-.carteles2 .cartel-mov{
   display: flex;
-  animation: slider 8s linear infinite;
-  -webkit-animation: slider 8s linear infinite ;
-  width: calc(400px * 14);
-}
-
-.carteles2 .cartel-2{
-  width: 380px;
+  width: 100%;
+  min-height: 80px;
+  align-items: center;
   user-select: none;
-  padding: 20px;
-  font-size: 34px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-weight: bolder;
 }
-
-.carteles3{
-  background-color: #9f4;
-  color: #000;
-  width: 86%;
-  height: auto;
-  margin: auto;
-  overflow: hidden;
+.cartel img {
+  width: 40px;
+  margin-left: 15px;
 }
-.carteles3 .cartel-mov{
-  display: flex;
-  animation: slider 8s linear infinite;
-  -webkit-animation: slider 8s linear infinite ;
-  width: calc(900px * 14);
-}
-
-.carteles3 .cartel-3{
-  width: 900px;
-  user-select: none;
-  padding: 20px;
-  font-size: 34px;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-weight: bolder;
-
+.cartel i {
+  font-size: 40px;
+  margin-left: 15px;
 }
 
 .outer{
@@ -253,12 +214,6 @@ li a:hover{
   margin-right: 7px;
   font-size: 28px;
 }
-
-.iconFire{
-  margin-right: 7px;
-  font-size: 28px;
-}
-
 
 @keyframes slider {
   0%{
@@ -509,33 +464,22 @@ li a:hover{
 .imgExtra{
   width: 100%;
   max-height: 600px;
-  background-color: #000;
+  background-color: inherit;
 }
-
 .imgExtra img {
-  padding: 16px;
   width: 100%;
   max-height: 600px;
-  opacity: 2;
 }
-
 .img-outer{
   width: 100%;
+  background-color: inherit;
 }
 .img-outer img{
-  padding: 8px;
   width: 100%;
-  opacity: 2;
 }
-
-.imagenTest2{
-  max-height: 300px;
-}
-
-
 
 .info{
-  background-color: #fff;
+  background-color: #eeee;
   color: #000;
   width: 100%;
 }
@@ -589,7 +533,6 @@ li a:hover{
   margin-top: 48px;
 }
 
-
 #info85{
   margin: auto;
   font-size: 38px;
@@ -598,13 +541,8 @@ li a:hover{
   font-weight: bolder;
   letter-spacing: .1em;
 }
-
-.img-outer{
-  width: 100%;
-  background-color: #000;
-}
 section {
-  background-color: #f0e7d8;
+  background-color: #eee;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -617,7 +555,7 @@ section {
   width: 770px; /* Adjust width to account for book padding */
   height: 555px; /* Adjust height to account for book padding */
   position: relative;
-  background-image: url('imagenes/background-book/dark-brown_leather_book.jpg'); /* Add your background image */
+  background-image: url('../static/image/background-book/black_leather_book.jpg'); /* Add your background image */
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -648,9 +586,6 @@ section {
   object-fit:cover;
 }
 
-.cover {
-  z-index: 7;
-}
 
 #page1 { z-index: 6; transform: rotateY(-0deg); }
 #page2 { z-index: 5; transform: rotateY(-0deg); }
@@ -660,9 +595,17 @@ section {
 #page6 { z-index: 1; transform: rotateY(-0deg); }
 
 .lastPage {
+  display: flex;
   margin: auto;
   margin-top: 80px;
-  background-color: #eeee;
+  font-family: Oliver;
+  font-size: 50px;
+  letter-spacing: 3px;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  background-color: #ddd;
+  border-radius: 10px;
   width: 640px;
   height: 440px;
 }
@@ -720,16 +663,21 @@ section {
 
 .h2-contact{
   font-family: Oliver;
-  font-size: 50px;
+  font-size: 30px;
   letter-spacing: 3px;
   color:#9bf730;
-  margin: 30px 0;
-  text-align: justify;
+  text-align: center;
   
 }
 
 form{
   width: 100%;
+  display: flex;
+  justify-content: center;
+}
+form input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+  background-color: #eee;
+  color: #000;
 }
 
 .form-div{
@@ -744,7 +692,7 @@ form{
 
 .input-contact{
   margin-top: 30px;
-  color: #fff;
+  color: #eee;
 }
 
 #i1{
@@ -753,7 +701,7 @@ form{
   justify-content: space-between;
 }
 .input1{
-  color: #fff;
+  color: #eee;
   width: 45%;
   padding: 10px 14px;
 }
@@ -762,7 +710,7 @@ form{
   width: 100%;
 }
 .input2{
-  color: #fff;
+  color: #eee;
   width: 100%;
   padding: 10px 14px;
 }
@@ -771,7 +719,7 @@ form{
   width: 100%;
 }
 .input3{
-  color: #fff;
+  color: #eee;
   width: 100%;
   padding: 10px 14px;
   min-height: 130px;
@@ -784,13 +732,13 @@ form{
 .send{
   display: block;
   width: 100%;
-  text-align: end;
+  text-align: center;
 }
 
 #send{
-  font-size: 30px;
-  font-weight: 300;
-  font-family: Oliver;
+  font-size: 26px;
+  font-weight: 600;
+  font-family: SofiaSans;
   width: 150px;
   height: 50px;
   border-radius: 18px;
@@ -799,9 +747,8 @@ form{
   cursor: pointer;
 }
 #send:hover{
-  background-color: #5a3;
-  border: 1px solid #aaa;
-  color:  #ccc;
+  background-color: #777;
+  color:  #eee;
 
 }
 /* placeholder */

@@ -7,10 +7,6 @@
   <link rel="icon" type="image/x-icon" href="../static/image/assets/Favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css??family=Sofia+Sans+Condensed">
   <link rel="stylesheet" href="../static/index.css">
-  <link rel="stylesheet" href="../static/tienda.css">
-  <link rel="stylesheet" href="../static/carteles.css">
-  <link rel="stylesheet" href="../static/footer.css">
-  <link rel="stylesheet" href="../static/book.css">
 </head>
 <body>
   <div class="flex-container">
@@ -43,7 +39,6 @@
             <img class="header-img" src="../static/image/assets/finDelMundo.png" alt="imagen de la empresa">
           </div>
         </div>
-
         <!-- Menu desplegable responsivo -->
         <div class="btn-menu">
           <div class="boton">
@@ -96,17 +91,12 @@
     <div class="carteles-container">
       <div class="carteles">
         <div class="cartel-mov">
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
-          <div class="cartel"><i class="fa-solid fa-skull iconSkull"></i>Salsas Picantes, de Verdad</div>
+          {% for i in range(11) %}
+            <div class="cartel">
+              Salsas Picantes, de Verdad
+              <i class="fa-solid fa-skull iconSkull"></i>
+            </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -140,85 +130,16 @@
       </div>
     <div class="info">
       <div class="carteles-container">
-        <div class="carteles2">
+        <div class="carteles">
           <div class="cartel-mov">
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
+            {% for i in range(12) %}
+            <div class="cartel">
                 <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
                 <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
             </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
-            <div class="cartel-2">
-              <span>
-                <img src="../static/image/assets/Fueguito.png" alt="">
-                <p>Hecho en Uruguay</p>
-              </span>
-            </div>
+            {% endfor %}
           </div>
         </div>
-      </div>
-      <div class="imgExtra">
-        <img src="../static/image/assets/FotoMorrones.png" alt="Hombre rodeado de picantes">
       </div>
       <div class="finDelMundo" id="findelmundo">
         <h2>Nuestra producción de picantes</h2>
@@ -242,35 +163,25 @@
           </div>
         </div>
       </div>
+      <div class="imgExtra"><img src="../static//image/banner intro/Ajies-super hot.png" alt=""></div>
         <div class="carteles-container">
-          <div class="carteles3">
+          <div class="carteles">
             <div class="cartel-mov">
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
-              <div class="cartel-3"><i class="fa-solid fa-fire iconFire"></i>Usamos ajíes super-hot, los más picantes del mundo</div>
+              {% for i in range(12) %}
+                <div class="cartel">
+                  Usamos ajíes super-hot, los más picantes del mundo
+                  <img src="/static/image/assets/Fueguito.png" alt="">
+                </div>
+              {% endfor %}
             </div>
           </div>
         </div>
-      <div class="img-outer">
-        <img src="../static/image/assets/Ajies picantes-01.png" alt="ajies picantes">
-      </div>
+      <div class="img-outer"><img src="../static//image/banner intro/Producción de picantes.png" alt=""></div>
       <div class="recetas-finDelMundo" id="querido-satan">
         <!-- Libro fin del mundo -->
         <section class="book-section">
           <div class="book-container">
               <div class="book" id="book">
-                  <div class="page cover" id="cover">
-                    <img src="../static/image/background-book/dark-brown_leather_book.jpg" alt="Book Cover">
-                  </div>
                   <div class="page" id="page1">
                       <img src="../static/image/book/querido_belcebú.png" alt="Page 1">
                   </div>
@@ -289,7 +200,7 @@
                   <div class="page" id="page6">
                       <img src="../static/image/book/Entrada5.png" alt="Page 6">
                   </div>
-                  <div class="lastPage"></div>
+                  <div class="lastPage">Continuara ...</div>
               </div>
           </div>
           <button id="prev" class="nav-button">Previous</button>
@@ -304,10 +215,8 @@
             <img id="img4" src="../static/image/assets/contacto.png" alt="contacto imagen">
           </div>
           <div class="form-container">
+              <h3 class="h2-contact">contactanos</h3>
             <form action="https://formsubmit.co/b350f48860e105f42945ce047681ec10" method="POST">
-              <span class="h2-contact">
-                <h2 class="h2-contact">Contacto</h2>
-              </span>
               <div class="form-div">
                 <span id="i1" class="input-contact">
                   <input class="input1" type="text" name="name" id="name" placeholder="Nombre">
@@ -364,7 +273,7 @@
     '>\n' + document.documentElement.outerHTML;
 
     let currentPage = 0;
-    const totalPages = 7; // Including the cover page
+    const totalPages = 6;
 
     document.getElementById('next').addEventListener('click', () => {
         if (currentPage < totalPages) {

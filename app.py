@@ -28,5 +28,4 @@ def after_request(response):
 def hello():
   SAUCES = get_products_sauce()
   MERCHANDISING = get_products_merch()
-  
   return render_template("index.html", sauces = SAUCES, merchandising = MERCHANDISING)
