@@ -4,12 +4,12 @@
 
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ product.image }}" alt="{{ product.description }}">
+      <img src="{{ details.image }}" alt="{{ details.title }}">
     </div>
     <div class="product-details">
-      <h3 class="title">{{ product.title }}</h3>
-      <p class="price">{{ product.price }}</p>
-      <p class="description">{{ product.}}</p>
+      <h3 class="title">{{ details.title }}</h3>
+      <p class="price">{{ details.price | uru }}</p>
+      <p class="description">{{ details.description }}</p>
       <p class="quantity">Cantidad</p>
       <input type="number" value="1" min="1" max="9">
       <button class="addBtn">"Agregar al carrito"</button>

@@ -1,0 +1,45 @@
+.product-page-container {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+.img-container, .product-details {
+  width: 50%;
+  padding: 20px;
+}
+
+.img-container img {
+  max-width: 100%;
+}
+
+.product-details h3, p {
+  width: 100%;
+  padding: 4px;
+}
+.product-details .title {
+  font-family: SofiaSans;
+}
+.product-details .price {
+  margin: 10px 0px 10px 0px;
+  font-family: Oswald;
+  font-weight: 600;
+}
+.product-details .description {
+  font-family: SofiaSansItalic;
+}
+.product-details .quantity {
+  font-size: 12px;
+}
+
+button {
+  font-family: Oswald;
+  font-weight: 600;
+  border-radius: 25px;
+  color: #000;
+  background-color: #9bf730;
+  &:hover {
+    background-color: #7fcc27;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fin Del Mundo Web</title>
+  <link rel="icon" type="image/x-icon" href="../static/image/assets/Favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css??family=Sofia+Sans+Condensed">
+  <link rel="stylesheet" href="../static/index.css">
+  <link rel="stylesheet" href="../static/product.css">
+</head>
+<body>
+  <div class="flex-container">
+    <header class="header">
+      <div class="home">
+        <div class="icon-header">
+          <img class="header-img" src="../static/image/assets/fdm-logo-blanco.png" alt="imagen de la empresa">
+        </div>
+      </div>
+      <!-- Menu desplegable responsivo -->
+  <div class="btn-menu">
+      <i id="btn-menu" class="fa-solid fa-bars"></i>
+  </div>
+  <div class="navbar">
+    <ul class="navbar-items">
+        <li class="navbar-item"><a class="nav-link a1" href="#home">Home</a></li>
+        <li class="navbar-item"><a class="nav-link a2" href="#picantes">Productos</a></li>
+        <li class="navbar-item"><a class="nav-link a2" href="#merchant">Merch</a></li>
+        <li class="navbar-item"><a class="nav-link a3" href="#findelmundo">Fin Del Mundo</a></li>
+        <li class="navbar-item"><a class="nav-link a4" href="#querido-satan">Querido Satán</a></li>
+        <li class="navbar-item"><a class="nav-link a5" href="#contact">Contacto</a></li>
+        <li class="navbar-item"><a href="https://www.instagram.com/findelmundosalsas/" target="_blank"><img src="../static/image/assets/IG white.png" alt="icono de instagram blanco"></a></li>
+      <!-- cartNotification -->
+      <div class="header-cart">
+        <div class="icons-cart-notification">
+            <img class="cart-icon" src="../static/image/assets/cart-icon.png" alt="cart notification icon">
+            <div id="number-notification" class="header-cart-notification">0</div>
+        <div class="home">
+          <div class="icon-header">
+            <img class="header-img" src="../static/image/assets/finDelMundo.png" alt="imagen de la empresa">
+          </div>
+        </div>
+        <!-- Menu desplegable responsivo -->
+        <div class="btn-menu">
+          <div class="boton">
+            <i id="btn-menu" class="fa-solid fa-bars"></i>
+          </div>
+        </div>
+        <div class="navbar">
+          <ul class="navbar-items">
+              <li class="navbar-item"><a class="nav-link a1" href="#intro">Home</a></li>
+              <li class="dropdown"><a class="nav-link">Tienda</a>
+                <span class="dropdown-content"> 
+                  <a class="nav-link a2" href="#picantes">Picantes</a>
+                  <a class="nav-link b2" href="#merchant">Merchant</a>
+                </span>
+              <li class="navbar-item"><a class="nav-link a3" href="#findelmundo">Fin Del Mundo</a></li>
+              <li class="navbar-item"><a class="nav-link a4" href="#querido-satan">Querido Satán</a></li>
+              <li class="navbar-item"><a class="nav-link a5" href="#contact">Contacto</a></li>
+              <li class="navbar-item"><a href="https://www.instagram.com/findelmundosalsas/" target="_blank"><i class="fa-brands fa-instagram icon-header"></i></a></li>
+
+              <!-- cartNotification -->
+              <div class="header-cart">
+                <div class="icons-cart-notification">
+                  <img class="cart-icon" src="../static/image/assets/cart-icon.png" alt="cart notification icon">
+                  <div id="number-notification" class="header-cart-notification">0</div>
+                </div>
+              </div>
+          </ul>
+        </div>
+      </div>
+    </ul>
+  </div>
+      <!-- cartModal -->
+    <div class="cart-modal">
+      <p class="cart-modal-tittle">Carrito</p>
+        <hr/>
+      <div class="article-container">
+        <p class="cart-empty">El carrito esta vacio</p>
+      </div>
+    </div>
+</header>
+  <main class="main-content">{% block main %}{% endblock %}</main>
+<footer class="footer">
+  <div class="contact">
+    <div class="contact-container">
+        <div class="fdm-logo">
+          <img id="img5" src="../static/image/assets/fdm-logo-blanco.png" alt="Findelmundo logo blanco">
+        </div>
+      <div class="info-contact">
+        <div class="contact single">
+          <img src="../static/image/assets/Mail.png" alt="logo de email">
+          <h3 class="h3-email"><a href="#email">xxxxxxxxxx@gmail.com</a></h3>
+        </div>
+        <div class="contact duo">
+          <div>        
+            <img src="../static/image/assets/Instagram.png" alt="logo instagram verde">
+            <h3 class="h3-ig"><a href="https://www.instagram.com/findelmundosalsas/" target="_blank">@findelmundosalsas</a></h3>
+          </div>
+          <div>
+            <img src="../static/image/assets/Teléfono.png" alt="logo teléfono">
+            <h3 class="h3-num"><a href="#whatsapp">+589 91068092</a></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="map">
+      <iframe src="https://www.google.com/maps/d/embed?mid=11Q_T3B2cZDFThYE8jXuERhyBInmIXC4&ehbc=2E312F&z=13&ll=-34.898853, -56.164487"
+     height="530"
+     filter="grayscale(75%)"
+     frameborder="0"	
+     style="border:0; margin-top: -70px"></iframe>
+    </div>
+  </div>
+  <section class="patrocineo">
+    <div class="patrocineos-container">
+      <h3>Nos apoyan:</h3>
+      <div class="patrocineos">
+        <img src="../static/image/patrocineo/Isologotipos_Isologotipo ANDE.png" alt="ANDE agencia nacional de desarrollo imagen">
+        <img src="../static/image/patrocineo/Isologotipos_Isologotipo IM.png" alt="intendencia de montevideo imagen">
+        <img src="../static/image/patrocineo/Logo CIU_Proyecto patrocinado porPNG-01.png" alt="cámara de industrias de Uruguay imagen">
+      </div>
+    </div>
+  </section>
+</footer>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Adapted from https://stackoverflow.com/a/10162353
+const html = '<!DOCTYPE ' +
+document.doctype.name +
+(document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
+(!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
+(document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
+'>\n' + document.documentElement.outerHTML;
+
+let currentPage = 0;
+const totalPages = 6;
+
+document.getElementById('next').addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        document.querySelectorAll('.page')[currentPage].style.transform = 'rotateY(-180deg)';
+        currentPage++;
+    }
+});
+
+document.getElementById('prev').addEventListener('click', () => {
+    if (currentPage > 0) {
+        currentPage--;
+        document.querySelectorAll('.page')[currentPage].style.transform = 'rotateY(0deg)';
+    }
+});
+
+    // Hacer código para enlaces de la barra de navegación
+
+const header = document.querySelector('.header');
+const menu = document.querySelector('.btn-menu');
+const homeIcon = document.querySelector('.header-img');
+const btnMenu = document.querySelector('.btn-menu');
+const navBar = document.querySelector('.navbar');
+const icon = document.getElementById('btn-menu');
+
+window.addEventListener('scroll', () => {
+  header.classList.toggle('sticky', window.scrollY > 0)
+})
+
+btnMenu.addEventListener('click', ()=> {
+    if( icon.className === "fa-solid fa-bars") {
+        navBar.style.display = 'block';
+        icon.classList.replace('fa-solid', 'fa-solid');
+        icon.classList.replace('fa-bars', 'fa-x');
+        let menuState = 'open';
+        openMenu(menuState);
+    } else {
+        navBar.style.display = 'none';
+        icon.classList.replace('fa-solid', 'fa-solid');
+        icon.classList.replace('fa-x', 'fa-bars');
+        let menuState = 'close';
+        openMenu(menuState);
+    }
+})
+
+  function openMenu (menuState) {
+    window.addEventListener('resize', () => {
+    if (screen.availWidth > 700 || menuState == 'open') {
+        navBar.style.display = 'block';
+    }
+    if (screen.availWidth < 700 && menuState == 'close') {
+      navBar.style.display = 'none';
+    }
+    console.log(screen.width);
+  })
+  }
+
+let navBarItems = document.querySelectorAll('.navbar-items li a');
+let windowWidth = window.innerWidth;
+
+let className = navBarItems.className; 
+
+if (windowWidth < 700) {
+  navBarItems.forEach(item => {
+
+      item.addEventListener('click', ()=> {
+      
+        navBar.style.display = 'none';
+        icon.classList.replace('fa-solid', 'fa-solid');
+        icon.classList.replace('fa-x', 'fa-bars');
+      })
+  });
+}
+const PRODUCTS = document.querySelectorAll('.producto')
+PRODUCTS.forEach( producto => {
+  producto.addEventListener('click', function() {
+  const productId = this.getAttribute('data-id')  
+  window.location.href = `http://localhost:5000/product-page?id=${productId}`
+  })
+})
+});
+</script>
+<script src="https://kit.fontawesome.com/f6023662c1.js" crossorigin="anonymous"></script>
+</html>
