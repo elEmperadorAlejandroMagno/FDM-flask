@@ -17,81 +17,66 @@ body{
 }
 
 /* Header */
-
-.header{
+header {
   background-color: #000;
-  color: #fff;
+  width: 100%;
+}
+.nav-container {
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row nowrap;
+  justify-content: center;
+  padding: 25px 80px 20px 80px;
+  gap: 40px;
+}
+.logo-fdm, .logo-fdm div img {
+  width: 142px;
+}
+
+.nav-menu {
+  display: flex;
+  width: 100%;
   align-items: center;
-  padding: 14px;
-  transition: .3s linear;
-}
-.sticky {
-  position: fixed;
-  z-index: 200;
-}
-.header-img{
-  transition: .3s linear;
-  width: 190px;
-  height: 82px;
-}
+  max-width: 850px;
 
-.icon-header{
-  text-align: center;
-  cursor: pointer;
 }
-
-.home{
-  width: 30%;
-}
-
-.navbar{
-
-  display: block;
-  width: 70%;
-}
-
-.navbar-items{
-
+.nav-menu ul {
   width: 100%;
-  list-style-type: none;
-  margin: auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
 }
-
-.navbar-item{
-
-  margin: 15px 10px;
-}
-
-.navbar-item a{
-
-  text-decoration: none;
-  color: #fff;
+.nav-menu ul li {
   font-family: Oliver;
   font-size: 23px;
-}
-.navbar-item a:hover{
-  color: #9bf730;
-}
-.navbar-item i:hover{
-  color: #9bf730;
+  color: #eeee;
+  &:hover {
+    color: #9bf730;
+    cursor: pointer;
+  }
 }
 
-.boton i:hover{
+.cart-icon, .cart-icon div svg {
+  width: 53px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+.cart-svg path, .cart-svg circle, .cart-svg text {
+  fill: #eeee;
+  font-family: Oliver;
+}
+.cart-svg:hover path, .cart-svg:hover circle, .cart-svg:hover text { 
+  fill: #9bf730;
+}
+
+
+.ig-icon img {
+  width: 48px;
+  object-fit: cover;
   cursor: pointer;
-  color: #9bf730;
-}
-
-li a:hover{
-  cursor: pointer;
-}
-
-.navbar-item a{
-  scroll-behavior: smooth;
 }
 
 
@@ -225,6 +210,7 @@ li a:hover{
 
 .main-content{
   width: 100%;
+  min-height: 740px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

@@ -1,45 +1,70 @@
 .product-page-container {
   display: flex;
-  width: 100%;
-  padding: 10px;
   flex-wrap: wrap;
+  max-width: 980px;
+  min-height: 600px;
+  padding: 0px 40px 0px 40px;
+  margin: auto;
+  margin-top: 100px
 }
-.img-container, .product-details {
-  width: 50%;
-  padding: 20px;
+.product-details {
+  width: 280px;
+}
+.img-container {
+  flex: 1;
 }
 
 .img-container img {
   max-width: 100%;
+  padding: 0px 40px;
+  object-fit: contain;
 }
 
-.product-details h3, p {
-  width: 100%;
-  padding: 4px;
+.product-details {
+  display: flex;
+  flex-direction: column;
 }
 .product-details .title {
+  margin-bottom: 5px;
   font-family: SofiaSans;
 }
 .product-details .price {
-  margin: 10px 0px 10px 0px;
+  margin: 10px 0px 15px 0px;
   font-family: Oswald;
   font-weight: 600;
 }
 .product-details .description {
   font-family: SofiaSansItalic;
+  font-size: 20px;
 }
 .product-details .quantity {
-  font-size: 12px;
+  font-family: SofiaSans;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+#quantity {
+  font-family: Oswald;
+  font-size: 20px;
+  padding: 1px 18px 1px 14px;
+  border: 0.8px solid #444;
+  width: 74px;
+  height: auto;
 }
 
 button {
-  font-family: Oswald;
+  width: 280px;
+  font-family: SofiaSans;
   font-weight: 600;
+  font-size: 24px;
+  padding: 10px 20px;
+  border: none;
   border-radius: 25px;
   color: #000;
   background-color: #9bf730;
+  margin-top: 20px;
   &:hover {
-    background-color: #7fcc27;
+    background-color: #b7ff4c;
     cursor: pointer;
   }
 }
