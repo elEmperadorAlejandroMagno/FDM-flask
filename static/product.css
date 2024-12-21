@@ -52,7 +52,7 @@
   height: auto;
 }
 
-button {
+.addBtn, .nav-button {
   width: 280px;
   font-family: SofiaSans;
   font-weight: 600;

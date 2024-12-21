@@ -1,12 +1,22 @@
 {% extends "base.html" %}
   {% block main %}
       <div class="slider-home" id="home">
-          <ul>
-              <li><img src="../static/image/banner intro/BANNER-NAVIDAD-2024.png" alt="imgaen intro"></li>
-              <li><img src="../static/image/banner intro/ajies-imagen-1.png" alt=""></li>
-              <li><img src="../static/image/banner intro/mezcla-imagen-3.png" alt=""></li>
-              <li><img src="../static/image/banner intro/envasado-imagen-4.png" alt=""></li>
-          </ul>
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner" style="max-height: 545px;">
+            <div class="carousel-item active">
+              <img src="../static/image/banner intro/BANNER-NAVIDAD-2024.png" style="height: 100%; object-fit: cover;" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="../static/image/banner intro/banner_chipotle_2.png" style="height: 100%; object-fit: cover;" class="d-block w-100" alt="...">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
     <div class="carteles-container">
       <div class="carteles">
@@ -14,37 +24,45 @@
           {% for i in range(11) %}
             <div class="cartel">
               Salsas Picantes, de Verdad
-              <i class="fa-solid fa-skull iconSkull"></i>
+              <img src="../static/image/assets/Fueguito.png" alt="">
             </div>
           {% endfor %}
         </div>
       </div>
     </div>
       <div id="tienda" class="tienda-container">
-          <div class="catalogo-salsas" id="picantes">
+          <div class="catalogo-salsas" id="salsas">
             {% for sauce in sauces %}
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
-                <img src="{{ sauce.image }}" alt="{{ sauce.title }}" class="img-product">
-                <h3 class="title">{{ sauce.title }}</h3>
-                <div class="divHrLine">
-                  <hr class="hrLine">
-                </div>
-                <p class="price">{{ sauce.price | uru }}</p>
+                  <a class="productLink" href="http://localhost:5000/product-page?id={{ sauce.id }}">
+                    <div class="img-product-container">
+                      <img src="{{ sauce.image }}" alt="{{ sauce.title }}">
+                    </div>
+                    <div class="detail-container" style="color: #000;">
+                      <h3 class="title">{{ sauce.title }}</h3>
+                      <div class="divHrLine">
+                        <hr class="hrLine">
+                      </div>
+                      <p class="price">{{ sauce.price | uru }}</p>
+                    </div>
+                  </a>
               </div>
             {% endfor %}
           </div>
       </div>
       <div class="tienda-merchant">
-        <div class="catalogo-merchant" id="merchant">
+        <div class="catalogo-merchant" id="merch">
           {% for merch in merchandising %}
-            <div class="merch-container producto" data-id="{{ merch.id }}">
-              <img id="#a104" class="img-product-merchant" src="{{ merch.image }}" alt="{{ merch.title }}">
-              <div class="title">{{ merch.title }}</div>
-              <div class="divHrLine">
-                <hr class="hrLine">
+            <a class="productLink" href="http://localhost:5000/product-page?id={{ merch.id }}">
+              <div class="merch-container producto" data-id="{{ merch.id }}">
+                <img id="#a104" class="img-product-merchant" src="{{ merch.image }}" alt="{{ merch.title }}">
+                <div class="title">{{ merch.title }}</div>
+                <div class="divHrLine">
+                  <hr class="hrLine">
+                </div>
+                <div class="price">{{ merch.price | uru }}</div>
               </div>
-              <div class="price">{{ merch.price | uru }}</div>
-            </div>
+            </a>
           {% endfor %}
         </div>
       </div>
@@ -99,9 +117,9 @@
         <div class="img-outer"><img src="../static//image/backgrounds/Ajies-super hot.png" alt=""></div>
         <div class="recetas-finDelMundo" id="querido-satan">
           <!-- Libro fin del mundo -->
-          <section class="book-section">
-            <div class="book-container">
-                <div class="book" id="book">
+          <button id="prev" class="nav-button">Previous</button>
+          <div class="book-container">
+            <div class="book" id="book">
                     <div class="page" id="page1">
                         <img src="../static/image/book/querido_belcebú.png" alt="Page 1">
                     </div>
@@ -118,20 +136,16 @@
                         <img src="../static/image/book/Entrada4.png" alt="Page 5">
                     </div>
                     <div class="page" id="page6">
-                        <img src="../static/image/book/Entrada5.png" alt="Page 6">
+                      <img src="../static/image/book/Entrada5.png" alt="Page 6">
                     </div>
-                    <div class="lastPage">Continuara ...</div>
-                </div>
             </div>
-            <button id="prev" class="nav-button">Previous</button>
-            <button id="next" class="nav-button">Next</button>
-          </section>
-        </div>
+          </div>
+          <button id="next" class="nav-button">Next</button>
       </div>
       <section>
           <div id="contact" class="contact-form">
             <div class="img-contact">
-              <img id="img4" src="../static/image/assets/contacto.png" alt="contacto imagen">
+              <img id="img4" src="../static/image/assets/CalaveraTelefono.png" alt="contacto imagen">
             </div>
             <div class="form-container">
                 <h3 class="h2-contact">contactanos</h3>
