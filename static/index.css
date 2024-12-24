@@ -601,9 +601,7 @@ header {
   width: 100%;
   object-fit: cover;
 }
-.form-container{
-  width: 40%;
-}
+.form-container{width: 50%;}
 
 .h2-contact{
   font-family: Oliver;
@@ -611,13 +609,11 @@ header {
   letter-spacing: 3px;
   color:#9bf730;
   text-align: center;
-  
 }
 
 form{
   width: 100%;
   display: flex;
-  justify-content: center;
 }
 form input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
   background-color: #eee;
@@ -742,8 +738,11 @@ form input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
   border-radius: 20px 20px 18% 30px;
 }
 
-textarea:focus, input:focus, input[type]:focus {
+textarea:focus,input[type="email"]:focus, .input-contact input[type="text"]:focus {
   border-color: #9bf730;
+  background-color: #777;
+  color: #eeee;
+  font-family: SofiaSans;
   outline: 0 none;
 }
 
