@@ -58,6 +58,7 @@ header {
   font-family: Oliver;
   font-size: 23px;
   color: #eeee;
+  transition: all 0.8s ease;
   &:hover {
     color: #9bf730;
     cursor: pointer;
@@ -74,24 +75,33 @@ header {
   fill: #eeee;
   font-family: Oliver;
   font-size: 80px;
+  transition: all 0.8s ease;
 }
 .cart-svg:hover path, .cart-svg:hover circle, .cart-svg:hover text { 
   fill: #9bf730;
 }
 
-
 .ig-icon {
   padding-left: 20px;
+  width: 55px;
+  height: 55px;
+  background-image: url(../static/image/assets/iG-icon-white.png);
+  background-size: cover;
+  transition: all 0.8s ease;
+  &:hover {
+    cursor: pointer;
+    background-image: url(../static/image/assets/IG-icon-green.png);
+  }
 }
 
-.ig-icon img {
+/* .ig-icon img {
   width: 48px;
   object-fit: cover;
   cursor: pointer;
   &:hover {
     background-image: url(../static/image/assets/IG\ verde.png.png);
   }
-}
+} */
 
 
 /* btn menu  */
@@ -112,9 +122,6 @@ header {
 .carteles-container{
   width: 100%;
   background-color: #9f4;
-    font-size: 38px;
-  font-family: SofiaSans;
-  font-weight: 600;
 }
 
 .carteles{
@@ -128,8 +135,8 @@ header {
 .carteles .cartel-mov{
   display: flex;
   align-items: center;
-  animation: slider 8s linear infinite;
-  -webkit-animation: slider 8s linear infinite ;
+  animation: slider 13s linear infinite;
+  -webkit-animation: slider 13s linear infinite ;
   width: max-content;
 }
 .cartel {
@@ -144,6 +151,9 @@ header {
 }
 .texto-cartel {
   margin: 0;
+  font-size: 26px;
+  font-family: Oswald;
+  font-weight: 900;
 }
 
 .carteles {
@@ -759,6 +769,9 @@ textarea:focus, input:focus, input[type]:focus {
   padding: 0px 30px;
 }
 
+.fdm-logo {
+  padding-bottom: 10px;
+}
 .contact-container .fdm-logo img{
   width: 310px;
   height: 170px;
@@ -775,11 +788,13 @@ textarea:focus, input:focus, input[type]:focus {
 .info-contact .single {
   display: flex;
   justify-content: center;
+  padding-bottom: 0;
 }
 .info-contact .duo {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  padding-bottom: 30px;
 }
 .info-contact .duo div {
   display: flex;
@@ -969,4 +984,3 @@ textarea:focus, input:focus, input[type]:focus {
   font-family: Oswald;
   src: url(../static/fonts/Oswald-VariableFont_wght.ttf);
 }
-
