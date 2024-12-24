@@ -5,6 +5,7 @@
 }
 html{
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 body{
   background-color: #eee;
@@ -13,6 +14,7 @@ body{
 .flex-container{
   width: 100%;
   display: flex;
+  position: relative;
   flex-wrap: wrap;
 }
 
@@ -20,6 +22,8 @@ body{
 header {
   background-color: #000;
   width: 100%;
+  position: fixed;
+  z-index: 10000;
 }
 .nav-container {
   width: 100%;
@@ -69,16 +73,24 @@ header {
 .cart-svg path, .cart-svg circle, .cart-svg text {
   fill: #eeee;
   font-family: Oliver;
+  font-size: 80px;
 }
 .cart-svg:hover path, .cart-svg:hover circle, .cart-svg:hover text { 
   fill: #9bf730;
 }
 
 
+.ig-icon {
+  padding-left: 20px;
+}
+
 .ig-icon img {
   width: 48px;
   object-fit: cover;
   cursor: pointer;
+  &:hover {
+    background-image: url(../static/image/assets/IG\ verde.png.png);
+  }
 }
 
 
@@ -118,12 +130,24 @@ header {
   align-items: center;
   animation: slider 8s linear infinite;
   -webkit-animation: slider 8s linear infinite ;
-  width: calc(500px * 14);
+  width: max-content;
+}
+.cartel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 16px;
+  width: max-content;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+.texto-cartel {
+  margin: 0;
 }
 
-.carteles .cartel{
+.carteles {
   display: flex;
-  width: 100%;
   min-height: 80px;
   align-items: center;
   user-select: none;
@@ -155,6 +179,9 @@ header {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+}
+.slider-home {
+  padding: 110px 0 0 0;
 }
 
 .tienda-container{
@@ -723,7 +750,7 @@ textarea:focus, input:focus, input[type]:focus {
   flex-wrap: nowrap;
   justify-content: space-between;
   margin-top: 60px;
-  padding: 20px;
+  padding: 20px 20px 60px 20px;
 }
 
 .contact-container{
@@ -782,9 +809,7 @@ textarea:focus, input:focus, input[type]:focus {
 
 .map{
   width: 60%;
-  height: 450px;
   margin: auto;
-  padding: 14px;
 }
 
 .map iframe{
@@ -823,6 +848,44 @@ textarea:focus, input:focus, input[type]:focus {
 }
 
 /*  Responsive  */
+@media screen and (max-width: 1280px) and (min-width: 700px) {
+  .nav-container {
+    gap: 0;
+    justify-content: space-between;
+  }
+  #i1 {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .form-div input {
+    width: 100%;
+  }
+  .form-div textarea {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 1100px) {
+  .nav-menu {
+    display: none;
+  }
+  .nav-container {
+    justify-content: center;
+    gap: 40px;
+  }
+}
+@media screen and (max-width: 963px) {
+  .patrocineos-container {
+    text-align: center;
+  }
+  .patrocineos {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .patrocineos img:first-child {
+    padding-top: 20px;
+  }
+}
 @media screen and (max-width: 886px) {
   .contact {
     flex-wrap: wrap;
@@ -836,165 +899,34 @@ textarea:focus, input:focus, input[type]:focus {
   }
 }
 
-@media screen and (max-width: 799px) {
-
-  /* parte uno */
-
-  .img-contact{
-    width: 60%;
-  }
-  .form-container{
-    width: 100%;
-  }
-
-  form{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-  }
-  .h2-contact{
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: center;
-  }
-
-  /* parte dos */
-
-  .contact{
-    flex-wrap: wrap;
-  }
-
-  .contact-container{
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .contact-container .info-contact{
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-  }
-  .contact-container .info-contact .contact{
-    padding: 8px;
-  }
-
-  .contact-container .fin-del-mundo{
-    width: 100%;
-  }
-}
-
-
-/*  RESPONSIVE */
-
-@media screen and (max-width: 700px) and (min-width: 351px) {
-
-/* Nav Bar */
-
-.header{
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row-reverse;
-  width: 100%;
-}
-.home{
-  width: 100%;
-}
-.icon-header {
-  margin: 0 auto;
-  width: 190px;
-}
-.btn-menu{
-  width: 95px;
-  padding: 20px;
-  display: block;
-}
-.btn-menu i {
-  font-size: 60px;
-}
-
-
-.navbar{
-  display: none;
-  position: absolute;
-  left: 0;
-  top: 105px;
-  width: 200px;
-  background-color: #000;
-  border-radius: 25px;
-  border: 1px solid #9bf730;
-}
-.navbar ul{
-  display: block;
-}
-.navbar .navbar-items{
-  text-align: center;
-}
-.header-cart{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 2px;
-}
-.dropdown-content{
-  position: relative;
-}
-
-.recetas-finDelMundo{
-  width: 100%;
-}
-.recetas-finDelMundo .slider{
-  width: 440px;
-  height: 300px;
-}
-.recetas-finDelMundo .slider .list{
-  width: calc(400px*3);
-}
-.recetas-finDelMundo .slider .list img{
-  width: 400px;
-}
-.dots li i{
-  font-size: 2em;
-}
-}
-
-@media screen and (max-width: 570px) {
+@media screen and (max-width: 700px) {
   
   /* contact */
   .info-contact{
     flex-wrap: wrap;
   }
-  .contact{
+  .img-contact, .form-container{
     width: 100%;
     margin-top: 10px;
+  }
+  #i1 {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .form-div input {
+    width: 100%;
+  }
+  .form-div textarea {
+    width: 100%;
+  }
+  .map iframe {
+    padding-top: 20px;
   }
 }
 
 @media screen and (max-width: 350px) {
-  .header{
-    width: 100%;
-  }
-  .header{
-    display: block;
-  }
-  .navbar{
-    display: none;
-    width: 100%;
-  }
-  .navbar ul{
-    display: block;
-  }
-  .home{
-    width: 100%;
-  }
-  .navbar .navbar-items{
-    text-align: center;
-  }
-  .dropdown-content{
-    position: relative;
+  header{
+    position: static;
   }
 
   .main{
@@ -1006,28 +938,6 @@ textarea:focus, input:focus, input[type]:focus {
   .merchant .img-product-merchant{
     max-width: 120px;
   }
-
-  .slider{
-    width: 340px;
-    height: 320px;
-    padding: 0px;
-  }
-  .slider .list{
-    width: calc(320px*3);
-    margin-left: 10px;
-  }
-  .slider .list .item{
-    margin-left: 20px;
-  }
-  .slider .list .item:first-child{
-    margin-left: 0px;
-  }
-  .slider .list .item img{
-    width: 320px;
-    height: 250px;
-    margin: 0px;
-  }
-
 
   .footer{
     width: 100%;
