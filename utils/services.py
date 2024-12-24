@@ -1,4 +1,5 @@
 import requests
+import json
 
 def get_products_sauce():
   url = "http://localhost:1234/products?type=sauce"
@@ -38,3 +39,8 @@ def get_product_by_id(id):
   except (KeyError, ValueError) as e:
     print(f"Data error: {e}")
   return None
+
+def get_json_products(): 
+  with open('products.json') as f: 
+    return json.load(f)
+  

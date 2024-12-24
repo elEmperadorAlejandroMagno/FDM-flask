@@ -1,8 +1,8 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from utils.services import get_products_sauce, get_products_merch, get_product_by_id
+from utils.services import get_products_sauce, get_products_merch, get_product_by_id, get_json_products
 from utils.helpers import uru, login_required
 
 app = Flask(__name__)
@@ -26,9 +26,13 @@ def after_request(response):
 
 @app.route('/')
 def hello():
-  SAUCES = get_products_sauce()
-  MERCHANDISING = get_products_merch()
-  return render_template("index.html", sauces = SAUCES, merchandising = MERCHANDISING)
+  # SAUCES = get_products_sauce()
+  # MERCH = get_products_merch()
+  products = get_json_products()
+  SAUCES = [product for product in products if product['type'] == 'sauce']
+  MERCH = [product for product in products if product['type'] == 'merchandasing']
+
+  return render_template("index.html", sauces = SAUCES, merchandising = MERCH)
 
 @app.route('/product-page')
 def get_product():
