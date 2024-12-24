@@ -33,20 +33,20 @@
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="salsas">
             {% for sauce in sauces %}
+              <a class="productLink" href="http://localhost:5000/product-page?id={{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
-                  <a class="productLink" href="http://localhost:5000/product-page?id={{ sauce.id }}">
-                    <div class="img-product-container">
-                      <img src="{{ sauce.image }}" alt="{{ sauce.title }}">
-                    </div>
-                    <div class="detail-container" style="color: #000;">
-                      <h3 class="title">{{ sauce.title }}</h3>
-                      <div class="divHrLine">
+                  <div class="img-product-container">
+                    <img src="{{ sauce.image }}" alt="{{ sauce.title }}">
+                  </div>
+                  <div class="detail-container" style="color: #000;">
+                    <h3 class="title">{{ sauce.title }}</h3>
+                    <div class="divHrLine">
                         <hr class="hrLine">
-                      </div>
-                      <p class="price">{{ sauce.price | uru }}</p>
                     </div>
-                  </a>
-              </div>
+                    <p class="price">{{ sauce.price | uru }}</p>
+                  </div>
+                </div>
+              </a>
             {% endfor %}
           </div>
       </div>

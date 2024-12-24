@@ -5,7 +5,7 @@
     "description": "Mix picante de condimentos para carnes y para verduras, 4 salsas a elección & stickers",
     "price": 1500.00,
     "type": "sauce",
-    "image": "static/image/products/fondo transparente/Pack-completo-transp_edited.png",
+    "image": "static/image/products/fondo transparente/Pack-completo-transp.png",
     "available": true
   },
   {
@@ -14,7 +14,7 @@
     "description": "2 salsas + gota siniestra + stickers + combo de condimentos",
     "price": 1000.00,
     "type": "sauce",
-    "image": "static/image/products/fondo transparente/Pack-chico-transp_edited.png",
+    "image": "static/image/products/fondo transparente/Pack-chico-transp.png",
     "available": true
   },
   {
@@ -37,7 +37,7 @@
   },
   {
     "id": "008",
-    "title": "Salsa de arándanos con ghost pepper",
+    "title": "Salsa de Arándanos con Ghost Pepper",
     "description": "Fresco y sabrosa la salsa de arándanos muy buena porque sí",
     "price": 400.00,
     "type": "sauce",
@@ -46,7 +46,7 @@
   },
   {
     "id": "009",
-    "title": "Gota Siniestra",
+    "title": "La Gota Siniestra",
     "description": "Solo para los más valientes, una gota ultra picante que te hará sudar",
     "price": 300.00,
     "type": "sauce",
@@ -55,7 +55,7 @@
   },
   {
     "id": "010",
-    "title": "Salsa de Mango",
+    "title": "Mango y mix de ajíes",
     "description": "Si te gusta el mango, bancate el carozo que se sho",
     "price": 400.00,
     "type": "sauce",
@@ -82,7 +82,7 @@
   },
   {
     "id": "011",
-    "title": "Salsa de Jalapeño, Cilantro y Lima",
+    "title": "Salsa de Jalapeño, cilantro y lima",
     "description": "Una salsa suave y rica para acompañar tus comidas y disfrutar con amigos",
     "price": 350.00,
     "type": "sauce",

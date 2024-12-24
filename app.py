@@ -30,7 +30,7 @@ def hello():
   # MERCH = get_products_merch()
   products = get_json_products()
   SAUCES = [product for product in products if product['type'] == 'sauce']
-  MERCH = [product for product in products if product['type'] == 'merchandasing']
+  MERCH = [product for product in products if product['type'] == 'merchandising']
 
   return render_template("index.html", sauces = SAUCES, merchandising = MERCH)
 

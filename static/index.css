@@ -210,17 +210,25 @@ header {
   width: 100%;
   justify-content: center;
   grid-template-columns: repeat(auto-fit, 343px);
-  /* gap: 40px; */
+  gap: 40px;
+}
+.sauce-container {
+  width: 343px;
+  height: 568px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .img-product-container {
-  border-radius: 8px;
-  margin-top: 16px;
-  width: 343px;
-  /* height: 458px; */
+  width: 100%;
+  height: 458px;
 }
 .img-product-container img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .detail-container {
@@ -580,7 +588,8 @@ header {
   border-top: 1px solid #9bf730;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 30px;
   align-items: center;
   width: 100%;
 }
