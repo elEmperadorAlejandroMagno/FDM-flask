@@ -60,7 +60,7 @@ header {
   color: #eeee;
   transition: all 0.8s ease;
   &:hover {
-    color: #9bf730;
+    color: #98ff00;
     cursor: pointer;
   }
 }
@@ -78,7 +78,7 @@ header {
   transition: all 0.8s ease;
 }
 .cart-svg:hover path, .cart-svg:hover circle, .cart-svg:hover text { 
-  fill: #9bf730;
+  fill: #98ff00;
 }
 
 .ig-icon {
@@ -210,24 +210,19 @@ header {
   width: 100%;
   justify-content: center;
   grid-template-columns: repeat(auto-fit, 343px);
-  gap: 40px;
-}
-
-.sauce-container {
-  text-align: center;
-  list-style: none;
+  /* gap: 40px; */
 }
 
 .img-product-container {
   border-radius: 8px;
   margin-top: 16px;
   width: 343px;
+  /* height: 458px; */
 }
 .img-product-container img {
   width: 100%;
-  height: 458px;
-  object-fit: cover;
 }
+
 .detail-container {
   padding: 16px;
   width: 343px;
