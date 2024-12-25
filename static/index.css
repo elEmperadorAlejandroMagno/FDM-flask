@@ -530,7 +530,6 @@ hr {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
   font-family: 'Times New Roman', serif;
 }
 
@@ -574,6 +573,9 @@ hr {
 #page6 { z-index: 1; transform: rotateY(-0deg); }
 
 .nav-button {
+  width: 100px;
+  height: 80px;
+  background-color: transparent;
   transform: translateY(-50%);
   border: none;
   padding: 10px 20px;
@@ -583,10 +585,20 @@ hr {
 
 #prev {
   margin-right: 20px;
+  background-image: url(/static/image/assets/Flechita\(2\).png);
+  background-size: cover;
+  &:hover {
+    background-image: url(/static/image/assets/Flechita\(2\)Hover.png);
+  }
 }
 
 #next {
   margin-left: 20px;
+  background-image: url(/static/image/assets/Flechita\(1\).png);
+  background-size: cover;
+  &:hover {
+    background-image: url(/static/image/assets/Flechita\(1\)Hover.png);
+  }
 }
 
 /* Contact */
@@ -892,7 +904,7 @@ textarea:focus,input[type="email"]:focus, .input-contact input[type="text"]:focu
     width: 100%;
   }
 }
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1150px) {
   .nav-menu {
     display: none;
   }
@@ -900,6 +912,7 @@ textarea:focus,input[type="email"]:focus, .input-contact input[type="text"]:focu
     justify-content: center;
     gap: 40px;
   }
+
 }
 @media screen and (max-width: 963px) {
   .patrocineos-container {
