@@ -33,7 +33,7 @@
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="salsas">
             {% for sauce in sauces %}
-              <a class="productLink" href="http://localhost:5000/product-page?id={{ sauce.id }}">
+              <a class="productLink" href="https://fdm-flask-l1bq.onrender.com/product-page?id={{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
                   <div class="img-product-container">
                     <img src="{{ url }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
@@ -53,7 +53,7 @@
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merch">
           {% for merch in merchandising %}
-            <a class="productLink" href="http://localhost:5000/product-page?id={{ merch.id }}">
+            <a class="productLink" href="https://fdm-flask-l1bq.onrender.com/product-page?id={{ merch.id }}">
               <div class="merch-container producto" data-id="{{ merch.id }}">
                 <img id="#a104" class="img-product-merchant" src="{{ url }}{{ merch.images[0] }}" alt="{{ merch.title }}">
                 <div class="title">{{ merch.title }}</div>
@@ -216,14 +216,14 @@
 
       // redirect a la pagina de producto
 
-      const PRODUCTS = document.querySelectorAll('.producto')
+      // const PRODUCTS = document.querySelectorAll('.producto')
 
-      PRODUCTS.forEach( producto => {
-        producto.addEventListener('click', function() {
-        const productId = this.getAttribute('data-id')  
-        window.location.href = `http://localhost:5000/product-page?id=${productId}`
-        })
-      })
+      // PRODUCTS.forEach( producto => {
+      //   producto.addEventListener('click', function() {
+      //   const productId = this.getAttribute('data-id')  
+      //   window.location.href = `https://fdm-flask-l1bq.onrender.com/product-page?id=${productId}`
+      //   })
+      // })
     </script>
 
   {% endblock %}
