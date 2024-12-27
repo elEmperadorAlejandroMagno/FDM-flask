@@ -1,8 +1,9 @@
 import requests
 import json
+from utils.url import imageUrl
 
 def get_products_sauce():
-  url = "http://localhost:1234/products?type=sauce"
+  url = f"{imageUrl}/products?type=sauce"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -15,7 +16,7 @@ def get_products_sauce():
   return None
 
 def get_products_merch():
-  url = "http://localhost:1234/products?type=merchandising"
+  url = f"{imageUrl}/products?type=merchandising"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -28,7 +29,7 @@ def get_products_merch():
   return None
 
 def get_product_by_id(id):
-  url = f"http://localhost:1234/products/{id}"
+  url = f"{imageUrl}/products/{id}"
   try:
     response = requests.get(url)
     response.raise_for_status()

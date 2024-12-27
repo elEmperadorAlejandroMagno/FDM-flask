@@ -4,11 +4,11 @@
 
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ details.images[0] }}" alt="{{ details.title }}" class="main-image" data-main-img="{{ details.images[0] }}">
+      <img src="{{ url }}/{{ details.images[0] }}" alt="{{ details.title }}" class="main-image" data-main-img="{{ url }}{{ details.images[0] }}">
       <div class="extraImgs">
         {% if details.images | length > 1 %}
           {% for img in details.images %}
-            <img src="{{ img }}" alt="{{ details.title }}" class="extra-image">
+            <img src="{{ url }}/{{ img }}" alt="{{ details.title }}" class="extra-image">
           {% endfor %}
         {% endif %}
       </div>
