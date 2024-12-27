@@ -895,20 +895,20 @@ textarea:focus,input[type="email"]:focus, .input-contact input[type="text"]:focu
 
 @font-face {
   font-family: Oliver;
-  src: url(../static/fonts/Oliver-Regular.ttf);
+  src: url(../fonts/Oliver-Regular.ttf);
 }
 
 @font-face {
   font-family: SofiaSans;
-  src: url(../static/fonts/SofiaSansCondensed-VariableFont_wght.ttf);
+  src: url(../fonts/SofiaSansCondensed-VariableFont_wght.ttf);
 }
 
 @font-face {
   font-family: SofiaSansItalic;
-  src: url(../static/fonts/SofiaSansCondensed-Italic-VariableFont_wght.ttf);
+  src: url(../fonts/SofiaSansCondensed-Italic-VariableFont_wght.ttf);
 }
 
 @font-face {
   font-family: Oswald;
-  src: url(../static/fonts/Oswald-VariableFont_wght.ttf);
+  src: url(../fonts/Oswald-VariableFont_wght.ttf);
 }
