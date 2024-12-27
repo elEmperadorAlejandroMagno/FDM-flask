@@ -8,6 +8,9 @@ from utils.url import imageUrl
 
 app = Flask(__name__)
 
+if __name__ == '__main__': 
+  app.run()
+
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
