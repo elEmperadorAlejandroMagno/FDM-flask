@@ -95,12 +95,12 @@ header {
   padding-left: 20px;
   width: 55px;
   height: 55px;
-  background-image: url(../static/image/assets/iG-icon-white.png);
+  background-image: url(../image/assets/iG-icon-white.png);
   background-size: cover;
   transition: all 0.8s ease;
   &:hover {
     cursor: pointer;
-    background-image: url(../static/image/assets/IG-icon-green.png);
+    background-image: url(../image/assets/IG-icon-green.png);
   }
 }
 
