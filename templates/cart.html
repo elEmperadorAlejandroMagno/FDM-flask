@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="cart-container">
+        <div class="cart">
+            <div class="cart-header">
+                <h1>Mi carrito</h1>
+            </div>
+            <div class="cart-body">
+                <table class="cart-items">
+                  <tbody>
+                    {% for item in cart %}
+                      <tr>
+                        <td>
+                          <img src="{{ item.image }}" alt="{{ item.title }}">
+                        </td>
+                        <td>
+                          <h3>{{ item.title }}</h3>
+                          <p>{{ item.price | uru }}</p>
+                        </td>
+                        <td><input type="number" value="{{ item.quantity }}"></td>
+                        <td>{{ (item.price*item.quantity) | uru }}</td>
+                        <td>
+                          <button class="btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+            <div>
+              <p>Ingresar código promocional</p>
+              <input type="text" placeholder="Ingresa un código de promoción válido">
+            </div>
+            <div>
+              <p>Agregar una nota</p>
+              <input type="text" placeholder="Escribe una nota para el vendedor">
+            </div>
+        </div>
+        <div class="resumen">
+          <h1>Resumen del pedido</h1>
+            <table class="resumen-table">
+              <tbody>
+                <tr>
+                  <td>Subtotal</td>
+                  <td>1000</td>
+                </tr>
+                <tr>
+                  <td>Envio</td>
+                  <td> URUGUAY </td>
+                </tr>
+                <tr>
+                  <td>
+                    <select name="envio" id="envio">
+                      <option value="{{ 50 | uru }}">Montevideo</option>
+                      <option value="{{ 50 | uru }}">Ciudad de la Costa</option>
+                      <option value="{{ 0 | uru }}">Resto del país (el costo dependerá de la agencia de envíos)</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="total">Total</td>
+                  <td>3000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <button class="finalBtn">Finalizar compra</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+{% endblock %}
+
+{% block script %}
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css')}}">
+
+{% endblock %}

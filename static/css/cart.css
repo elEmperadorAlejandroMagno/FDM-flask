@@ -1,0 +1,43 @@
+.cart-container {
+  justify-content: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 120px 20px 60px 20px;
+}
+
+.cart {
+  width: 700px;
+  font-family: SofiaSans;
+}
+
+td img {
+  width: 200px;
+  height: auto;
+}
+
+.resumen-table {
+  font-family: SofiaSans;
+}
+
+.finalBtn {
+  width: 400px;
+  height: 40px;
+  background-color: #98ff00;
+  border-radius: 25px;
+  border: none;
+  font-family: Oswald;
+  font-size: 24px;
+  &:hover {
+    background-color: #b7ff4c;
+    cursor: pointer;
+  }
+}
+
+@font-face {
+  font-family: Oswald;
+  src: url(../static/fonts/Oswald-VariableFont_wght.ttf);
+}
+@font-face {
+  font-family: SofiaSans;
+  src: url(../static/fonts/SofiaSansCondensed-VariableFont_wght.ttf);
+}

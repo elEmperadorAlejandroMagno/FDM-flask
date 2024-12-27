@@ -36,7 +36,7 @@
               <a class="productLink" href="http://localhost:5000/product-page?id={{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
                   <div class="img-product-container">
-                    <img src="{{ sauce.image }}" alt="{{ sauce.title }}">
+                    <img src="{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
                   </div>
                   <div class="detail-container" style="color: #000;">
                     <h3 class="title">{{ sauce.title }}</h3>
@@ -55,7 +55,7 @@
           {% for merch in merchandising %}
             <a class="productLink" href="http://localhost:5000/product-page?id={{ merch.id }}">
               <div class="merch-container producto" data-id="{{ merch.id }}">
-                <img id="#a104" class="img-product-merchant" src="{{ merch.image }}" alt="{{ merch.title }}">
+                <img id="#a104" class="img-product-merchant" src="{{ merch.images[0] }}" alt="{{ merch.title }}">
                 <div class="title">{{ merch.title }}</div>
                 <div class="divHrLine">
                   <hr class="hrLine">
@@ -172,4 +172,58 @@
             </div>
           </div>
       </section>
+  {% endblock %}
+  {% block script %}
+    <script>
+        // cambio de imagen de productos
+
+        const products = document.querySelectorAll('.sauce-container');
+
+      products.forEach(product => {
+        const imgElement = product.querySelector('.sauce-image');
+        const images = imgElement.dataset.images.split(',');
+
+        product.addEventListener('mouseenter', () => {
+          if (images.length > 1) {
+            imgElement.src = images[1];
+          }
+        });
+
+        product.addEventListener('mouseleave', () => {
+          imgElement.src = images[0];
+        });
+      });
+
+      // codigo de libro fdm
+
+      let currentPage = 0;
+      const totalPages = 5;
+
+      document.getElementById('next').addEventListener('click', () => {
+          if (currentPage < totalPages) {
+              document.querySelectorAll('.page')[currentPage].style.transform = 'rotateY(-180deg)';
+              currentPage++;
+          }
+      });
+
+      document.getElementById('prev').addEventListener('click', () => {
+          if (currentPage > 0) {
+              currentPage--;
+              document.querySelectorAll('.page')[currentPage].style.transform = 'rotateY(0deg)';
+          }
+      });
+
+
+      // redirect a la pagina de producto
+
+      const PRODUCTS = document.querySelectorAll('.producto')
+
+      PRODUCTS.forEach( producto => {
+        producto.addEventListener('click', function() {
+        const productId = this.getAttribute('data-id')  
+        window.location.href = `http://localhost:5000/product-page?id=${productId}`
+        })
+      })
+    </script>
+
   {% endblock %}

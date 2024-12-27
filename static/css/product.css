@@ -1,0 +1,109 @@
+:root {
+  --primary-background-color: #eee;
+  --secondary-background-color: #000;
+  --third-background-color: #777;
+  --btn-background-color: #98ff00;
+  --btn-hover-color: #b7ff4c;
+  --black-text-color: #000;
+  --white-text-color: #eeee;
+}
+
+.product-page-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 120px 40px 60px 40px;
+  width: 100%;
+  min-height: 600px;
+  margin: auto;
+}
+
+.product-details {
+  padding-top: 60px;
+  width: 280px;
+}
+
+.img-container {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.main-image {
+  width: 640px;
+  height: auto;
+  object-fit: cover;
+}
+
+.extraImgs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.extra-image {
+  width: 80px; /* Ajusta el tamaño según tus necesidades */
+  height: auto;
+  cursor: pointer;
+}
+
+.active {
+  border: 2px solid var(--secondary-background-color);
+  border-radius: 10px;
+}
+
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+.product-details .title {
+  margin-bottom: 5px;
+  font-family: SofiaSans;
+  font-size: 32px;
+  color: rgb(87 87 87);
+  font-weight: 700;
+}
+.product-details .price {
+  margin: 10px 0px 15px 0px;
+  font-family: Oswald;
+  font-size: 24px;
+  font-weight: 800;
+}
+.product-details .description {
+  font-family: SofiaSansItalic;
+  font-size: 20px;
+}
+.product-details .quantity {
+  font-family: SofiaSans;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+#quantity {
+  font-family: Oswald;
+  font-size: 20px;
+  padding: 1px 18px 1px 14px;
+  border: 0.8px solid var(--third-background-color);
+  width: 74px;
+  height: auto;
+}
+
+.addBtn {
+  width: 280px;
+  font-family: SofiaSans;
+  font-weight: 600;
+  font-size: 24px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  color: var(--black-text-color);
+  background-color: var(--btn-background-color);
+  margin-top: 20px;
+  &:hover {
+    background-color: var(--btn-hover-color);
+    cursor: pointer;
+  }
+}

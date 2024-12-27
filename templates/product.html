@@ -4,7 +4,14 @@
 
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ details.image }}" alt="{{ details.title }}">
+      <img src="{{ details.images[0] }}" alt="{{ details.title }}" class="main-image" data-main-img="{{ details.images[0] }}">
+      <div class="extraImgs">
+        {% if details.images | length > 1 %}
+          {% for img in details.images %}
+            <img src="{{ img }}" alt="{{ details.title }}" class="extra-image">
+          {% endfor %}
+        {% endif %}
+      </div>
     </div>
     <div class="product-details">
       <h3 class="title">{{ details.title }}</h3>
@@ -15,5 +22,34 @@
       <button class="addBtn">Agregar al carrito</button>
     </div>
   </div>
+
+{% endblock %}
+
+{% block script %}
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const mainImg = document.querySelector('.img-container img');
+      const extraImgs = document.querySelectorAll('.extra-image');
+
+      extraImgs[0].classList.add('active');
+
+      extraImgs.forEach(img => {
+        img.addEventListener('mouseenter', () => {
+          extraImgs.forEach(img => img.classList.remove('active'));
+          mainImg.src = img.src;
+          img.classList.add('active');
+        });
+        img.addEventListener('mouseleave', () => {
+          mainImg.src = mainImg.getAttribute('data-main-img');
+          img.classList.remove('active');
+          extraImgs[0].classList.add('active');
+        })
+      });
+    });
+  </script>
 
 {% endblock %}

@@ -26,13 +26,11 @@ def after_request(response):
 
 @app.route('/')
 def hello():
-  # SAUCES = get_products_sauce()
-  # MERCH = get_products_merch()
-  products = get_json_products()
-  SAUCES = [product for product in products if product['type'] == 'sauce']
-  MERCH = [product for product in products if product['type'] == 'merchandising']
+  if request.method == 'GET':
+    SAUCES = get_products_sauce()
+    MERCH = get_products_merch()
 
-  return render_template("index.html", sauces = SAUCES, merchandising = MERCH)
+    return render_template("index.html", sauces = SAUCES, merchandising = MERCH)
 
 @app.route('/product-page')
 def get_product():
@@ -40,4 +38,12 @@ def get_product():
     id = request.args.get('id')
     PRODUCT = get_product_by_id(id)
     return render_template("product.html", details = PRODUCT)
+   
+@app.route('/cart-page')
+def get_cart_info():
+   if request.method == 'GET':
+    # cart = request.cookies.get('cart')
+    cart = [{"item": "item 1","price": 100, "quantity": 3, "total": 300.00, "image": "http://localhost:1234/images/products/fondo transparente/habanero-choco-transp.png"}]
+    return render_template("cart.html", cart = cart)
+      
    
