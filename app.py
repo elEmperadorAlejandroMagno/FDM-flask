@@ -30,6 +30,10 @@ def after_request(response):
 
 @app.route('/')
 def hello():
+  return "Hello, world!"
+
+@app.route('/home')
+def home():
   if request.method == 'GET':
     SAUCES = get_products_sauce()
     MERCH = get_products_merch()
