@@ -1,9 +1,9 @@
 import requests
 import json
-from utils.url import imageUrl
+from utils.url import URL
 
 def get_products_sauce():
-  url = f"{imageUrl}/products?type=sauce"
+  url = f"{URL["API_URL"]}/products?type=sauce"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -16,7 +16,7 @@ def get_products_sauce():
   return None
 
 def get_products_merch():
-  url = f"{imageUrl}/products?type=merchandising"
+  url = f"{URL["API_URL"]}/products?type=merchandising"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -29,7 +29,7 @@ def get_products_merch():
   return None
 
 def get_product_by_id(id):
-  url = f"{imageUrl}/products/{id}"
+  url = f"{URL["API_URL"]}/products/{id}"
   try:
     response = requests.get(url)
     response.raise_for_status()

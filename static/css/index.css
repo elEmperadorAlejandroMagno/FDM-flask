@@ -197,7 +197,7 @@ header {
 }
 
 .tienda-container{
-  background-image: url(../static/image/backgrounds/Fondo_extendido.png);
+  background-image: url(../image/backgrounds/Fondo_extendido.png);
   background-size: cover;
   width: 100%;
   text-align: center;

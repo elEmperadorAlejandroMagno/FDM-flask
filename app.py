@@ -4,7 +4,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import get_products_sauce, get_products_merch, get_product_by_id
 from utils.helpers import uru, login_required
-from utils.url import imageUrl
+from utils.url import URL
 
 app = Flask(__name__)
 
@@ -38,20 +38,20 @@ def home():
     SAUCES = get_products_sauce()
     MERCH = get_products_merch()
 
-    return render_template("index.html", sauces = SAUCES, merchandising = MERCH, url = imageUrl)
+    return render_template("index.html", sauces = SAUCES, merchandising = MERCH, url = URL )
 
 @app.route('/product-page')
 def get_product():
    if request.method == 'GET':
     id = request.args.get('id')
     PRODUCT = get_product_by_id(id)
-    return render_template("product.html", details = PRODUCT, url = imageUrl)
+    return render_template("product.html", details = PRODUCT, url = URL["API_URL"])
    
 @app.route('/cart-page')
 def get_cart_info():
    if request.method == 'GET':
     # cart = request.cookies.get('cart')
-    cart = [{"item": "item 1","price": 100, "quantity": 3, "total": 300.00, "image": f"{imageUrl}/images/products/fondo transparente/habanero-choco-transp.png"}]
+    cart = [{"item": "item 1","price": 100, "quantity": 3, "total": 300.00, "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"}]
     return render_template("cart.html", cart = cart)
-      
+      # 
    
