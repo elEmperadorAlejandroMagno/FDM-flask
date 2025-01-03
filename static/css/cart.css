@@ -1,32 +1,168 @@
 .cart-container {
-  justify-content: center;
   display: flex;
-  flex-flow: row wrap;
-  padding: 120px 20px 60px 20px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 60px 20px 0 20px;
+  margin: 0 36px;
+  margin-top: 120px;
+}
+
+h1 {
+  font-size: 20px !important;
+  font-family: SofiaSansBold;
+}
+
+.custom-width {
+  width: 300px;
+}
+.custom-height {
+  min-height: 340px;
+}
+
+.finalBtn.custom-width {
+  width: 100%;
 }
 
 .cart {
-  width: 700px;
+  width: 900px;
   font-family: SofiaSans;
 }
 
+.cart-body table {
+  width: 100%;
+}
+
+.white-space {
+  height: 40px;
+}
+
+.table-item {
+  max-width: 1000px;
+  height: 100px;
+  box-sizing: content-box;
+}
+
+.table-group-divider {
+  border-top: solid 2px #cccccc !important;
+}
+
+.table-custom td:nth-child(2) {
+  width: 50%;
+  padding-left: 20px;
+}
+
+.img-td {
+  width: 100px;
+  background-color: #ebebeb;
+  border: solid 1px #999;
+}
 td img {
-  width: 200px;
-  height: auto;
+  width: 100px;
+  height: 100px;
+}
+.info-item h3, p{
+  font-size: 16px;
+  font-family: SofiaSans;
+}
+.price-pack {
+  font-size: 16;
+  font-family: Oswald;
+}
+
+td input {
+  width: 80px;
+  text-align: center;
+  font-family: Oswald;
+  font-size: 16px;
+}
+
+.btn-danger {
+  color: #666;
+  background-color: inherit;
+  border: none;
+  &:hover {
+    cursor: pointer;
+    color: #000;
+  }
 }
 
 .resumen-table {
+  min-height: 240px;
   font-family: SofiaSans;
 }
 
+.envio {
+  padding: 0 20px;
+}
+.envio select {
+  text-align: center;
+  font-family: SofiaSans;
+  padding: 10px 5px;
+  width: 100%;
+}
+
 .finalBtn {
-  width: 400px;
+  width: 340px;
   height: 40px;
   background-color: #98ff00;
   border-radius: 25px;
   border: none;
-  font-family: Oswald;
+  font-family: SofiaSansBold;
   font-size: 24px;
+  &:hover {
+    background-color: #b7ff4c;
+    cursor: pointer;
+  }
+}
+
+.cart-footer {
+  width: 100%;
+  height: auto;
+  padding: 40px 0 30px 30px;
+  margin: 0 36px;
+  font-family: SofiaSans;
+  font-size: 16px;
+  user-select: none;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+p i {
+  padding-right: 10px;
+}
+
+.code input, .note input {
+  min-width: 220px;
+  font-family: SofiaSans;
+  font-size: 16px;
+  background-color: inherit;
+  padding: 8px 4px;
+  border: solid 1px var(--border-color);
+  margin-bottom: 20px;
+  &:focus {
+    outline: none;
+    text-transform: uppercase;
+  }
+}
+.code input::placeholder, .note input::placeholder {
+  text-transform: none;
+  text-align: center;
+}
+
+.d-none {
+  display: none;
+}
+
+.btn-accept {
+  width: 80px;
+  padding: 8px 4px;
+  border-radius: 25px;
+  font-family: SofiaSansBold;
+  font-size: 16px;
+  background-color: #98ff00;
+  border: none;
+  outline: none;
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;
@@ -40,4 +176,8 @@ td img {
 @font-face {
   font-family: SofiaSans;
   src: url(../static/fonts/SofiaSansCondensed-VariableFont_wght.ttf);
+}
+@font-face {
+  font-family: SofiaSansBold;
+  src: url(../fonts/SofiaSansCondensed-Bold.ttf);
 }

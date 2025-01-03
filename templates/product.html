@@ -34,11 +34,7 @@
 
       const mainImg = document.querySelector('.img-container img');
       const extraImgs = document.querySelectorAll('.extra-image');
-      const URLs = {
-        fdmProd : "https://fdm-flask-l1bq.onrender.com",
-        fdmLocal : "http://localhost:5000"
-      }
-
+      
       extraImgs[0].classList.add('active');
 
       extraImgs.forEach(img => {
@@ -53,20 +49,6 @@
           extraImgs[0].classList.add('active');
         })
       });
-
-      const userCurrentUrl = window.location.href;
-      const HomeURL = `${URLs.fdmLocal}/home`;
-
-      let navButtons = document.querySelectorAll('.nav-list a');
-      navButtons.forEach(link => link.addEventListener('click', event => {
-        event.preventDefault();
-        const targetURL = link.getAttribute('href');
-
-        if (!userCurrentUrl.includes(HomeURL)) {
-          window.location.href = `${HomeURL}${targetURL}`;
-        } else window.location.href = targetURL;
-      })
-      );
     });
   </script>
 

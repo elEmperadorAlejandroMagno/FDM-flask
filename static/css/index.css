@@ -6,6 +6,7 @@
   --btn-hover-color: #b7ff4c;
   --black-text-color: #000;
   --white-text-color: #eeee;
+  --border-color: #cccccc;
 }
 
 *{
@@ -24,6 +25,7 @@ body{
 .flex-container{
   width: 100%;
   display: flex;
+  flex-direction: column;
   position: relative;
   flex-wrap: wrap;
 }
@@ -186,11 +188,6 @@ header {
 
 .main-content{
   width: 100%;
-  min-height: 740px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
 }
 .slider-home {
   padding: 110px 0 0 0;
@@ -343,6 +340,8 @@ hr {
 
 /* CART MODAL  */
 /*! PENDIENTE !*/
+
+
 
 
 /* informacion extra */
@@ -509,7 +508,6 @@ hr {
 
 .contact-form{
   background-color: var(--secondary-background-color);
-  border-top: 1px solid --btn-background-color;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -519,26 +517,23 @@ hr {
 }
 
 .img-contact{
-  width: 35%;
+  width: 30%;
 }
 #img4{
   width: 100%;
   object-fit: cover;
 }
-.form-container{width: 50%;}
+.form-container{width: 40%;text-align: center;}
 
 .h2-contact{
+  width: 484px;
+  text-align: center;
   font-family: Oliver;
   font-size: 30px;
   letter-spacing: 3px;
   color:var(--btn-background-color);
-  text-align: center;
 }
 
-form{
-  width: 100%;
-  display: flex;
-}
 form input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
   background-color: var(--main-background-color);
   color: var(--black-text-color);

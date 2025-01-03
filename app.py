@@ -51,7 +51,16 @@ def get_product():
 def get_cart_info():
    if request.method == 'GET':
     # cart = request.cookies.get('cart')
-    cart = [{"item": "item 1","price": 100, "quantity": 3, "total": 300.00, "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"}]
+    cart = [
+      {"title": "Habanero chocolate","price": 400, "quantity": 2, "total": 800, "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"},
+      {
+        "title": "Carolina Reaper y ajo",
+        "price": 400,
+        "quantity": 1,
+        "total": 400,
+        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
+      }
+      ]
     return render_template("cart.html", cart = cart)
       # 
    
