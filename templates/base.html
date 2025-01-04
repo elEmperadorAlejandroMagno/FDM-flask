@@ -145,34 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
   '>\n' + document.documentElement.outerHTML;
 
   // funciones adicionales
-
-//   const cartProducts = fetch('http://localhost:1234', {
-//     mode: 'no-cors',
-//     method: "get",
-//     headers: {
-//       "Content-Type": "application/json"
-//     }
-//  })
-//     .then(response => response.json())
-//     .then(data => {
-//       data.forEach(product => {
-//         const productContainer = document.createElement('tr');
-//         productContainer.innerHTML = `
-//         <div style="display: flex; justify-content: space-between;">
-//           <div class="imgCartModalContainer">
-//             <img src="${product.img}" alt="${product.name}">
-//           </div>
-//           <div class="cart-modal-info">
-//             <h3>${product.name}</h3>
-//             <p>$U${product.price}</p>
-//             <input type="number" value="1">
-//           </div>
-//         </div>
-//         `;
-//         document.querySelector('.table-light tbody').appendChild(productContainer);
-//       });
-//     });
-
   const URLs = {
         fdmProd : "https://fdm-flask-l1bq.onrender.com",
         fdmLocal : "http://localhost:5000"
@@ -191,6 +163,21 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   );
 
+  // Enviar el carrito al servidor cuando se carga la página
+  const CART = JSON.parse(localStorage.getItem('cart')) || [];
+
+    fetch('http://localhost:5000/home', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cart: CART })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Carrito enviado al servidor:', data);
+    })
+    .catch(error => console.error('Error al enviar el carrito:', error));
 
   const flexContainer = document.querySelector('.flex-container');
   const cartIcon = document.querySelector('.cart-icon');

@@ -13,7 +13,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="product-details">
+    <div class="product-details" data-id="{{ details.id }}">
       <h3 class="title">{{ details.title }}</h3>
       <p class="price">{{ details.price | uru }}</p>
       <p class="description">{{ details.description }}</p>
@@ -35,20 +35,49 @@
       const mainImg = document.querySelector('.img-container img');
       const extraImgs = document.querySelectorAll('.extra-image');
       
-      extraImgs[0].classList.add('active');
-
-      extraImgs.forEach(img => {
-        img.addEventListener('mouseenter', () => {
-          extraImgs.forEach(img => img.classList.remove('active'));
-          mainImg.src = img.src;
-          img.classList.add('active');
+      if (extraImgs.length > 0) {
+        extraImgs[0].classList.add('active');
+        extraImgs.forEach(img => {
+          img.addEventListener('mouseenter', () => {
+            extraImgs.forEach(img => img.classList.remove('active'));
+            mainImg.src = img.src;
+            img.classList.add('active');
+          });
+          img.addEventListener('mouseleave', () => {
+            mainImg.src = mainImg.getAttribute('data-main-img');
+            img.classList.remove('active');
+            extraImgs[0].classList.add('active');
+          });
         });
-        img.addEventListener('mouseleave', () => {
-          mainImg.src = mainImg.getAttribute('data-main-img');
-          img.classList.remove('active');
-          extraImgs[0].classList.add('active');
-        })
-      });
+      }
+
+      const ADDBUTTON = document.querySelector('.addBtn');
+
+      const QUANTITY = parseInt(document.querySelector('#quantity').value);
+      const IMG = document.querySelector('.main-image').src;
+
+      ADDBUTTON.addEventListener('click', () => {
+        const PRODUCT = {
+          id: document.querySelector('.product-details').dataset.id,
+          title: document.querySelector('.title').textContent,
+          price: document.querySelector('.price').textContent,
+          quantity: QUANTITY,
+          image: IMG
+        }
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existingProductIndex = cart.findIndex(item => item.id === PRODUCT.id);
+        if (existingProductIndex !== -1) {
+          cart[existingProductIndex].quantity += PRODUCT.quantity;
+        } else {
+          cart.push(PRODUCT);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        console.log('Producto agregado al carrito', PRODUCT);
+        console.log('Carrito actualizado:', cart);
+      })
     });
   </script>
 
