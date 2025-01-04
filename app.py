@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import get_products_sauce, get_products_merch, get_product_by_id
 from utils.helpers import uru, login_required
 from utils.url import URL
+import json
 
 app = Flask(__name__)
 
@@ -32,48 +33,20 @@ def after_request(response):
 def hello():
   return "Hello, world!"
 
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
+  cart = []
+  if request.method == 'POST':
+    cart = request.json.get('cart', [])
+    return jsonify(cart)
   if request.method == 'GET':
     SAUCES = get_products_sauce()
     MERCH = get_products_merch()
-    CART_ITEMS = [
-      {
-        "title": "Habanero chocolate",
-      "price": 400, "quantity": 2, 
-      "total": 800, 
-      "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"
-      },
-      {
-        "title": "Carolina Reaper y ajo",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
-      },
-      {
-        "title": "Salsa de Arándanos con ghost pepper",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Arándanos-fondo-transp_edited_edited.png"
-      },
-            {
-        "title": "Habanero chocolate",
-      "price": 400, "quantity": 2, 
-      "total": 800, 
-      "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"
-      },
-      {
-        "title": "Carolina Reaper y ajo",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
-      }
-    ]
+    CART_ITEMS = cart
+    print(f"cart: {CART_ITEMS}")
+    print(f"cart: {cart}")
 
-    return render_template("index.html", sauces = SAUCES, merchandising = MERCH, url = URL, cart = CART_ITEMS)
+    return render_template("index.html", sauces = SAUCES, merchandising = MERCH, cart = CART_ITEMS, url = URL)
 
 @app.route('/product-page')
 def get_product():
@@ -82,32 +55,14 @@ def get_product():
     PRODUCT = get_product_by_id(id)
     return render_template("product.html", details = PRODUCT, url = URL["API_URL"])
    
-@app.route('/cart-page')
+@app.route('/cart-page', methods=['GET', 'POST'])
 def get_cart_info():
+  #  if request.method == 'POST':
+  #    cart = request.json.get('cart', [])
+  #    return jsonify(cart)
    if request.method == 'GET':
     # cart = request.cookies.get('cart')
-    cart = [
-      {
-       "title": "Habanero chocolate",
-       "price": 400, 
-       "quantity": 2, 
-       "total": 800, 
-       "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"
-       },
-      {
-        "title": "Carolina Reaper y ajo",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
-      },
-      {
-        "title": "Salsa de Arándanos con ghost pepper",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Arándanos-fondo-transp_edited_edited.png"
-      }
-      ]
-    return render_template("cart.html", cart = cart)
+    # print(f"cart: {cart}")  
+    # CART_ITEMS = json.loads(cart)
+    return render_template("cart.html")
    
