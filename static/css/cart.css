@@ -32,6 +32,10 @@ h1 {
   width: 100%;
 }
 
+#table-2 td:nth-child(2) {
+  text-align: end;
+}
+
 .white-space {
   height: 40px;
 }
@@ -43,7 +47,7 @@ h1 {
 }
 
 .table-group-divider {
-  border-top: solid 2px #cccccc !important;
+  border-top: solid 2px var(--border-color) !important;
 }
 
 .table-custom td:nth-child(2) {
@@ -92,7 +96,7 @@ td input {
 }
 
 .envio {
-  padding: 0 20px;
+  padding: 0 15px;
 }
 .envio select {
   text-align: center;
@@ -116,13 +120,16 @@ td input {
 }
 
 .cart-footer {
-  width: 100%;
   height: auto;
   padding: 40px 0 30px 30px;
   margin: 0 36px;
   font-family: SofiaSans;
   font-size: 16px;
   user-select: none;
+  
+  
+  
+  
   &:hover {
     cursor: pointer;
   }

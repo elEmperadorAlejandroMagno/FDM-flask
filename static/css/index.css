@@ -22,6 +22,13 @@ body{
   background-color: #eee;
 }
 
+.table-group-divider {
+  border-top: solid 2px var(--border-color) !important;
+}
+.white-space {
+  height: 20px;
+}
+
 .flex-container{
   width: 100%;
   display: flex;
@@ -35,7 +42,7 @@ header {
   background-color: var(--secondary-background-color);
   width: 100%;
   position: fixed;
-  z-index: 10000;
+  z-index: 9999;
 }
 .nav-container {
   width: 100%;
@@ -341,7 +348,113 @@ hr {
 /* CART MODAL  */
 /*! PENDIENTE !*/
 
+.cart-modal {
+  width: 350px;
+  height: 100vh;
+  overflow: auto;
+  display: block;
+  position: fixed;
+  top: 0;
+  right: -350px;
+  z-index: 10000;
+  background-color: #ffff;
+  transition: all 1s ease;
+  margin: 0 auto;
+}
 
+.cart-modal-header {
+  height: 110px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  background-color: #000;
+  color: var(--white-text-color);
+  font-family: SofiaSans;
+  font-size: 20px;
+}
+.cart-modal-header i {
+  margin-left: 10px;
+  padding: 8px 4px;
+  color: var(--white-text-color);
+  &:hover {
+    color: var(--btn-hover-color);
+    cursor: pointer;
+  }
+}
+
+.cart-modal-main {
+  width: 100%;
+  height: 450px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 30px;
+}
+
+.article-container {
+  width: 100%;
+}
+.custom-width {
+  width: 310px;
+}
+
+.cart-item {
+  width: 100%;
+  padding-top: 15px;
+}
+
+.imgCartModalContainer {
+  width: 80px;
+  height: auto;
+}
+.imgCartModalContainer img {
+  width: 100%;
+  object-fit: cover;
+}
+.cart-modal-info h3 {
+  max-width: 150px;
+  font-family: SofiaSans;
+  font-size: 16px;
+}
+.cart-modal-info p {
+  font-family: Oswald;
+  font-size: 16px;
+  font-weight: 700;
+}
+.cart-modal-info input {
+  text-align: center;
+  font-family: SofiaSans;
+  font-size: 16px;
+  width: 50px;
+}
+
+.total-amount {
+  text-align: justify;
+  font-size: 24px;
+  font-family: SofiaSans;
+  line-height: normal;
+  padding: 10px 0 0 30px;
+}
+
+.full-cart-btn {
+  width: 250px;
+  padding: 10px 5px;
+  font-family: SofiaSansBold;
+  font-size: 20px;
+  border: none;
+  border-radius: 25px;
+  background-color: var(--btn-background-color);
+  &:hover {
+    background-color: #b7ff4c;
+    cursor: pointer;
+  }
+}
+
+.cart-modal.open{
+  right: 0;
+}
 
 
 /* informacion extra */
@@ -897,10 +1010,13 @@ textarea:focus,input[type="email"]:focus, .input-contact input[type="text"]:focu
   font-family: SofiaSans;
   src: url(../fonts/SofiaSansCondensed-VariableFont_wght.ttf);
 }
-
 @font-face {
   font-family: SofiaSansItalic;
   src: url(../fonts/SofiaSansCondensed-Italic-VariableFont_wght.ttf);
+}
+@font-face {
+  font-family: SofiaSansBold;
+  src: url(../fonts/SofiaSansCondensed-Bold.ttf);
 }
 
 @font-face {

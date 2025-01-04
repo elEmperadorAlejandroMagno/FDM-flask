@@ -24,6 +24,8 @@
 }
 
 .img-container {
+  max-width: 650px;
+  max-height: 650px;
   display: flex;
   flex-direction: row-reverse;
   gap: 20px;
@@ -33,8 +35,7 @@
 
 .main-image {
   width: 100%;
-  max-width: 650px;
-  height: auto;
+  max-height: 650px;
 }
 
 .extraImgs {

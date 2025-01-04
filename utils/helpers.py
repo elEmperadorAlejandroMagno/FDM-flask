@@ -17,5 +17,5 @@ def login_required(f):
     return decorated_function
 
 def uru(value):
-    """Format value as USD."""
+    """Format value as URU."""
     return f"$U{value:,.2f}"

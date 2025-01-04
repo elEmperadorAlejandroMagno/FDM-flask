@@ -7,7 +7,7 @@
                 <h1>Mi carrito</h1>
             </div>
             <div class="cart-body">
-                <table class="table-light table-custom">
+                <table class="table-light table-custom" id="table-1">
                   <thead>
                     <th scope="col"></th>
                     <th scope="col"></th>
@@ -41,7 +41,7 @@
         </div>
         <div class="resumen">
           <h1>Resumen del pedido</h1>
-          <table class="table-light custom-width custom-height">
+          <table class="table-light custom-width custom-height" id="table-2">
               <thead>
                   <th style="display: none;">title</th>
                   <th style="display: none;">amount</th>
@@ -58,9 +58,9 @@
                   <tr>
                       <td colspan="2" class="envio">
                           <select name="envio" id="envio">
-                              <option value="{{ 50 | uru }}">Montevideo</option>
-                              <option value="{{ 50 | uru }}">Ciudad de la Costa</option>
-                              <option value="{{ 0 | uru }}">Resto del país</option>
+                              <option value="{{ 50 | uru }}">Montevideo {{ 50 | uru }}</option>
+                              <option value="{{ 50 | uru }}">Ciudad de la Costa {{ 50 | uru }}</option>
+                              <option value="{{ 0 | uru }}">Resto del país $(según la compañía de envio)</option>
                           </select>
                       </td>
                   </tr>
