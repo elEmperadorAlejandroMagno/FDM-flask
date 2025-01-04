@@ -13,7 +13,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="product-details" data-id="{{ details.id }}">
+    <div class="product-details">
       <h3 class="title">{{ details.title }}</h3>
       <p class="price">{{ details.price | uru }}</p>
       <p class="description">{{ details.description }}</p>
@@ -34,8 +34,8 @@
 
       const mainImg = document.querySelector('.img-container img');
       const extraImgs = document.querySelectorAll('.extra-image');
-      if (extraImgs.length > 0) {
-        extraImgs[0].classList.add('active');
+      
+      extraImgs[0].classList.add('active');
 
       extraImgs.forEach(img => {
         img.addEventListener('mouseenter', () => {
@@ -49,39 +49,7 @@
           extraImgs[0].classList.add('active');
         })
       });
-      }
-
-      const ADDBUTTON = document.querySelector('.addBtn');
-
-      ADDBUTTON.addEventListener('click', () => {
-        const QUANTITY = document.querySelector('#quantity').value;
-        const IMG = document.querySelector('.main-image').src;
-        const PRODUCT =  {
-          id: document.querySelector('.product-details').dataset.id,
-          title: document.querySelector('.title').textContent,
-          price: document.querySelector('.price').textContent,
-          quantity: QUANTITY,
-          image: IMG
-        };
-
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        const existingProductIndex = cart.findIndex(item => item.id === PRODUCT.id);
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].quantity = parseInt(cart[existingProductIndex].quantity) + parseInt(PRODUCT.quantity);
-          localStorage.setItem('cart', JSON.stringify(cart));
-          console.log('Producto actualizado en el carrito:', PRODUCT);
-          console.log('Carrito actualizado:', cart);
-          return;
-        }
-        else {
-          cart.push(PRODUCT);
-          localStorage.setItem('cart', JSON.stringify(cart));
-          console.log('Producto agregado al carrito:', PRODUCT);
-          console.log('Carrito actualizado:', cart);
-        }
     });
-  });
   </script>
 
 {% endblock %}
