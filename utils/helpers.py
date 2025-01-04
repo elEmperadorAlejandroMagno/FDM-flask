@@ -18,4 +18,8 @@ def login_required(f):
 
 def uru(value):
     """Format value as URU."""
-    return f"$U{value:,.2f}"
+    try:
+        value = float(value)
+        return f"$U{value:,.2f}"
+    except (ValueError, TypeError):
+        return value

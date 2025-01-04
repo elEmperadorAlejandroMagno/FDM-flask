@@ -27,7 +27,8 @@
                           <p>{{ item.price | uru }}</p>
                         </td>
                         <td class="align-top num-item"><input type="number" value="{{ item.quantity }}"></td>
-                        <td class="align-top price-pack">{{ (item.price*item.quantity) | uru }}</td>
+                        <td class="align-top price-pack">{{ item.price | uru }} x {{ item.quantity }}</td>
+                        </td>
                         <td class="align-top">
                           <button class="btn-danger"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
@@ -49,11 +50,11 @@
               <tbody class="table-group-divider">
                   <tr>
                       <td>Subtotal</td>
-                      <td>1000</td>
+                      <td id="subtotal"></td>
                   </tr>
                   <tr>
                       <td>Envio</td>
-                      <td>Gratis</td>
+                      <td id="envio"></td>
                   </tr>
                   <tr>
                       <td colspan="2" class="envio">
@@ -67,7 +68,7 @@
                   <tr class="table-group-divider"></tr>
                   <tr>
                       <td class="total">Total</td>
-                      <td>{{ 3000 | uru }}</td>
+                      <td id="total"></td>
                   </tr>
                   <tr>
                       <td colspan="2">
@@ -116,6 +117,12 @@
       userNote.addEventListener('click', () => {
         document.querySelector('.note').classList.toggle('d-none');
       });
+
+      const subtotal = document.getElementById('subtotal');
+      const envio = document.getElementById('envio');
+      const total = document.getElementById('total');
+      
+      subtotal.textContent = document.querySelectorAll('.price-pack').reduce((acc, item) => acc + parseFloat(item.textContent.replace('$', '').replace('.', '').replace(',', '.')), 0);
     });
   </script>
   

@@ -1,10 +1,11 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, jsonify
+from flask import Flask, flash, redirect, render_template, request, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import get_products_sauce, get_products_merch, get_product_by_id
 from utils.helpers import uru, login_required
 from utils.url import URL
+import json
 
 app = Flask(__name__)
 
@@ -35,50 +36,36 @@ def hello():
 @app.route('/home', methods=['GET', 'POST'])
 def home():
   if request.method == 'POST':
-    cart = request.json.get('cart')
-    response = jsonify(cart)
-    response.set_cookie('cart', cart)
-    return response
+        cart = request.json.get('cart', [])
+        response = jsonify(cart)
+        response.set_cookie('cart', json.dumps(cart), max_age=60*60*24*30)  # Guardar el carrito en cookies por 30 días
+        return response
   if request.method == 'GET':
-    SAUCES = get_products_sauce()
-    MERCH = get_products_merch()
-    CART_ITEMS = []
-
-    return render_template("index.html", sauces = SAUCES, merchandising = MERCH, url = URL, cart = CART_ITEMS)
+        SAUCES = get_products_sauce()
+        MERCH = get_products_merch()
+        cart_cookie = request.cookies.get('cart', '[]')
+        try:
+            CART_ITEMS = json.loads(cart_cookie)
+        except json.JSONDecodeError:
+            CART_ITEMS = []
+        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, url=URL, cart=CART_ITEMS)
 
 @app.route('/product-page')
 def get_product():
    if request.method == 'GET':
     id = request.args.get('id')
     PRODUCT = get_product_by_id(id)
-    return render_template("product.html", details = PRODUCT, url = URL["API_URL"])
+    cart_cookie = request.cookies.get('cart', '[]')
+    try:
+        CART_ITEMS = json.loads(cart_cookie)
+    except json.JSONDecodeError:
+        CART_ITEMS = []
+    return render_template("product.html", details = PRODUCT, url = URL["API_URL"], cart = CART_ITEMS)
    
 @app.route('/cart-page')
 def get_cart_info():
    if request.method == 'GET':
-    # cart = request.cookies.get('cart')
-    cart = [
-      {
-       "title": "Habanero chocolate",
-       "price": 400, 
-       "quantity": 2, 
-       "total": 800, 
-       "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"
-       },
-      {
-        "title": "Carolina Reaper y ajo",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
-      },
-      {
-        "title": "Salsa de Arándanos con ghost pepper",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Arándanos-fondo-transp_edited_edited.png"
-      }
-      ]
-    return render_template("cart.html", cart = cart)
+    cart_cookie = request.cookies.get('cart', '[]')
+    CART_ITEMS = json.loads(cart_cookie)
+    return render_template("cart.html", cart = CART_ITEMS)
    
