@@ -28,12 +28,34 @@ h1 {
   font-family: SofiaSans;
 }
 
+.empty-cart {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: SofiaSans;
+  font-size: 20px;
+  font-weight: 700;
+}
+
 .cart-body table {
   width: 100%;
 }
 
+.subtotal-table, .envio-table {
+  font-size: 20px;
+  font-family: SofiaSans;
+  font-weight: 600;
+}
 #table-2 td:nth-child(2) {
   text-align: end;
+}
+
+.total td {
+  font-family: Oswald;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .white-space {
@@ -101,6 +123,8 @@ td input {
 .envio select {
   text-align: center;
   font-family: SofiaSans;
+  font-size: 16px;
+  font-weight: 600;
   padding: 10px 5px;
   width: 100%;
 }
@@ -126,10 +150,6 @@ td input {
   font-family: SofiaSans;
   font-size: 16px;
   user-select: none;
-  
-  
-  
-  
   &:hover {
     cursor: pointer;
   }
@@ -173,6 +193,12 @@ p i {
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 1315px) {
+  .resumen {
+    padding-top: 40px;
   }
 }
 

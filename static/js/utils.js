@@ -1,5 +1,12 @@
 export function drawCartModal(cart) {
   const cartTable = document.querySelector('.table-body');
+  if (cart.length === 0) {
+    const cartBody = document.querySelector('.article-container');
+    cartBody.innerHTML = `
+      <div class="empty-cart">
+        <h3>Tu carrito esta vacío</h3>
+      </div>`;
+  }
   const CART_ITEM = cart.map(item => `
     <tr class="white-space"></tr>
       <tr class="cart-item">
@@ -24,9 +31,16 @@ export function drawCartModal(cart) {
 
 export function drawCartPage(cart) {
   const cartTable = document.querySelector('.table-body-2');
+  if (cart.length === 0) {
+    const cartBody = document.querySelector('.cart-body');
+    cartBody.innerHTML = `
+      <div class="empty-cart">
+        <h3>Tu carrito esta vacío</h3>
+      </div>`;
+  }
   const CART_ITEM = cart.map(item => `
     <tr class="white-space"></tr>
-      <tr scope="row" class="table-item">
+      <tr scope="row" class="table-item" data-id="${item.id}">
         <td class="img-td">
           <img src="${item.image}" alt="${item.title}">
         </td>
@@ -69,5 +83,8 @@ export function parseCurrency(value) {
 export function drawSubtotal () {
   let subtotal = localStorage.getItem('cartSubtotal', 0);
   let cartSubtotal = document.querySelector('.cart-subtotal');
+  if (subtotal === null) {
+    subtotal = 0;
+  }
   cartSubtotal.innerHTML = formatCurrency(subtotal);
 }

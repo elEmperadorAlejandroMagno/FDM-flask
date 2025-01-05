@@ -30,12 +30,12 @@
               </thead>
               <tbody class="table-group-divider">
                   <tr>
-                      <td>Subtotal</td>
-                      <td id="subtotal"></td>
+                      <td class="subtotal-table">Subtotal</td>
+                      <td class="subtotal-table" id="subtotal"></td>
                   </tr>
                   <tr>
-                      <td>Envio</td>
-                      <td id="envio">$U0.00</td>
+                      <td class="envio-table">Envio</td>
+                      <td class="envio-table" id="envio">$U0.00</td>
                   </tr>
                   <tr>
                       <td colspan="2" class="envio">
@@ -49,8 +49,8 @@
                       </td>
                   </tr>
                   <tr class="table-group-divider"></tr>
-                  <tr>
-                      <td class="total">Total</td>
+                  <tr class="total">
+                      <td>Total</td>
                       <td id="total"></td>
                   </tr>
                   <tr>
@@ -89,14 +89,15 @@
   <script type="module">
     import { formatCurrency, parseCurrency, drawCartPage } from '../static/js/utils.js';
 
-    const CART = JSON.parse(localStorage.getItem('cart')) || [];
-    const SUBTOTAL = JSON.parse(localStorage.getItem('cartSubtotal')) || 0;
-    if (window.location.href.includes('cart-page')) {
-      document.querySelector('.cart-icon').style.display="none";
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      drawCartPage(CART);
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let subtotal = parseCurrency(localStorage.getItem('cartSubtotal')) || 0;
+      let count = parseInt(localStorage.getItem('cartCount')) || 0;
+
+      if (window.location.href.includes('cart-page')) {
+        document.querySelector('.cart-icon').style.display="none";
+      }
+      drawCartPage(cart);
 
       const promoCode = document.querySelector('.promo-code p');
       promoCode.addEventListener('click', () => {
@@ -109,16 +110,39 @@
       
       const ENVIO = document.getElementById('envio');
       const INPUT_ENVIO = document.getElementById('inputEnvio');
-      document.getElementById('subtotal').textContent = formatCurrency(SUBTOTAL);
-      document.getElementById('total').textContent = formatCurrency(SUBTOTAL);
+      document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+      document.getElementById('total').textContent = formatCurrency(subtotal);
 
       INPUT_ENVIO.addEventListener('change', () => {
         const envioValue = parseCurrency(parseFloat(INPUT_ENVIO.value));
-        const subtotalValue = parseCurrency(SUBTOTAL);
         const TOTAL = subtotalValue + envioValue;
         ENVIO.textContent = formatCurrency(envioValue);
         document.getElementById('total').textContent = formatCurrency(TOTAL);
       });
+
+      document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', () => {
+
+        const id = button.closest('.table-item').dataset.id;
+        const item = cart.find(item => item.id === id);
+        if (!item) {
+          console.error('Item not found in cart:',id);
+          return;
+        }
+        const index = cart.indexOf(item);
+        subtotal -= item.price * item.quantity;
+        count -= item.quantity;
+
+        cart.splice(index, 1);
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('cartSubtotal', JSON.stringify(subtotal));
+        localStorage.setItem('cartCount', JSON.stringify(count));
+
+        window.location.reload();
+        });
+      });
+
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {
         alert('Compra finalizada');

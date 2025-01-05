@@ -31,6 +31,11 @@
 
   <script type="module">
     import { drawCartModal, formatCurrency, parseCurrency, drawSubtotal, drawCartPage } from '../static/js/utils.js';
+
+    let count = localStorage.getItem('cartCount') || 0;
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let subtotal = localStorage.getItem('cartSubtotal') || 0;
+
     document.addEventListener('DOMContentLoaded', () => {
 
       const mainImg = document.querySelector('.img-container img');
@@ -75,22 +80,16 @@
           cart.push(PRODUCT);
         }
 
-        localStorage.setItem('cart', JSON.stringify(cart));
-        console.log('Producto agregado al carrito', PRODUCT);
-        console.log('Carrito actualizado:', cart);
-        
-        let cartCount = document.querySelector('.cart-count');
-        let cartSubtotal = document.querySelector('.cart-subtotal');
         let currentCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+        localStorage.setItem('cart', JSON.stringify(cart));
         localStorage.setItem('cartCount', currentCount);
         localStorage.setItem('cartSubtotal', cart.reduce((acc, item) => acc + item.price * item.quantity, 0));
-        let count = localStorage.getItem('cartCount', 0);
-        let subtotal = localStorage.getItem('cartSubtotal', 0);
-        console.log(subtotal);
-        cartCount.innerHTML = count;
-        cartSubtotal.innerHTML = formatCurrency(subtotal);
-        drawCartModal(cart);
+        window.location.reload();
       })
+      let cartCount = document.querySelector('.cart-count');
+
+      cartCount.innerHTML = count;
+      drawCartModal(cart);
       drawSubtotal();
     });
   </script>
