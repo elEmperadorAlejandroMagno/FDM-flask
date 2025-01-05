@@ -36,6 +36,9 @@ body{
   position: relative;
   flex-wrap: wrap;
 }
+.opacity {
+  opacity: 0.5;
+}
 
 /* Header */
 header {

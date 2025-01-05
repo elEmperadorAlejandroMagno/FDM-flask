@@ -18,8 +18,8 @@
       <p class="price">{{ details.price | uru }}</p>
       <p class="description">{{ details.description }}</p>
       <p class="quantity">Cantidad</p>
-      <input id="quantity" type="number" value="1" min="1" max="9">
-        <button class="addBtn">Agregar al carrito</button>
+      <input type="number" value="1" min="1" max="9">
+      <button class="addBtn">Agregar al carrito</button>
     </div>
   </div>
 
@@ -30,11 +30,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
   <script type="module">
-    import { drawCartModal, formatCurrency, parseCurrency, drawSubtotal, drawCartPage } from '../static/js/utils.js';
+    import { drawCartModal, formatCurrency, parseCurrency, drawSubtotal, drawCartPage, getCount } from '../static/js/utils.js';
 
-    let count = localStorage.getItem('cartCount') || 0;
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let subtotal = localStorage.getItem('cartSubtotal') || 0;
+
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -57,18 +55,18 @@
         });
       }
 
-      const ADDBUTTON = document.querySelector('.addBtn');
-      const QUANTITY = parseInt(document.querySelector('#quantity').value);
-      const IMG = document.querySelector('.main-image').src;
-      const PRICE = parseFloat(parseCurrency(document.querySelector('.price').textContent));
-      console.log(PRICE);
-      ADDBUTTON.addEventListener('click', () => {
+      const addToCartBtn = document.querySelector('.addBtn');
+      const quantity = document.querySelector('.product-details input');
+      const img = document.querySelector('.main-image').src;
+      const price = parseFloat(parseCurrency(document.querySelector('.price').textContent));
+
+      addToCartBtn.addEventListener('click', () => {
         const PRODUCT = {
           id: document.querySelector('.product-details').dataset.id,
           title: document.querySelector('.title').textContent,
-          price: PRICE,
-          quantity: QUANTITY,
-          image: IMG
+          price: price,
+          quantity: parseInt(quantity.value),
+          image: img
         }
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -79,18 +77,14 @@
         } else {
           cart.push(PRODUCT);
         }
-
-        let currentCount = cart.reduce((acc, item) => acc + item.quantity, 0);
         localStorage.setItem('cart', JSON.stringify(cart));
-        localStorage.setItem('cartCount', currentCount);
-        localStorage.setItem('cartSubtotal', cart.reduce((acc, item) => acc + item.price * item.quantity, 0));
-        window.location.reload();
+        let count = getCount(cart);
+        drawCartModal(cart);
+        drawSubtotal(cart);
+        document.querySelector('.cart-count').innerHTML = count;
+        document.querySelector('.cart-modal').classList.add('open');
+        document.querySelector('.flex-container').classList.add('opacity');
       })
-      let cartCount = document.querySelector('.cart-count');
-
-      cartCount.innerHTML = count;
-      drawCartModal(cart);
-      drawSubtotal();
     });
   </script>
 

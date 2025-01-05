@@ -83,7 +83,7 @@
   margin-bottom: 5px;
   font-size: 16px;
 }
-#quantity {
+.product-details input {
   font-family: Oswald;
   font-size: 20px;
   padding: 1px 18px 1px 14px;

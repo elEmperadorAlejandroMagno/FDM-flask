@@ -98,10 +98,9 @@
   </div>
   <div class="cart-modal-main">
     <div class="article-container">
-  <!-- <p class="cart-empty">El carrito está vacío</p> -->
       <table class="table-light custom-width" id="table-3">
         <tbody class="table-body">
-          <!--Productos en el carrito-->
+          <!-- Productos -->
         </tbody>
       </table>
     </div>
@@ -109,7 +108,7 @@
   <div class="cart-modal-footer" style="text-align: center;">
     <div class="total-amount">
       <p>Subtotal</p>
-      <p class="cart-subtotal"></p>
+      <p class="cart-subtotal" id="subtotal"></p>
     </div>
     <hr style="border-color: #cccc;">
     <button class="full-cart-btn">Ver carrito completo</button>
@@ -117,7 +116,7 @@
 </div>
 </body>
 <script type="module">
-  import { drawCartModal, formatCurrency, drawSubtotal } from '../static/js/utils.js';
+  import { drawCartModal, formatCurrency, drawSubtotal, getCount } from '../static/js/utils.js';
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -126,6 +125,28 @@ document.addEventListener('DOMContentLoaded', function() {
   (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
   (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
   '>\n' + document.documentElement.outerHTML;
+
+  // Renderizar cart modal
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let count = getCount(cart);
+  drawCartModal(cart);
+  drawSubtotal(cart);
+  document.querySelector('.cart-count').innerHTML = count;
+
+  const inputNum = document.querySelectorAll('.input-num');
+  inputNum.forEach(input => {
+    input.addEventListener('change', () => {
+      cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const id = input.closest('#product-item').dataset.id;
+      const product = cart.find(item => item.id === id);
+      product.quantity = parseInt(input.value);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      count = getCount(cart);
+      drawCartModal(cart);
+      drawSubtotal(cart);
+      document.querySelector('.cart-count').innerHTML = count;
+    });
+  });
 
   // funciones adicionales
   const URLs = {
@@ -146,14 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   );
 
-  // Enviar el carrito al servidor cuando se carga la página
-  const CART = JSON.parse(localStorage.getItem('cart')) || [];
-
-  let currentCount = localStorage.getItem('cartCount') || 0;
-  document.querySelector('.cart-count').textContent = currentCount;
-  drawCartModal(CART);
-  drawSubtotal();
-
   const flexContainer = document.querySelector('.flex-container');
   const cartIcon = document.querySelector('.cart-icon');
   const cartModal = document.querySelector('.cart-modal');
@@ -161,11 +174,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   cartIcon.addEventListener('click', () => {
     cartModal.classList.add('open');
-    flexContainer.style.opacity = '0.6';
+    flexContainer.classList.add('opacity');
   });
   closeCartModal.addEventListener('click', () => {
     cartModal.classList.remove('open');
-    flexContainer.style.opacity = '1';
+    flexContainer.classList.remove('opacity');
   });
 
   document.querySelector('.full-cart-btn').addEventListener('click', () => {
