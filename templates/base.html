@@ -100,26 +100,8 @@
     <div class="article-container">
   <!-- <p class="cart-empty">El carrito está vacío</p> -->
       <table class="table-light custom-width" id="table-3">
-        <tbody>
-          {% for item in cart %}
-            <tr class="white-space"></tr>
-            <tr class="cart-item">
-              <td>
-                <div class="imgCartModalContainer">
-                  <img src="{{ item.image }}" alt="{{ item.title }}">
-                </div>
-              </td>
-              <td>
-                <div class="cart-modal-info">
-                  <h3>{{ item.title }}</h3>
-                  <p>{{ item.price | uru }}</p>
-                  <input type="number" value="{{ item.quantity }}">
-                </div>
-              </td>
-            </tr>
-            <tr class="white-space"></tr>
-            <tr class="table-group-divider"></tr>
-          {% endfor %}
+        <tbody class="table-body">
+          <!--Productos en el carrito-->
         </tbody>
       </table>
     </div>
@@ -127,14 +109,15 @@
   <div class="cart-modal-footer" style="text-align: center;">
     <div class="total-amount">
       <p>Subtotal</p>
-      <p>$U1,000.00</p>
+      <p class="cart-subtotal"></p>
     </div>
     <hr style="border-color: #cccc;">
     <button class="full-cart-btn">Ver carrito completo</button>
   </div>
 </div>
 </body>
-<script>
+<script type="module">
+  import { drawCart, formatCurrency, drawSubtotal } from '../static/js/utils.js';
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -166,23 +149,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Enviar el carrito al servidor cuando se carga la página
   const CART = JSON.parse(localStorage.getItem('cart')) || [];
 
-    fetch('http://localhost:5000/home', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ cart: CART })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Carrito enviado al servidor');
-    })
-    .catch(error => console.error('Error al enviar el carrito'));
-
-  let cartCount = document.querySelector('.cart-count');
-  let count = CART.reduce((acc, item) => acc + item.quantity, 0);
-  cartCount.textContent = count;
-  console.log('Cantidad de productos en el carrito:', count);
+  let currentCount = localStorage.getItem('cartCount') || 0;
+  console.log(currentCount);
+  document.querySelector('.cart-count').textContent = currentCount;
+  drawCart(CART);
+  drawSubtotal();
 
   const flexContainer = document.querySelector('.flex-container');
   const cartIcon = document.querySelector('.cart-icon');
