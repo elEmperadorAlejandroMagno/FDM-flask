@@ -35,7 +35,7 @@
                   </tr>
                   <tr>
                       <td>Envio</td>
-                      <td id="envio">$0.00</td>
+                      <td id="envio">$U0.00</td>
                   </tr>
                   <tr>
                       <td colspan="2" class="envio">
@@ -91,11 +91,11 @@
 
     const CART = JSON.parse(localStorage.getItem('cart')) || [];
     const SUBTOTAL = JSON.parse(localStorage.getItem('cartSubtotal')) || 0;
+    if (window.location.href.includes('cart-page')) {
+      document.querySelector('.cart-icon').style.display="none";
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.location.href.includes('cart-page')) {
-        document.querySelector('.cart-icon').style.display="none";
-      }
       drawCartPage(CART);
 
       const promoCode = document.querySelector('.promo-code p');

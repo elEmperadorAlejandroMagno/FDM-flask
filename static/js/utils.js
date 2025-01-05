@@ -47,10 +47,15 @@ export function drawCartPage(cart) {
 }
 
 export function formatCurrency(value) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU'
-  }).format(value);
+    try {
+      value = parseFloat(value);
+      if (isNaN(value)) {
+        throw new Error('Invalid number');
+      }
+      return `$U${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+    } catch (error) {
+      return value;
+    }
 }
 
 export function parseCurrency(value) {
