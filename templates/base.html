@@ -117,7 +117,7 @@
 </div>
 </body>
 <script type="module">
-  import { drawCart, formatCurrency, drawSubtotal } from '../static/js/utils.js';
+  import { drawCartModal, formatCurrency, drawSubtotal } from '../static/js/utils.js';
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -150,9 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const CART = JSON.parse(localStorage.getItem('cart')) || [];
 
   let currentCount = localStorage.getItem('cartCount') || 0;
-  console.log(currentCount);
   document.querySelector('.cart-count').textContent = currentCount;
-  drawCart(CART);
+  drawCartModal(CART);
   drawSubtotal();
 
   const flexContainer = document.querySelector('.flex-container');

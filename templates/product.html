@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
   <script type="module">
-    import { drawCart, formatCurrency, drawSubtotal } from '../static/js/utils.js';
+    import { drawCartModal, formatCurrency, parseCurrency, drawSubtotal, drawCartPage } from '../static/js/utils.js';
     document.addEventListener('DOMContentLoaded', () => {
 
       const mainImg = document.querySelector('.img-container img');
@@ -55,7 +55,7 @@
       const ADDBUTTON = document.querySelector('.addBtn');
       const QUANTITY = parseInt(document.querySelector('#quantity').value);
       const IMG = document.querySelector('.main-image').src;
-      const PRICE = parseFloat(document.querySelector('.price').textContent.replace(/[^0-9.-]+/g,""));
+      const PRICE = parseFloat(parseCurrency(document.querySelector('.price').textContent));
       console.log(PRICE);
       ADDBUTTON.addEventListener('click', () => {
         const PRODUCT = {
@@ -89,7 +89,7 @@
         console.log(subtotal);
         cartCount.innerHTML = count;
         cartSubtotal.innerHTML = formatCurrency(subtotal);
-        drawCart(cart);
+        drawCartModal(cart);
       })
       drawSubtotal();
     });
