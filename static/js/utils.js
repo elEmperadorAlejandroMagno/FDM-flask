@@ -23,7 +23,7 @@ export function drawCartModal(cart) {
             <div class="cart-modal-info">
               <h3>${item.title}</h3>
               <p>${formatCurrency(item.price)}</p>
-              <input class="input-num" type="number" value="${item.quantity}">
+              <input class="input-num" type="number" min="1" max="9" value="${item.quantity}">
             </div>
           </td>
         </tr>
@@ -57,7 +57,7 @@ export function drawCartPage(cart) {
             <h3>${item.title}</h3>
             <p>${formatCurrency(item.price)}</p>
           </td>
-          <td class="align-top num-item"><input class="input-num" type="number" value="${item.quantity}"></td>
+          <td class="align-top num-item"><input class="input-num" type="number" min="1" max="9" value="${item.quantity}"></td>
           <td class="align-top price-pack">${formatCurrency(item.price * item.quantity)}</td>
           <td class="align-top">
             <button class="btn-danger"><i class="fa-solid fa-trash-can"></i></button>
@@ -110,4 +110,54 @@ export function drawSubtotal (cart) {
   }
   cartSubtotal.innerHTML = formatCurrency(subtotal);
   return subtotal;
+}
+
+export function updateCart(cart) {
+  cart = JSON.parse(localStorage.getItem('cart')) || [];
+  drawCartModal(cart);
+  drawSubtotal(cart);
+  const count = getCount(cart);
+  document.querySelector('.cart-count').innerHTML = count;
+  addInputEventListeners(cart);
+}
+
+function addInputEventListeners(cart) {
+  const inputNum = document.querySelector('.input-num');
+  inputNum.addEventListener('change', () => {
+      const id = inputNum.closest('#product-item').dataset.id;
+      const product = cart.find(item => item.id === id);
+      product.quantity = parseInt(inputNum.value);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      if(window.location.href.includes('cart-page')) {
+        updateCartPage(cart);
+      } else updateCart(cart);
+  });
+}
+
+export function updateCartPage (cart) {
+  cart = JSON.parse(localStorage.getItem('cart')) || [];
+  drawCartPage(cart);
+  drawSubtotal(cart);
+  addInputEventListeners(cart);
+  get_total(cart);
+}
+
+function get_total(cart) {
+  let total = cart.reduce((acc, item) => {
+    return acc + (item.price * item.quantity);
+  }, 0);
+
+  if (total === null) {
+    total = 0;
+  }
+
+  const INPUT_ENVIO = document.querySelector('#InputEnvio');
+  let envio = 0;
+  if (INPUT_ENVIO) {
+    envio = parseCurrency(INPUT_ENVIO.value);
+  }
+  total += envio;
+  console.log(total);
+  document.querySelector('#total').innerHTML = formatCurrency(total);
+  return total;
 }
