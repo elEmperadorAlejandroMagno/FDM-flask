@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
   <script type="module">
-    import { drawCartModal, formatCurrency, parseCurrency, drawSubtotal, drawCartPage, getCount } from '../static/js/utils.js';
+    import { formatCurrency, parseCurrency, drawSubtotal, getCount, updateCart } from '../static/js/utils.js';
 
 
 
@@ -78,9 +78,15 @@
           cart.push(PRODUCT);
         }
         localStorage.setItem('cart', JSON.stringify(cart));
+        const updateCookie = fetch('/add_to_cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(PRODUCT)
+        });
         let count = getCount(cart);
-        drawCartModal(cart);
-        drawSubtotal(cart);
+        updateCart(cart);
         document.querySelector('.cart-count').innerHTML = count;
         document.querySelector('.cart-modal').classList.add('open');
         document.querySelector('.flex-container').classList.add('opacity');

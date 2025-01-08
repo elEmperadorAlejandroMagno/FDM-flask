@@ -15,9 +15,40 @@
                     <th scope="col"></th>
                     <th scope="col"></th>
                   </thead>
-                  <tbody class="table-group-divider table-body-2">
-                    <!-- Productos en el carrito -->
-                  </tbody>
+                    <tbody class="table-group-divider table-body-2">
+                      {% if cart|length == 0 %}
+                        <tr>
+                          <td colspan="2">
+                            <div class="empty-cart">
+                              <h3>Tu carrito esta vacío</h3>
+                            </div>
+                          </td>
+                        </tr>
+                      {% else %}
+                        {% for item in cart %}
+                          <tr class="white-space"></tr>
+                          <tr scope="row" class="table-item" id="product-item" data-id="{{ item.id }}">
+                            <td class="img-td">
+                              <img src="{{ item.image }}" alt="{{ item.title }}">
+                            </td>
+                            <td class="align-top info-item">
+                              <h3>{{ item.title }}</h3>
+                              <p>{{ item.price | uru }}</p>
+                            </td>
+                            <td class="align-top num-item"><input class="input-num" type="number" min="1" max="9" value="{{ item.quantity }}"></td>
+                            <td class="align-top price-pack">{{ (item.price * item.quantity) | uru }}</td>
+                            <td class="align-top">
+                              <form action="/remove_from_cart" method="post">
+                                <input type="text" name="id" value="{{ item.id }}" style="display: none;">
+                                <button class="btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                              </form>
+                            </td>
+                          </tr>
+                          <tr class="white-space"></tr>
+                          <tr class="table-group-divider"></tr>
+                        {% endfor %}
+                      {% endif %}
+                    </tbody>
                 </table>
               </div>
         </div>
@@ -31,31 +62,40 @@
               <tbody class="table-group-divider">
                   <tr>
                       <td class="subtotal-table">Subtotal</td>
-                      <td class="subtotal-table cart-subtotal" id="subtotal"></td>
+                      <td class="subtotal-table cart-subtotal" id="subtotal">{{ subtotal | uru }}</td>
                   </tr>
                   <tr>
                       <td class="envio-table">Envio</td>
-                      <td class="envio-table" id="envio">$U0.00</td>
+                      <td class="envio-table" id="envio">{{ envio | uru }}</td>
                   </tr>
                   <tr>
                       <td colspan="2" class="envio">
+                        {% if cart|length == 0 %}
+                          <select name="envio" disabled>
+                            <option value="" selected>Selecciona el envío</option>
+                          </select>
+                        {% else %}
                           <select name="envio" id="inputEnvio">
                               <option value="0" selected disabled>Selecciona el envío</option>
-                              <option value="50">Montevideo {{ 50 | uru }}</option>
-                              <option value="50">Ciudad de la Costa {{ 50 | uru }}</option>
-                              <option value="0">Retiro del lugar</option>
-                              <option value="0">Resto del país $(según la compañía de envio)</option>
+                              {% for envio in options_envio %}
+                                <option value="{{ envio.costo }}">{{ envio.lugar }}</option>
+                              {% endfor %}
                           </select>
+                        {% endif %}
                       </td>
                   </tr>
                   <tr class="table-group-divider"></tr>
                   <tr class="total">
                       <td>Total</td>
-                      <td id="total"></td>
+                      <td id="total">{{ (subtotal + envio) | uru }}</td>
                   </tr>
                   <tr>
                       <td colspan="2">
+                        {% if cart|length == 0 %}
+                          <button class="finalBtn custom-width" disabled>Finalizar compra</button>
+                        {% else %}
                           <button class="finalBtn custom-width">Finalizar compra</button>
+                        {% endif %}
                       </td>
                   </tr>
               </tbody>
@@ -87,70 +127,38 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
   <script type="module">
-    import { formatCurrency, parseCurrency, drawCartPage, drawSubtotal, updateCartPage } from '../static/js/utils.js';
+    import { formatCurrency, parseCurrency } from '../static/js/utils.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       if (window.location.href.includes('cart-page')) {
         document.querySelector('.cart-icon').style.display="none";
       }
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      let subtotalValue = drawSubtotal(cart);
-      updateCartPage(cart);
 
       const promoCode = document.querySelector('.promo-code p');
       promoCode.addEventListener('click', () => {
         document.querySelector('.code').classList.toggle('d-none');
+        // Add promo code to the cart
       });
       const userNote = document.querySelector('.user-note p');
       userNote.addEventListener('click', () => {
         document.querySelector('.note').classList.toggle('d-none');
+        // Add note to the cart
       });
-      
-      const ENVIO = document.getElementById('envio');
-      const INPUT_ENVIO = document.getElementById('inputEnvio');
-      document.getElementById('total').textContent = formatCurrency(subtotalValue);
 
-      INPUT_ENVIO.addEventListener('change', () => {
-        const envioValue = parseCurrency(INPUT_ENVIO.value);
-        const TOTAL = subtotalValue + envioValue;
-        ENVIO.textContent = formatCurrency(envioValue);
-        document.getElementById('total').textContent = formatCurrency(TOTAL);
+      const INPUT_ENVIO = document.querySelector('#inputEnvio');
+      INPUT_ENVIO.addEventListener('change', () => { 
+        // Update envio value y actualizar el total
       });
 
       document.querySelectorAll('.btn-danger').forEach(button => {
         button.addEventListener('click', () => {
-
-        const id = button.closest('.table-item').dataset.id;
-        const item = cart.find(item => item.id === id);
-        if (!item) {
-          console.error('Item not found in cart:',id);
-          return;
-        }
-        const index = cart.indexOf(item);
-
-        cart.splice(index, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        
-        cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-        
-        drawCartPage(cart);
-        subtotalValue = drawSubtotal(cart);
-
-        const TOTAL = document.getElementById('total');
-        const ENVIO = document.getElementById('envio');
-        const envioValue = parseCurrency(ENVIO.textContent);
-        let totalValue =  subtotalValue + envioValue;
-        const FORMATTED_TOTAL = formatCurrency(totalValue);
-
-        console.log(formatCurrency(totalValue));
-        TOTAL.textContent = FORMATTED_TOTAL;
+          // Add item to the cart -->
         });
       });
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {
-        const total = document.getElementById('total').textContent;
-        alert(`Compra finalizada Total pagado: ${total}`);
+        alert('Compra finalizada correctamente');
 
       });
     });

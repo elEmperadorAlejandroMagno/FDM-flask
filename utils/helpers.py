@@ -24,17 +24,10 @@ def uru(value):
     except (ValueError, TypeError):
         return value
 
-def totalPack(price, quantity):
-    price = price.strip('$U')
-    price = float(price)    
-    total = price * quantity
-    return total
-
-    
 def sumItemPrices(items):
     total = 0;
     for item in items:
-        price = item['price'].strip('$U')
+        price = item['price']
         price = float(price)    
-        total += price
+        total += price * item['quantity']
     return total

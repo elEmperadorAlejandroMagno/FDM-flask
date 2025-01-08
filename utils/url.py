@@ -1,5 +1,5 @@
 URL = {
-  "API_URL" : "http://localhost:1234",
+  "API_URL" : "https://poised-cyan-lentil.glitch.me",
   "fdm" : "http://localhost:5000",
 
 }

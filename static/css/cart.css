@@ -127,6 +127,9 @@ td input {
   font-weight: 600;
   padding: 10px 5px;
   width: 100%;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .finalBtn {
