@@ -1,0 +1,127 @@
+:root {
+  --primary-background-color: #eee;
+  --secondary-background-color: #000;
+  --third-background-color: #777;
+  --btn-background-color: #98ff00;
+  --btn-hover-color: #b7ff4c;
+  --black-text-color: #000;
+  --white-text-color: #eeee;
+  --border-color: #cccccc;
+  color-scheme: light dark;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+li {
+  list-style-type: none;
+}
+
+header {
+  width: 100%; 
+  background-color: #000;
+  color: #eee;
+  font-family: Olvier;
+  font-size: 30px;
+  text-align: center;
+}
+
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  align-items: center;
+  padding: 20px 20px;
+}
+
+.img-container {
+  position: absolute;
+  left: 0;
+  padding: 20px;
+  width: 200px;
+}
+.img-container img {
+  width: 100%;
+}
+
+main {
+  width: 80%;
+  min-height: 600px;
+}
+
+aside {
+  background-color: var(--secondary-background-color);
+  width: 20%;
+  min-height: 600px;
+}
+
+.menu-button h3 {
+  font-family: SofiaSans;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.accordion {
+  --bs-accordion-bg: var(--secondary-background-color)!important;
+  --bs-accordion-active-bg: var(--btn-background-color) !important;
+  --bs-accordion-color: #eeee!important;
+  --bs-accordion-border-width: 0!important;
+  --bs-accordion-inner-border-radius: 0!important;
+  --bs-accordion-btn-focus-box-shadow: none!important;
+  --bs-accordion-btn-bg: #000 !important;
+  --bs-accordion-btn-color: #eeee !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--btn-background-color) !important; /* Color de fondo azul oscuro cuando está expandido */
+  color: #000 !important; /* Color del texto blanco */
+}
+
+.accordion-button::after {
+  background-color: #eee!important; /* Color del texto blanco */
+}
+.accordion-button:not(.collapsed)::after {
+  background-color: var(--btn-background-color) !important; /* Color de fondo azul claro cuando se pasa el mouse */
+}
+
+.accordion-body {
+  padding: 0!important;
+}
+
+.li-panel ul {
+  padding: 0;
+  margin: 0;
+}
+.li-panel li {
+  padding: 12px 8px;
+  list-style-type: none;
+  font-family: SofiaSansItalic;
+  font-size: 18px;
+  font-weight: 700;
+  &:hover {
+    cursor: pointer;
+    background-color: #333;
+  }
+}
+
+footer {
+  width: 100%; 
+  min-height: 200px;
+}
+
+@font-face {
+  font-family: SofiaSansItalic;
+  src: url(../fonts/SofiaSansCondensed-Italic-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: SofiaSans;
+  src: url(../fonts/SofiaSansCondensed-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: Olvier;
+  src: url(../fonts/Oliver-Regular.ttf);
+}

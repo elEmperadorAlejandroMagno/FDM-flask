@@ -7,6 +7,7 @@
   --black-text-color: #000;
   --white-text-color: #eeee;
   --border-color: #cccccc;
+  color-scheme: light dark;
 }
 
 *{
@@ -19,7 +20,8 @@ html{
   scroll-padding-top: 100px;
 }
 body{
-  background-color: #eee;
+  background-color: light-dark(var(--primary-background-color), var(--secondary-background-color));
+  color: light-dark(var(--black-text-color), var(--white-text-color));
 }
 
 .table-group-divider {
@@ -32,7 +34,7 @@ body{
 .flex-container{
   width: 100%;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   position: relative;
   flex-wrap: wrap;
 }
@@ -361,7 +363,7 @@ hr {
   top: 0;
   right: -350px;
   z-index: 10000;
-  background-color: #ffff;
+  background-color: #fff;
   transition: all 1s ease;
   margin: 0 auto;
 }
@@ -454,11 +456,31 @@ hr {
 .full-cart-btn {
   width: 250px;
   padding: 10px 5px;
-  font-family: SofiaSansBold;
+  font-family: 'SofiaSans';
   font-size: 20px;
+  font-weight: 900;
   border: none;
   border-radius: 25px;
+  color: var(--black-text-color);
   background-color: var(--btn-background-color);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;
@@ -553,11 +575,12 @@ hr {
   letter-spacing: .1em;
 }
 .recetas-finDelMundo {
+  background-color: var(--primary-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: 'Times New Roman', serif;
+  font-family: SofiaSans;
 }
 .recetas-container {
   display: flex;

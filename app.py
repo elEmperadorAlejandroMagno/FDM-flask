@@ -85,4 +85,7 @@ def get_cart_info():
     subtotal = sumItemPrices(CART_ITEMS)
     total = subtotal + envio
     return render_template("cart.html", cart = CART_ITEMS, envio = envio, options_envio = LISTA_ENVIOS , subtotal = subtotal, total = total)
-   
+
+@app.route('/adminBoard')
+def panel_admin():
+  return render_template("panel.html")

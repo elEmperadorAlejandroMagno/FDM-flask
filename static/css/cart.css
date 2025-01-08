@@ -135,13 +135,14 @@ td input {
 .finalBtn {
   width: 340px;
   height: 40px;
-  background-color: #98ff00;
+  background-color: var(--btn-background-color);
   border-radius: 25px;
   border: none;
   font-family: SofiaSansBold;
   font-size: 24px;
+  color: var(--black-text-color);
   &:hover {
-    background-color: #b7ff4c;
+    background-color: var(--btn-hover-color);
     cursor: pointer;
   }
 }
@@ -185,16 +186,17 @@ p i {
 }
 
 .btn-accept {
+  color: var(--black-text-color);
   width: 80px;
   padding: 8px 4px;
   border-radius: 25px;
   font-family: SofiaSansBold;
   font-size: 16px;
-  background-color: #98ff00;
+  background-color: var(--btn-background-color);
   border: none;
   outline: none;
   &:hover {
-    background-color: #b7ff4c;
+    background-color: var(--btn-hover-color);
     cursor: pointer;
   }
 }
