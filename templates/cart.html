@@ -75,19 +75,21 @@
                             <option value="" selected>Selecciona el envío</option>
                           </select>
                         {% else %}
+                        <form action="/envio" method="post" id="envio-form">
                           <select name="envio" id="inputEnvio">
                               <option value="0" selected disabled>Selecciona el envío</option>
                               {% for envio in options_envio %}
                                 <option value="{{ envio.costo }}">{{ envio.lugar }}</option>
                               {% endfor %}
                           </select>
+                        </form>
                         {% endif %}
                       </td>
                   </tr>
                   <tr class="table-group-divider"></tr>
                   <tr class="total">
                       <td>Total</td>
-                      <td id="total">{{ (subtotal + envio) | uru }}</td>
+                      <td id="total">{{ total | uru }}</td>
                   </tr>
                   <tr>
                       <td colspan="2">
@@ -162,12 +164,27 @@
         // Add note to the cart
       });
 
-      const INPUT_ENVIO = document.querySelector('#inputEnvio');
-      if (INPUT_ENVIO) {
-        INPUT_ENVIO.addEventListener('change', () => { 
-        // Update envio value y actualizar el total
+      const envioSelect = document.querySelector('#inputEnvio');
+
+      envioSelect.addEventListener('change', () => { 
+      // Update envio value y actualizar el total
+        const envioValue  = envioSelect.value;
+        fetch('/envio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ envio: envioValue })
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector('#subtotal').textContent = formatCurrency(data.subtotal);
+          if (document.querySelector('#inputEnvio').value === "Free" || document.querySelector('#inputEnvio').value === "Por definir") {
+            document.querySelector('#envio').textContent = document.querySelector('#inputEnvio').value;
+          } else document.querySelector('#envio').textContent = formatCurrency(data.envio);
+          document.querySelector('#total').textContent = formatCurrency(data.total);
+        })
       });
-      }
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {

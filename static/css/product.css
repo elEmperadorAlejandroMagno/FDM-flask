@@ -87,9 +87,12 @@
   font-family: Oswald;
   font-size: 20px;
   padding: 1px 18px 1px 14px;
-  border: 0.8px solid var(--third-background-color);
+  border: 0.8px solid var(--secondary-background-color);
   width: 74px;
   height: auto;
+  &:focus {
+    outline: none;
+  }
 }
 
 .addBtn {

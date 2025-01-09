@@ -81,10 +81,27 @@ def get_cart_info():
    if request.method == 'GET':
     cart_cookie = request.cookies.get('cart', '[]')
     CART_ITEMS = json.loads(cart_cookie)
-    envio = 0
     subtotal = sumItemPrices(CART_ITEMS)
-    total = subtotal + envio
-    return render_template("cart.html", cart = CART_ITEMS, envio = envio, options_envio = LISTA_ENVIOS , subtotal = subtotal, total = total)
+    total = subtotal
+    return render_template("cart.html", cart = CART_ITEMS, envio = 0, options_envio = LISTA_ENVIOS , subtotal = subtotal, total = total)
+
+@app.route('/envio', methods=['POST'])
+def get_envio():
+   if request.method == 'POST':
+      data = request.get_json()
+      envio = data.get('envio')
+      cart_cookie = request.cookies.get('cart', '[]')
+      CART_ITEMS = json.loads(cart_cookie)
+      subtotal = sumItemPrices(CART_ITEMS)
+      total = subtotal
+      if envio and envio.isdigit():
+        envio = int(envio)
+      elif envio in ['Free', 'Por definir']:
+        envio = 0
+      else:
+        envio = 0
+      total += envio
+      return jsonify({'total': total, 'subtotal': subtotal, 'envio': envio})
 
 @app.route('/adminBoard')
 def panel_admin():
