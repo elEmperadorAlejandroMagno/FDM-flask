@@ -129,6 +129,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Renderizar cart modal
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   updateCart(cart);
+  const subtotalModal = document.getElementById('subtotal');
+  if (subtotalModal) {
+    subtotalModal.textContent = fetch('/update_cart', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const subtotal = formatCurrency(data.subtotal)
+      document.querySelector('#subtotal').textContent = subtotal;
+    });
+  }
 
   // funciones adicionales
   const URLs = {

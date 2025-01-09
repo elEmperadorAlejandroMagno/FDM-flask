@@ -136,22 +136,22 @@
         document.querySelector('.cart-icon').style.display="none";
       }
 
-    let btnDanger = document.querySelectorAll('.btn-danger')
-    if (btnDanger) {
-      btnDanger.forEach(button => {
-        button.addEventListener('click', () => {
-          // delete item from cart 
-          const ID = button.closest('.table-item').dataset.id;
-          console.log(ID);
-          let cart = JSON.parse(localStorage.getItem('cart')) || [];
-          let itemToRemove = cart.findIndex(item => item.id === ID);
-          if (itemToRemove !== -1) {
-            cart.splice(itemToRemove, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-          }
+      let btnDanger = document.querySelectorAll('.btn-danger')
+      if (btnDanger) {
+        btnDanger.forEach(button => {
+          button.addEventListener('click', () => {
+            // delete item from cart 
+            const ID = button.closest('.table-item').dataset.id;
+            console.log(ID);
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let itemToRemove = cart.findIndex(item => item.id === ID);
+            if (itemToRemove !== -1) {
+              cart.splice(itemToRemove, 1);
+              localStorage.setItem('cart', JSON.stringify(cart));
+            }
+          });
         });
-      });
-    }
+      }
 
       const promoCode = document.querySelector('.promo-code p');
       promoCode.addEventListener('click', () => {

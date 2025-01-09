@@ -57,10 +57,33 @@ def add_to_cart():
         for item in CART_ITEMS:
             if item['id'] == product['id']:
                 product['quantity'] += item['quantity']
+                break
         CART_ITEMS.append(product)
         response = jsonify({'status': 'success'})
         response.set_cookie('cart', json.dumps(CART_ITEMS))
         return response
+
+@app.route('/update_cart', methods=['POST', 'GET'])
+def update_cart():
+  if request.method == 'POST':
+      data = request.get_json()
+      print(f"Data: {data}")
+      cart_cookie = request.cookies.get('cart', '[]')
+      CART_ITEMS = json.loads(cart_cookie)
+      for item in CART_ITEMS:
+        if item['id'] == data['id']:
+          item['quantity'] = data['quantity']
+          break
+      
+      response = jsonify({ 'subtotal': sumItemPrices(CART_ITEMS), 'total': sumItemPrices(CART_ITEMS) })
+      response.set_cookie('cart', json.dumps(CART_ITEMS))
+      return response
+  if request.method == 'GET':
+    cart_cookie = request.cookies.get('cart', '[]')
+    CART_ITEMS = json.loads(cart_cookie)
+    subtotal = sumItemPrices(CART_ITEMS)
+    response = jsonify({ 'subtotal': subtotal})
+    return response
     
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():

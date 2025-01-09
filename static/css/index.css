@@ -399,6 +399,7 @@ hr {
   padding: 10px 30px;
 }
 
+
 .article-container {
   width: 100%;
 }
@@ -418,6 +419,10 @@ hr {
 .cart-item {
   width: 100%;
   padding-top: 15px;
+}
+
+.cart-item input:focus {
+  outline: none;
 }
 
 .imgCartModalContainer {

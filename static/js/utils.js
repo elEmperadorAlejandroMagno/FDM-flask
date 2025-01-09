@@ -13,7 +13,7 @@ export function drawCartModal(cart) {
   } else {
     const CART_ITEM = cart.map(item => `
       <tr class="white-space"></tr>
-        <tr class="cart-item" id="product-item" data-id="${item.id}">
+        <tr class="cart-item table-item" id="product-item" data-id="${item.id}">
           <td>
             <div class="imgCartModalContainer">
               <img src="${item.image}" alt="${item.title}">
@@ -59,15 +59,17 @@ export function getCount(cart) {
     return 0;
   }
   return cart.reduce((acc, item) => {
-    return acc + item.quantity;
+    const quantity = Number(item.quantity);
+    return acc + (isNaN(quantity) ? 0 : quantity);
   }, 0);
 }
 
-export function drawSubtotal (cart) {
+export function drawSubtotal(cart) {
   let cartSubtotal = document.querySelector('#subtotal');
-
   let subtotal = cart.reduce((acc, item) => {
-    return acc + (item.price * item.quantity);
+    const price = Number(item.price);
+    const quantity = Number(item.quantity);
+    return acc + (isNaN(price) || isNaN(quantity) ? 0 : price * quantity);
   }, 0);
   if (subtotal === null) {
     subtotal = 0;
@@ -79,22 +81,41 @@ export function drawSubtotal (cart) {
 export function updateCart(cart) {
   cart = JSON.parse(localStorage.getItem('cart')) || [];
   drawCartModal(cart);
-  drawSubtotal(cart);
+  // if (window.location.href.includes('/home')) drawSubtotal(cart);
   const count = getCount(cart);
   document.querySelector('.cart-count').innerHTML = count;
   addInputEventListeners(cart);
 }
 
 function addInputEventListeners(cart) {
-  const inputNum = document.querySelector('.input-num');
-  if (!inputNum) {
-    return;
-  }
-  inputNum.addEventListener('change', () => {
-    const id = inputNum.closest('#product-item').dataset.id;
-    const product = cart.find(item => item.id === id);
-    product.quantity = parseInt(inputNum.value);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart(cart);
+  const inputNumElements = document.querySelectorAll('.input-num');
+  inputNumElements.forEach(inputNum => {
+    inputNum.addEventListener('change', () => {
+      const id = inputNum.closest('.table-item').dataset.id;
+      const product = cart.find(item => item.id === id);
+      if (product) {
+        product.quantity = parseInt(inputNum.value);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart(cart);
+
+        // Actualizar la cookie en el servidor
+        const body = { id: id, quantity: product.quantity };
+        fetch('/update_cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector('#subtotal').textContent = formatCurrency(data.subtotal);
+          document.querySelector('#total').textContent = formatCurrency(data.total);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
+    });
   });
 }
