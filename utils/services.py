@@ -3,7 +3,7 @@ import json
 from utils.url import URL
 
 def get_products_sauce():
-  url = f"{URL["API_URL"]}/products?type=sauce"
+  url = f"{URL['API_URL']}/products?type=sauce"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -16,7 +16,7 @@ def get_products_sauce():
   return None
 
 def get_products_merch():
-  url = f"{URL["API_URL"]}/products?type=merchandising"
+  url = f"{URL['API_URL']}/products?type=merchandising"
   try: 
     response = requests.get(url)
     response.raise_for_status()
