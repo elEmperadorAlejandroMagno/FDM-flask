@@ -125,6 +125,27 @@ def get_envio():
         envio = 0
       total += envio
       return jsonify({'total': total, 'subtotal': subtotal, 'envio': envio})
+   
+@app.route('/checkout', methods=['POST'])
+def checkout():
+  data = request.cookies.get('purchase', '[]')
+  purchase = json.loads(data)
+  if request.method == 'GET':
+    return render_template("checkout.html", purchase = purchase)
+  if request.method == 'POST':
+      data = request.get_json()
+      if data:
+        try:
+          db.execute("INSERT INTO orders (name, email, phone, address, city, country, zip, products, total, status) VALUES (?,?,?;?;?;?;?,?;?;?)", (data['name'], data['email'], data['phone'], data['address'], data['city'], data['country'], data['zip'], json.dumps(purchase), data['total'], 'pending'))
+          request.cookies.pop('cart')
+          
+          return jsonify({'status': 'success'})
+        except:
+          return jsonify({'status': 'error'})
+      else:
+       return jsonify({'status': 'error'})
+
+
 
 @app.route('/adminBoard')
 def panel_admin():
