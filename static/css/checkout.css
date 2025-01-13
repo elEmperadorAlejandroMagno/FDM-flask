@@ -1,0 +1,56 @@
+
+.checkout-container {
+  margin-top: 120px;
+  padding: 40px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alert {
+  width: 100%;
+  text-align: center;
+}
+
+.user-info-container {
+  width: 60%;
+}
+.form-group input {
+  margin-bottom: 20px;
+}
+
+.resume-purchase {
+  width: 30%;
+}
+
+.finalBtn {
+  width: 300px;
+  height: 40px;
+  background-color: var(--btn-background-color);
+  border-radius: 25px;
+  border: none;
+  font-family: SofiaSansBold;
+  font-size: 24px;
+  color: var(--black-text-color);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  &:hover {
+    background-color: var(--btn-hover-color);
+    cursor: pointer;
+  }
+}

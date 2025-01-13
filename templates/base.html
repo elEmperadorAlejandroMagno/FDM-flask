@@ -116,7 +116,8 @@
 </div>
 </body>
 <script type="module">
-  import { formatCurrency, getCount, updateCart } from '../static/js/utils.js';
+  import { updateCart } from '../static/js/utils.js';
+  import { URL } from '../static/js/url.js'
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -129,28 +130,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Renderizar cart modal
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   updateCart(cart);
-  const subtotalModal = document.getElementById('subtotal');
-  if (subtotalModal) {
-    subtotalModal.textContent = fetch('/update_cart', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      const subtotal = formatCurrency(data.subtotal)
-      document.querySelector('#subtotal').textContent = subtotal;
-    });
-  }
 
-  // funciones adicionales
-  const URLs = {
-        fdmProd : "https://fdm-flask-l1bq.onrender.com",
-        fdmLocal : "http://localhost:5000"
-      }
   const userCurrentUrl = window.location.href;
-  const HomeURL = `${URLs.fdmLocal}/home`;
+  const HomeURL = `${URL.FDM_URL}/home`;
 
   let navButtons = document.querySelectorAll('.nav-list a');
     navButtons.forEach(link => link.addEventListener('click', event => {
@@ -178,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.querySelector('.full-cart-btn').addEventListener('click', () => {
-    window.location.href = `${URLs.fdmLocal}/cart-page`;
+    window.location.href = URL.FDM_URL + '/cart-page';
   });
 });
 </script>

@@ -58,10 +58,13 @@ def add_to_cart():
             if item['id'] == product['id']:
                 product['quantity'] += item['quantity']
                 break
-        CART_ITEMS.append(product)
-        response = jsonify({'status': 'success'})
-        response.set_cookie('cart', json.dumps(CART_ITEMS))
-        return response
+    else:
+      CART_ITEMS.append(product)
+      subtotal = sumItemPrices(CART_ITEMS)
+      response = jsonify({'status': 'success', 'subtotal': subtotal})
+      response.set_cookie('cart', json.dumps(CART_ITEMS))
+      response.set_cookie('subtotal', str(subtotal))
+      return response
 
 @app.route('/update_cart', methods=['POST', 'GET'])
 def update_cart():
@@ -74,7 +77,6 @@ def update_cart():
         if item['id'] == data['id']:
           item['quantity'] = data['quantity']
           break
-      
       response = jsonify({ 'subtotal': sumItemPrices(CART_ITEMS), 'total': sumItemPrices(CART_ITEMS) })
       response.set_cookie('cart', json.dumps(CART_ITEMS))
       return response
@@ -126,7 +128,7 @@ def get_envio():
       total += envio
       return jsonify({'total': total, 'subtotal': subtotal, 'envio': envio})
    
-@app.route('/checkout', methods=['POST'])
+@app.route('/checkout', methods=['POST', 'GET'])
 def checkout():
   data = request.cookies.get('purchase', '[]')
   purchase = json.loads(data)
@@ -138,7 +140,6 @@ def checkout():
         try:
           db.execute("INSERT INTO orders (name, email, phone, address, city, country, zip, products, total, status) VALUES (?,?,?;?;?;?;?,?;?;?)", (data['name'], data['email'], data['phone'], data['address'], data['city'], data['country'], data['zip'], json.dumps(purchase), data['total'], 'pending'))
           request.cookies.pop('cart')
-          
           return jsonify({'status': 'success'})
         except:
           return jsonify({'status': 'error'})

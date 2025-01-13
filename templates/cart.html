@@ -130,12 +130,10 @@
 
   <script type="module">
     import { formatCurrency, parseCurrency } from '../static/js/utils.js';
+    import { URL } from '../static/js/url.js';
 
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.location.href.includes('cart-page')) {
-        document.querySelector('.cart-icon').style.display="none";
-      }
-
+      
       let btnDanger = document.querySelectorAll('.btn-danger')
       if (btnDanger) {
         btnDanger.forEach(button => {
@@ -188,8 +186,7 @@
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {
-        alert('Compra finalizada correctamente');
-
+        window.location.href = URL.FDM_URL + '/checkout';
       });
     });
   </script>

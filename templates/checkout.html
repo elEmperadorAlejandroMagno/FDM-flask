@@ -1,55 +1,63 @@
 {% extends "base.html" %}
 
   {% block main %}
-  
-    <div class="user-info-container"> 
+    <div class="checkout-container">
       {% if status == 'success' %}
         <div class="alert alert-success" role="alert" style="color: green">
           COMPRA REALIZADA CON ÉXITO
         </div>
-      {% else %}
+      {% elif status == 'error' %}
         <div class="alert alert-danger" role="alert" style="color: red">
           ERROR AL REALIZAR LA COMPRA
         </div>
       {% endif %}
-      <div class="from-container">
-        <h2>Información de envío</h2>
-        <form action="/checkout" method="POST">
-          <div class="form-group">
-            <label for="name">Nombre</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-            <input type="email" class="form-control" id="email" name="email" required>
-            <input type="number" class="form-control" id="phone" name="phone" required>
-            <input type="text" class="form-control" id="address" name="address" required>
-          </div>
-          <button type="submit" class="finalBtn">Hacer Pedido</button>
-        </form>
+      <div class="user-info-container"> 
+        <div class="from-container">
+          <h2>Información de envío</h2>
+          <form action="/checkout" method="POST">
+            <div class="form-group">
+              <label for="name">Nombre</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+              <label for="phone">Teléfono</label>
+              <input type="number" class="form-control" id="phone" name="phone" required>
+              <label for="address">Dirección</label>
+              <input type="text" class="form-control" id="address" name="address" required>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="finalBtn">Hacer Pedido</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="resume-purchase">
+        <h3>Resumen</h3>
+        <table class="table-light custom-width custom-height">
+          <tbody class="table-group-divider">
+            <tr>
+              <td>Producto 1</td>
+              <td>x2</td>
+              <td>$800.00</td>
+            </tr>
+            <tr>
+              <td>Producto 2</td>
+              <td>x1</td>
+              <td>$400.00</td>
+            </tr>
+            <tr>
+              <td>Envío</td>
+              <td>$50.00</td>
+            </tr>
+            <tr class="table-group-divider">
+              <td>TOTAL</td>
+              <td>$1,250.00</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="resume-purchase">
-      <h3>Resumen</h3>
-      <table class="table-light custom-width custom-height">
-        <tbody class="table-group-divider">
-          <tr>
-            <td>Producto 1</td>
-            <td>x2</td>
-            <td>$800.00</td>
-          </tr>
-          <tr>
-            <td>Producto 2</td>
-            <td>x1</td>
-            <td>$400.00</td>
-          </tr>
-          <tr>
-            <td>Envío</td>
-            <td>$50.00</td>
-          </tr>
-          <tr class="table-group-divider">
-            <td>TOTAL</td>
-            <td>$1,250.00</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+  {% endblock %}
+  {% block script %}
+    <link rel="stylesheet" href="../static/css/checkout.css">
   {% endblock %}
