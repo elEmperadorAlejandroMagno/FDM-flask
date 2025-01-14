@@ -31,3 +31,8 @@ def sumItemPrices(items):
         price = float(price)    
         total += price * item['quantity']
     return total
+
+def get_ID_product_list(products):
+    product_ID_list = [product['id'] for product in products]
+    product_ID_str = ','.join(map(str, product_ID_list))
+    return product_ID_str

@@ -35,23 +35,20 @@
         <h3>Resumen</h3>
         <table class="table-light custom-width custom-height">
           <tbody class="table-group-divider">
+            {% for product in purchase.cart %}
             <tr>
-              <td>Producto 1</td>
-              <td>x2</td>
-              <td>$800.00</td>
+              <td>{{ product.title }}</td>
+              <td>x{{ product.quantity }}</td>
+              <td>{{ (product.price * product.quantity) | uru }}</td>
             </tr>
-            <tr>
-              <td>Producto 2</td>
-              <td>x1</td>
-              <td>$400.00</td>
-            </tr>
+            {% endfor %}
             <tr>
               <td>Envío</td>
-              <td>$50.00</td>
+              <td>{{ purchase.envio | uru }}</td>
             </tr>
             <tr class="table-group-divider">
               <td>TOTAL</td>
-              <td>$1,250.00</td>
+              <td>{{ (purchase.subtotal + purchase.envio) | uru }}</td>
             </tr>
           </tbody>
         </table>
@@ -60,4 +57,39 @@
   {% endblock %}
   {% block script %}
     <link rel="stylesheet" href="../static/css/checkout.css">
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          fetch('/checkout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: form.name.value,
+              email: form.email.value,
+              phone: form.phone.value,
+              address: form.address.value,
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              alert('Compra realizada con éxito');
+              setTimeout(() => {
+                localStorage.removeItem('cart');
+                window.location.href = '/home';
+              }, 1000);
+            } else {
+              alert('Error al realizar la compra: ' + data.message);
+            }
+          }).catch(error => {
+            console.error('Error:', error);
+            alert('Error al realizar la compra');
+          });
+        });
+      });
+    </script>
   {% endblock %}

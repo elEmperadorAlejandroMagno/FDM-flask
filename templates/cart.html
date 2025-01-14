@@ -133,7 +133,7 @@
     import { URL } from '../static/js/url.js';
 
     document.addEventListener('DOMContentLoaded', () => {
-      
+
       let btnDanger = document.querySelectorAll('.btn-danger')
       if (btnDanger) {
         btnDanger.forEach(button => {
@@ -163,9 +163,9 @@
       });
 
       const envioSelect = document.querySelector('#inputEnvio');
-
-      envioSelect.addEventListener('change', () => { 
-      // Update envio value y actualizar el total
+      if (envioSelect) {
+        envioSelect.addEventListener('change', () => { 
+        // Update envio value y actualizar el total
         const envioValue  = envioSelect.value;
         fetch('/envio', {
           method: 'POST',
@@ -183,6 +183,7 @@
           document.querySelector('#total').textContent = formatCurrency(data.total);
         })
       });
+      }
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {

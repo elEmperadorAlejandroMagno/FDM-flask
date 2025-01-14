@@ -81,11 +81,9 @@ export function drawSubtotal(cart) {
 export function updateCart(cart) {
   cart = JSON.parse(localStorage.getItem('cart')) || [];
   drawCartModal(cart);
-  if (window.location.pathname !== '/cart-page') {
-    drawSubtotal(cart);
-    const count = getCount(cart);
-    document.querySelector('.cart-count').innerHTML = count;
-  }
+  drawSubtotal(cart);
+  const count = getCount(cart);
+  document.querySelector('.cart-count').textContent = count;
   addInputEventListeners(cart);
 }
 

@@ -160,7 +160,19 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.querySelector('.full-cart-btn').addEventListener('click', () => {
-    window.location.href = URL.FDM_URL + '/cart-page';
+    fetch('/cart-page', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cart: JSON.parse(localStorage.getItem('cart')) || [] })
+      }).then(response => response.json())
+      .then(data => {
+        if (data.status == 'success') {
+          console.log('Cart updated successfully');
+          window.location.href = '/cart-page';
+        }else console.log('Error updating cart');
+      }).catch(error => console.log('Error', error));
   });
 });
 </script>
