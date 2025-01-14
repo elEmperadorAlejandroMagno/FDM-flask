@@ -29,7 +29,8 @@ def get_products_merch():
   return None
 
 def get_product_by_id(id):
-  url = f"{URL["API_URL"]}/products/{id}"
+  url = f"{URL['API_URL']}/products/{id}"
+  print(url)
   try:
     response = requests.get(url)
     response.raise_for_status()
@@ -40,6 +41,7 @@ def get_product_by_id(id):
   except (KeyError, ValueError) as e:
     print(f"Data error: {e}")
   return None
+
 
 def get_json_products(): 
   with open('products.json') as f: 

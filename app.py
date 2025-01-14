@@ -41,12 +41,14 @@ def home():
         MERCH = get_products_merch()
         return render_template("index.html", sauces=SAUCES, merchandising=MERCH, url=URL)
 
-@app.route('/product-page')
-def get_product():
-   if request.method == 'GET':
-    id = request.args.get('id')
-    PRODUCT = get_product_by_id(id)
-    return render_template("product.html", details = PRODUCT, url = URL["API_URL"])
+@app.route('/product-page/<int:id>', methods=['GET'])
+def product_page(id):
+  print(id)
+  PRODUCT = get_product_by_id(id)
+  if PRODUCT:
+    return render_template("product.html", product= PRODUCT, url= URL['API_URL'])
+  else: 
+    return "Product not found", 404
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -194,4 +196,36 @@ def checkout():
 
 @app.route('/adminBoard')
 def panel_admin():
-  return render_template("panel.html")
+  return redirect('/adminBoard/orders')
+
+@app.route('/adminBoard/orders')
+def get_orders():
+  if request.method == 'GET':
+    filter = request.args.get('filter')
+    if filter:
+      orders = db.execute(f"SELECT * FROM orders WHERE status = '{filter}'")
+      return render_template("orders.html", orders = orders)
+    else:
+      orders = db.execute("SELECT * FROM orders")
+      return render_template("orders.html", orders = orders)
+
+@app.route('/adminBoard/orders/<int:id>')
+def get_order_by_ID(id):
+  order = db.execute("SELECT * FROM orders WHERE id = ?", id)
+  return render_template("orders.html", orders = order)
+    
+@app.route('/adminBoard/products')
+def get_products():
+  if request.method == 'GET':
+    filter = request.args.get('filter')
+    if filter:
+      products = db.execute(f"SELECT * FROM products WHERE type = '{filter}'")
+      return render_template("products.html", products = products)
+  else:
+    products = db.execute("SELECT * FROM products")
+    return render_template("products.html", products = products)
+  
+@app.route('/adminBoard/products/<int:id>')
+def get_product_by_ID(id):
+  product = db.execute("SELECT * FROM products WHERE id = ?", id)
+  return render_template("products.html", products = product)
