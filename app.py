@@ -2,7 +2,7 @@ from cs50 import SQL
 from flask import Flask, redirect, render_template, make_response, request, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from utils.services import get_products_sauce, get_products_merch, get_product_by_id
+from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list
 from utils.url import URL
 from utils.envios import LISTA_ENVIOS
@@ -194,12 +194,14 @@ def checkout():
 
 
 
+###! ADMIN PANEL
+
 @app.route('/adminBoard')
 def panel_admin():
   return redirect('/adminBoard/orders')
 
-@app.route('/adminBoard/orders')
-def get_orders():
+@app.route('/adminBoard/orders', methods=['GET', 'POST'])
+def panel_orders():
   if request.method == 'GET':
     filter = request.args.get('filter')
     if filter:
@@ -208,8 +210,8 @@ def get_orders():
       orders = db.execute("SELECT * FROM orders")
     return render_template("admin_board/orders.html", orders = orders)
 
-@app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE'])
-def get_order_by_ID(id):
+@app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE', 'PUT'])
+def panel_order_by_ID(id):
   if request.method == 'GET':
     order = db.execute("SELECT * FROM orders WHERE id = ?", id)
     return render_template("admin_board/orders.html", orders = order)
@@ -217,19 +219,39 @@ def get_order_by_ID(id):
     db.execute("DELETE FROM orders WHERE id = ?", id)
     return jsonify({'status': 'success'})
     
-@app.route('/adminBoard/products')
-def get_products():
+@app.route('/adminBoard/products', methods = ['GET', 'POST'])
+def panel_products():
   if request.method == 'GET':
-    filter = request.args.get('filter')
-    products = []
-    if filter:
-      products = db.execute(f"SELECT * FROM products WHERE type = '{filter}'")
+    filter = request.args.get('filter') 
+    PRODUCTS = get_products(filter)
+    return render_template("admin_board/products.html", products = PRODUCTS, url= URL['API_URL'])
+  if request.method == 'POST':
+    data = request.get_json()
+    newProduct = post_product(data)
+    if newProduct:
+      return jsonify({'status': 'success', 'product': newProduct})
     else:
-      products = db.execute("SELECT * FROM products")
-  return render_template("admin_board/products.html", products = products)
+      return jsonify({'status': 'error', 'message': 'Error creating product'})
   
-@app.route('/adminBoard/products/<int:id>', methods = ['GET', 'DELETE'])
-def get_product_by_ID(id):
+@app.route('/adminBoard/products/<int:id>', methods = ['GET', 'DELETE', 'PUT'])
+def panel_product_by_ID(id):
   if request.method == 'GET':
-    product = db.execute("SELECT * FROM products WHERE id = ?", id)
-    return render_template("admin_board/products.html", products = product)
+    PRODUCT = get_product_by_id(id)
+    if PRODUCT:
+      return render_template("admin_board/product.html", product = PRODUCT, url= URL['API_URL'])
+    else:
+      return jsonify({'status': 'error', 'message': 'Product not found'})
+  if request.method == 'DELETE':
+    deletedProduct = delete_product(id)
+    if deletedProduct:
+      return jsonify({'status': 'success', 'message': 'Product deleted'})
+    else:
+      return jsonify({'status': 'error', 'message': 'Error deleting product'})
+  if request.method == 'PUT':
+    data = request.get_json()
+    updatedProduct = update_product(id, data)
+    if updatedProduct:
+      return jsonify({'status': 'success', 'product': updatedProduct})
+    else:
+      return jsonify({'status': 'error', 'message': 'Error updating product'})
+     
