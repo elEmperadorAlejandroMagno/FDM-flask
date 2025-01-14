@@ -203,29 +203,33 @@ def get_orders():
   if request.method == 'GET':
     filter = request.args.get('filter')
     if filter:
-      orders = db.execute(f"SELECT * FROM orders WHERE status = '{filter}'")
-      return render_template("orders.html", orders = orders)
+      orders = db.execute("SELECT * FROM orders WHERE status = ?", filter)
     else:
       orders = db.execute("SELECT * FROM orders")
-      return render_template("orders.html", orders = orders)
+    return render_template("admin_board/orders.html", orders = orders)
 
-@app.route('/adminBoard/orders/<int:id>')
+@app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE'])
 def get_order_by_ID(id):
-  order = db.execute("SELECT * FROM orders WHERE id = ?", id)
-  return render_template("orders.html", orders = order)
+  if request.method == 'GET':
+    order = db.execute("SELECT * FROM orders WHERE id = ?", id)
+    return render_template("admin_board/orders.html", orders = order)
+  elif request.method == 'DELETE':
+    db.execute("DELETE FROM orders WHERE id = ?", id)
+    return jsonify({'status': 'success'})
     
 @app.route('/adminBoard/products')
 def get_products():
   if request.method == 'GET':
     filter = request.args.get('filter')
+    products = []
     if filter:
       products = db.execute(f"SELECT * FROM products WHERE type = '{filter}'")
-      return render_template("products.html", products = products)
-  else:
-    products = db.execute("SELECT * FROM products")
-    return render_template("products.html", products = products)
+    else:
+      products = db.execute("SELECT * FROM products")
+  return render_template("admin_board/products.html", products = products)
   
-@app.route('/adminBoard/products/<int:id>')
+@app.route('/adminBoard/products/<int:id>', methods = ['GET', 'DELETE'])
 def get_product_by_ID(id):
-  product = db.execute("SELECT * FROM products WHERE id = ?", id)
-  return render_template("products.html", products = product)
+  if request.method == 'GET':
+    product = db.execute("SELECT * FROM products WHERE id = ?", id)
+    return render_template("admin_board/products.html", products = product)

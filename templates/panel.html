@@ -30,30 +30,30 @@
           <div class="accordion" id="accordionExample">
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button menu-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button menu-button menu-orders" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                   <h3>Pedidos</h3>
                 </button>
               </h2>
               <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
                   <ul>
-                    <li>Pendientes</li>
-                    <li>Enviados</li>
+                    <a href="/adminBoard/orders?filter=pendiente"><li>Pendientes</li></a>
+                    <a href="/adminBoard/orders?filter=completado"><li>Enviados</li></a>
                   </ul>
                 </div>
               </div>
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed menu-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <button class="accordion-button collapsed menu-button menu-products" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                   <h3>Productos</h3>
                 </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
                   <ul>
-                    <li>Salsas</li>
-                    <li>Merch</li>
+                    <a href="sauce"><li>Salsas</li></a>
+                    <a href="merch"><li>Merch</li></a>
                   </ul>
                 </div>
               </div>
@@ -62,95 +62,8 @@
     </aside>
     <main>
       <div class="container">
-        <div class="row">
-          <div class="col">
-            <h2>Productos</h2>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Precio</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Producto 1</td>
-                  <td>$100</td>
-                  <td>10</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Producto 2</td>
-                  <td>$200</td>
-                  <td>20</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Producto 3</td>
-                  <td>$300</td>
-                  <td>30</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <h2>Pedidos</h2>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Correo</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Cliente 1</td>
-                  <td>cliente_01@gmail.com</td>
-                  <td>$100</td>
-                  <td>Pendiente</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Cliente 2</td>
-                  <td>cliente_02@yahoo.com</td>
-                  <td>$200</td>
-                  <td>Enviado</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {% block main %}
+        {% endblock %}
       </div>
     </main>
     <footer style="background-color: black;"></footer>
@@ -165,7 +78,36 @@
         (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
         (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
         '>\n' + document.documentElement.outerHTML;
-    });
+
+        ordersBtn = document.querySelector('.menu-orders');
+        productsBtn = document.querySelector('.menu-products');
+
+        ordersBtn.addEventListener('click', () => {
+          window.location.href = '/adminBoard/orders';
+        })
+        productsBtn.addEventListener('click', () => {
+          window.location.href = '/adminBoard/products';
+        })
+
+        delBtn = document.querySelectorAll('.btn-danger');
+        delBtn.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const orderID = btn.parentElement.parentElement.firstElementChild.innerText
+            fetch(`/adminBoard/orders/${orderID}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(res => res.json())
+            .then(data => {
+              console.log(data);
+              if (data.status === 'success') {
+                window.location.reload();
+              } else alert('Error al eliminar el pedido')
+            })
+          });
+        });
+      });
   </script>
 </body>
 </html>
