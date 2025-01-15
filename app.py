@@ -101,36 +101,7 @@ def remove_from_cart():
 
 @app.route('/cart-page', methods = ['POST', 'GET'])
 def get_cart_info():
-<<<<<<< HEAD
-   if request.method == 'GET':
-    # cart = request.cookies.get('cart')
-    cart = [
-      {
-       "title": "Habanero chocolate",
-       "price": 400, 
-       "quantity": 2, 
-       "total": 800, 
-       "image": f"{URL["API_URL"]}/images/products/fondo transparente/habanero-choco-transp.png"
-       },
-      {
-        "title": "Carolina Reaper y ajo",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Reaper-frente-transp.png"
-      },
-      {
-        "title": "Salsa de Arándanos con ghost pepper",
-        "price": 400,
-        "quantity": 1,
-        "total": 400,
-        "image": f"{URL["API_URL"]}/images/products/fondo transparente/Arándanos-fondo-transp_edited_edited.png"
-      }
-      ]
-    return render_template("cart.html", cart = cart)
-   
-=======
-   if request.method == 'POST':
+  if request.method == 'POST':
     data = request.get_json()
     cart = data.get('cart')
     subtotal = sumItemPrices(cart)
@@ -138,7 +109,7 @@ def get_cart_info():
     response.set_cookie('cart', json.dumps(cart))
     response.set_cookie('subtotal', str(subtotal))
     return response
-   elif request.method == 'GET':
+  elif request.method == 'GET':
     cart_cookie = request.cookies.get('cart', '[]')
     subtotal_cookie = request.cookies.get('subtotal', '0')
     subtotal = float(subtotal_cookie)
@@ -218,10 +189,8 @@ def checkout():
           return jsonify({'status': 'error', 'message': 'No user data provided'})
       else:
          return jsonify({'status': 'error', 'message': 'No purchase data found'})
-
-
-
+      
 @app.route('/adminBoard')
 def panel_admin():
-  return render_template("panel.html")
->>>>>>> features
+  if request.method == 'GET':
+    return render_template("panel.html")
