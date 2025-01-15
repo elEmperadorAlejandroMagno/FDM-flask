@@ -1,0 +1,40 @@
+{% extends 'panel.html' %}
+  {% block main %}
+
+    <div class="row">
+      <div class="col">
+        <h2>Productos</h2>
+        <table class="table-light custom-width">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Imagen</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+              <tr>
+                <th scope="row">{{ product['id'] }}</th>
+                <td><img src="{{ url }}{{ product['images'][0] }}" alt="{{ product['title'] }}" style="max-width: 80px;"></td>
+                <td>{{ product['title'] }}</td>
+                <td>{{ product['price'] |uru }}</td>
+                <td>
+                  <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
+                  <button type="button" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  {% endblock %}
+
+  {% block script %}
+
+  {% endblock %}
+ 

@@ -1,22 +1,22 @@
 {% extends "index.html" %}
 
 {% block main %}
-
+  
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ url }}{{ details.images[0] }}" alt="{{ details.title }}" class="main-image" data-main-img="{{ url }}{{ details.images[0] }}">
+      <img src="{{ url }}{{ product.images[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ url }}{{ product.images[0] }}">
       <div class="extraImgs">
-        {% if details.images | length > 1 %}
-          {% for img in details.images %}
-            <img src="{{ url }}{{ img }}" alt="{{ details.title }}" class="extra-image">
+        {% if product.images | length > 1 %}
+          {% for img in product.images %}
+            <img src="{{ url }}{{ img }}" alt="{{ product.title }}" class="extra-image">
           {% endfor %}
         {% endif %}
       </div>
     </div>
-    <div class="product-details" data-id="{{ details.id }}">
-      <h3 class="title">{{ details.title }}</h3>
-      <p class="price">{{ details.price | uru }}</p>
-      <p class="description">{{ details.description }}</p>
+    <div class="product-details" data-id="{{ product.id }}">
+      <h3 class="title">{{ product.title }}</h3>
+      <p class="price">{{ product.price | uru }}</p>
+      <p class="description">{{ product.description }}</p>
       <p class="quantity">Cantidad</p>
       <input type="number" value="1" min="1" max="9">
       <button class="addBtn">Agregar al carrito</button>

@@ -33,7 +33,7 @@
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="salsas">
             {% for sauce in sauces %}
-              <a class="productLink" href="{{ url['fdm'] }}/product-page?id={{ sauce.id }}">
+              <a class="productLink" href="{{ url['fdm'] }}/product-page/{{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
                   <div class="img-product-container">
                     <img src="{{ url['API_URL'] }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
@@ -53,7 +53,7 @@
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merch">
           {% for merch in merchandising %}
-            <a class="productLink" href="{{ url['fdm'] }}/product-page?id={{ merch.id }}">
+            <a class="productLink" href="{{ url['fdm'] }}/product-page/{{ merch.id }}">
               <div class="merch-container producto" data-id="{{ merch.id }}">
                 <img id="#a104" class="img-product-merchant" src="{{ url['API_URL'] }}{{ merch.images[0] }}" alt="{{ merch.title }}">
                 <div class="title">{{ merch.title }}</div>

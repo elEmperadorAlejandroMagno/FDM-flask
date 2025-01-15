@@ -1,0 +1,42 @@
+{% extends "panel.html" %}
+
+  {% block main %}
+
+    <div class="row">
+      <div class="col">
+        <h2>Pedidos</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Total</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <th scope="row">{{ order['id'] }}</th>
+              <td>{{ order['user_name'] }}</td>
+              <td>{{ order['user_email'] }}</td>
+              <td>{{ order['total_price'] | uru }}</td>
+              <td>{{ order['status'] }}</td>
+              <td>
+                <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="button" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  {% endblock %}
+
+  {% block script %}
+
+  {% endblock %}

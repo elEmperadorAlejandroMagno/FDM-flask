@@ -34,7 +34,6 @@ body{
 .flex-container{
   width: 100%;
   display: flex;
-  /* flex-direction: column; */
   position: relative;
   flex-wrap: wrap;
 }

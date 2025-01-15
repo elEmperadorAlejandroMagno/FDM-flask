@@ -1,0 +1,6 @@
+<i class="fa-regular fa-trash-can"></i>
+<i class="fa-solid fa-pen-to-square"></i>
+<i class="fa-solid fa-check"></i>
+<i class="fa-solid fa-xmark"></i>
+<i class="fa-solid fa-bars"></i>
+<i class="fa-regular fa-user"></i>
