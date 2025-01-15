@@ -11,7 +11,7 @@ app = Flask(__name__)
 # app.secret_key = 'super secret key'
 
 if __name__ == '__main__': 
-  app.run()
+app.run()
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"

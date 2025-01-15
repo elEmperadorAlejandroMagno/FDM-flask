@@ -19,7 +19,15 @@
           </div>
           <div>
             <ul class="nav-list">
-              <li>Panel de Administrador Fin del Mundo</li>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/home#salsas">products</a></li>
+              <li><a href="/home#merch">merch</a></li>
+              <li><a href="/home#findelmundo">findelmundo</a></li>
+              <li><a href="/home#querido-satan">querido satán</a></li>
+              <li><a href="/home#contact">contacto</a></li>
+              {% if session['user_id'] %}
+              <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+              {% endif %}
             </ul>
           </div>
         </div>
