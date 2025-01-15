@@ -185,7 +185,7 @@ def checkout():
         user_data = request.get_json()
         if user_data:
           try:
-            db.execute("INSERT INTO orders (username, email, phone, address, product_list, total_price) VALUES (?, ?, ?, ?, ?, ?)", user_data['name'], user_data['email'], user_data['phone'], user_data['address'], product_ID_list, total_price)
+            db.execute("INSERT INTO orders (name, email, phone, address, product_list, total_price) VALUES (?, ?, ?, ?, ?, ?)", user_data['name'], user_data['email'], user_data['phone'], user_data['address'], product_ID_list, total_price)
 
             response = jsonify({'status': 'success'})
             response.set_cookie('cart', '', expires=0)
