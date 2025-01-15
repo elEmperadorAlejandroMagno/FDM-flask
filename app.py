@@ -4,11 +4,15 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list
-from utils.constants import URL, LISTA_ENVIOS
+from utils.constants import LISTA_ENVIOS
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-# app.secret_key = 'super secret key'
+app.secret_key = os.getenv('SECRET_KEY')
 
 if __name__ == '__main__': 
   app.run()
@@ -20,7 +24,7 @@ app.jinja_env.filters["uru"] = uru
 
 Session(app)
 
-db = SQL("sqlite:///fdm.db")
+db = SQL(os.getenv('DATA_BASE'))
 
 @app.after_request
 def after_request(response):
@@ -39,14 +43,14 @@ def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
         MERCH = get_products_merch()
-        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, url=URL)
+        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, url= os.getenv("URL['API_URL']"))
 
 @app.route('/product-page/<int:id>', methods=['GET'])
 def product_page(id):
   print(id)
   PRODUCT = get_product_by_id(id)
   if PRODUCT:
-    return render_template("product.html", product= PRODUCT, url= URL['API_URL'])
+    return render_template("product.html", product= PRODUCT, url= os.getenv("URL['API_URL']"))
   else: 
     return "Product not found", 404
 
@@ -266,7 +270,7 @@ def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
     PRODUCTS = get_products(filter)
-    return render_template("admin_board/products.html", products = PRODUCTS, url= URL['API_URL'])
+    return render_template("admin_board/products.html", products = PRODUCTS, url= os.getenv("URL['API_URL']"))
   if request.method == 'POST':
     data = request.get_json()
     newProduct = post_product(data)
@@ -281,7 +285,7 @@ def panel_product_by_ID(id):
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
-      return render_template("admin_board/product.html", product = PRODUCT, url= URL['API_URL'])
+      return render_template("admin_board/product.html", product = PRODUCT, url= os.getenv("URL['API_URL']"))
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
   if request.method == 'DELETE':

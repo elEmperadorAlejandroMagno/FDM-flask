@@ -1,7 +1,5 @@
 import requests
-import json
 from utils.constants import URL
-
 
 def get_products(filter):
   if filter == 'sauce':
