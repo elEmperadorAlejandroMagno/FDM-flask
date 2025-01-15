@@ -1,5 +1,7 @@
 import requests
-from utils.constants import URL
+import os
+
+URL = os.getenv('API_URL')
 
 def get_products(filter):
   if filter == 'sauce':
@@ -7,7 +9,7 @@ def get_products(filter):
   elif filter == 'merchandising':
     return get_products_merch()
   else:
-    url = f"{URL['API_URL']}/products"
+    url = f"{URL}/products"
     try: 
       response = requests.get(url)
       response.raise_for_status()
@@ -20,7 +22,7 @@ def get_products(filter):
     return None
 
 def get_products_sauce():
-  url = f"{URL['API_URL']}/products?type=sauce"
+  url = f"{URL}/products?type=sauce"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -33,7 +35,7 @@ def get_products_sauce():
   return None
 
 def get_products_merch():
-  url = f"{URL['API_URL']}/products?type=merchandising"
+  url = f"{URL}/products?type=merchandising"
   try: 
     response = requests.get(url)
     response.raise_for_status()
@@ -46,7 +48,7 @@ def get_products_merch():
   return None
 
 def get_product_by_id(id):
-  url = f"{URL['API_URL']}/products/{id}"
+  url = f"{URL}/products/{id}"
   print(url)
   try:
     response = requests.get(url)
@@ -60,7 +62,7 @@ def get_product_by_id(id):
   return None
 
 def post_product(product):
-  url = f"{URL['API_URL']}/products"
+  url = f"{URL}/products"
   try:
     response = requests.post(url, json=product)
     response.raise_for_status()
@@ -73,7 +75,7 @@ def post_product(product):
   return None
 
 def delete_product(id):
-  url = f"{URL['API_URL']}/products/{id}"
+  url = f"{URL}/products/{id}"
   try:
     response = requests.delete(url)
     response.raise_for_status()
@@ -83,7 +85,7 @@ def delete_product(id):
   return False
 
 def update_product(id, product):
-  url = f"{URL['API_URL']}/products/{id}"
+  url = f"{URL}/products/{id}"
   try:
     response = requests.put(url, json=product)
     response.raise_for_status()

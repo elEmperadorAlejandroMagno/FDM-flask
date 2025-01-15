@@ -130,7 +130,11 @@
 
   <script type="module">
     import { formatCurrency, parseCurrency } from '../static/js/utils.js';
-    import { URL } from '../static/js/url.js';
+
+    const URL = fetch('/static/config.json')
+          .then(response => response.json())
+          .then(data => data.FDM_URL)
+          .catch(error => console.log('Error loading config file', error));
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -187,7 +191,7 @@
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {
-        window.location.href = URL.FDM_URL + '/checkout';
+        window.location.href = URL + '/checkout';
       });
     });
   </script>

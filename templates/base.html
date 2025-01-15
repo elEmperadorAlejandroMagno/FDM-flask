@@ -120,7 +120,6 @@
 </body>
 <script type="module">
   import { updateCart } from '../static/js/utils.js';
-  import { URL } from '../static/js/url.js'
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -130,12 +129,14 @@ document.addEventListener('DOMContentLoaded', function() {
   (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
   '>\n' + document.documentElement.outerHTML;
 
+  const URL = '{{ FDM_URL }}';
+  
   // Renderizar cart modal
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   updateCart(cart);
 
   const userCurrentUrl = window.location.href;
-  const HomeURL = `${URL.FDM_URL}/home`;
+  const HomeURL = `${URL}/home`;
 
   const homeLink = document.querySelector('.nav-list li a[href="#home"]');
   homeLink.addEventListener('click', (event) => {

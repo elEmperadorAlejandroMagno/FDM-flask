@@ -24,6 +24,9 @@ app.jinja_env.filters["uru"] = uru
 
 Session(app)
 
+API_URL = os.getenv('API_URL')
+FDM_URL = os.getenv('FDM_URL')
+
 db = SQL(os.getenv('DATA_BASE'))
 
 @app.after_request
@@ -43,14 +46,14 @@ def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
         MERCH = get_products_merch()
-        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, url= os.getenv("URL['API_URL']"))
+        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
 
 @app.route('/product-page/<int:id>', methods=['GET'])
 def product_page(id):
   print(id)
   PRODUCT = get_product_by_id(id)
   if PRODUCT:
-    return render_template("product.html", product= PRODUCT, url= os.getenv("URL['API_URL']"))
+    return render_template("product.html", product= PRODUCT, url= API_URL)
   else: 
     return "Product not found", 404
 
@@ -270,7 +273,7 @@ def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
     PRODUCTS = get_products(filter)
-    return render_template("admin_board/products.html", products = PRODUCTS, url= os.getenv("URL['API_URL']"))
+    return render_template("admin_board/products.html", products = PRODUCTS, url= API_URL)
   if request.method == 'POST':
     data = request.get_json()
     newProduct = post_product(data)
@@ -285,7 +288,7 @@ def panel_product_by_ID(id):
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
-      return render_template("admin_board/product.html", product = PRODUCT, url= os.getenv("URL['API_URL']"))
+      return render_template("admin_board/product.html", product = PRODUCT, url= API_URL)
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
   if request.method == 'DELETE':
