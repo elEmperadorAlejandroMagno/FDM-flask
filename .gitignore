@@ -69,7 +69,7 @@ coverage.xml
 local
 
 # Data base
-*.db
+
 
 #text files
 *.txt
