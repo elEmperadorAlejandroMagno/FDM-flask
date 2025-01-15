@@ -131,10 +131,7 @@
   <script type="module">
     import { formatCurrency, parseCurrency } from '../static/js/utils.js';
 
-    const URL = fetch('/static/config.json')
-          .then(response => response.json())
-          .then(data => data.FDM_URL)
-          .catch(error => console.log('Error loading config file', error));
+    const URL = '{{ FDM_URL }}';
 
     document.addEventListener('DOMContentLoaded', () => {
 
