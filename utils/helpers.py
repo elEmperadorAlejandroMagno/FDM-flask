@@ -18,4 +18,21 @@ def login_required(f):
 
 def uru(value):
     """Format value as URU."""
-    return f"$U{value:,.2f}"
+    try:
+        value = float(value)
+        return f"$U{value:,.2f}"
+    except (ValueError, TypeError):
+        return value
+
+def sumItemPrices(items):
+    total = 0;
+    for item in items:
+        price = item['price']
+        price = float(price)    
+        total += price * item['quantity']
+    return total
+
+def get_ID_product_list(products):
+    product_ID_list = [product['id'] for product in products]
+    product_ID_str = ','.join(map(str, product_ID_list))
+    return product_ID_str

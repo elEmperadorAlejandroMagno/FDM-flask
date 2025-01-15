@@ -13,12 +13,12 @@
         {% endif %}
       </div>
     </div>
-    <div class="product-details">
+    <div class="product-details" data-id="{{ details.id }}">
       <h3 class="title">{{ details.title }}</h3>
       <p class="price">{{ details.price | uru }}</p>
       <p class="description">{{ details.description }}</p>
       <p class="quantity">Cantidad</p>
-      <input id="quantity" type="number" value="1" min="1" max="9">
+      <input type="number" value="1" min="1" max="9">
       <button class="addBtn">Agregar al carrito</button>
     </div>
   </div>
@@ -29,26 +29,68 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
-  <script>
+  <script type="module">
+    import { formatCurrency, parseCurrency, drawSubtotal, getCount, updateCart } from '../static/js/utils.js';
+
+
+
     document.addEventListener('DOMContentLoaded', () => {
 
       const mainImg = document.querySelector('.img-container img');
       const extraImgs = document.querySelectorAll('.extra-image');
       
-      extraImgs[0].classList.add('active');
-
-      extraImgs.forEach(img => {
-        img.addEventListener('mouseenter', () => {
-          extraImgs.forEach(img => img.classList.remove('active'));
-          mainImg.src = img.src;
-          img.classList.add('active');
+      if (extraImgs.length > 0) {
+        extraImgs[0].classList.add('active');
+        extraImgs.forEach(img => {
+          img.addEventListener('mouseenter', () => {
+            extraImgs.forEach(img => img.classList.remove('active'));
+            mainImg.src = img.src;
+            img.classList.add('active');
+          });
+          img.addEventListener('mouseleave', () => {
+            mainImg.src = mainImg.getAttribute('data-main-img');
+            img.classList.remove('active');
+            extraImgs[0].classList.add('active');
+          });
         });
-        img.addEventListener('mouseleave', () => {
-          mainImg.src = mainImg.getAttribute('data-main-img');
-          img.classList.remove('active');
-          extraImgs[0].classList.add('active');
-        })
-      });
+      }
+
+      const addToCartBtn = document.querySelector('.addBtn');
+      const quantity = document.querySelector('.product-details input');
+      const img = document.querySelector('.main-image').src;
+      const price = parseFloat(parseCurrency(document.querySelector('.price').textContent));
+
+      addToCartBtn.addEventListener('click', () => {
+        const PRODUCT = {
+          id: document.querySelector('.product-details').dataset.id,
+          title: document.querySelector('.title').textContent,
+          price: price,
+          quantity: parseInt(quantity.value),
+          image: img
+        }
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingProductIndex = cart.findIndex(item => item.id === PRODUCT.id);
+        
+        if (existingProductIndex !== -1) {
+          cart[existingProductIndex].quantity += PRODUCT.quantity;
+        } else {
+          cart.push(PRODUCT);
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        const updateCookie = fetch('/add_to_cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(PRODUCT)
+        });
+        let count = getCount(cart);
+        updateCart(cart);
+        document.querySelector('.cart-count').innerHTML = count;
+        document.querySelector('.cart-modal').classList.add('open');
+        document.querySelector('.flex-container').classList.add('opacity');
+      })
     });
   </script>
 

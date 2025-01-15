@@ -35,7 +35,7 @@
               <path d="M197.9 55.9L169.9 127.4 64.5 127.4 27.6 29.8 0 29.8 0.2 16.7 36.5 16.7 73.4 114.3 160.9 114.3 183 55.9"></path>
               <circle cx="143.8" cy="153" r="13"></circle>
               <circle cx="90.8" cy="153" r="13"></circle>
-              <text data-hook="items-count" class="uxskpx M846Y_" text-anchor="middle" x="116" y="35" dy=".43em">0</text></svg>
+              <text data-hook="items-count" class="uxskpx M846Y_ cart-count" text-anchor="middle" x="116" y="35" dy=".43em"></text></svg>
           </div>
         </div>
         <div class="ig-icon">
@@ -98,28 +98,9 @@
   </div>
   <div class="cart-modal-main">
     <div class="article-container">
-  <!-- <p class="cart-empty">El carrito está vacío</p> -->
       <table class="table-light custom-width" id="table-3">
-        <tbody>
-          {% for item in cart %}
-            <tr class="white-space"></tr>
-            <tr class="cart-item">
-              <td>
-                <div class="imgCartModalContainer">
-                  <img src="{{ item.image }}" alt="{{ item.title }}">
-                </div>
-              </td>
-              <td>
-                <div class="cart-modal-info">
-                  <h3>{{ item.title }}</h3>
-                  <p>{{ item.price | uru }}</p>
-                  <input type="number" value="{{ item.quantity }}">
-                </div>
-              </td>
-            </tr>
-            <tr class="white-space"></tr>
-            <tr class="table-group-divider"></tr>
-          {% endfor %}
+        <tbody class="table-body">
+          <!-- Productos -->
         </tbody>
       </table>
     </div>
@@ -127,14 +108,16 @@
   <div class="cart-modal-footer" style="text-align: center;">
     <div class="total-amount">
       <p>Subtotal</p>
-      <p>$U1,000.00</p>
+      <p class="cart-subtotal" id="subtotal"></p>
     </div>
     <hr style="border-color: #cccc;">
     <button class="full-cart-btn">Ver carrito completo</button>
   </div>
 </div>
 </body>
-<script>
+<script type="module">
+  import { updateCart } from '../static/js/utils.js';
+  import { URL } from '../static/js/url.js'
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -144,41 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
   (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
   '>\n' + document.documentElement.outerHTML;
 
-  // funciones adicionales
+  // Renderizar cart modal
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  updateCart(cart);
 
-//   const cartProducts = fetch('http://localhost:1234', {
-//     mode: 'no-cors',
-//     method: "get",
-//     headers: {
-//       "Content-Type": "application/json"
-//     }
-//  })
-//     .then(response => response.json())
-//     .then(data => {
-//       data.forEach(product => {
-//         const productContainer = document.createElement('tr');
-//         productContainer.innerHTML = `
-//         <div style="display: flex; justify-content: space-between;">
-//           <div class="imgCartModalContainer">
-//             <img src="${product.img}" alt="${product.name}">
-//           </div>
-//           <div class="cart-modal-info">
-//             <h3>${product.name}</h3>
-//             <p>$U${product.price}</p>
-//             <input type="number" value="1">
-//           </div>
-//         </div>
-//         `;
-//         document.querySelector('.table-light tbody').appendChild(productContainer);
-//       });
-//     });
-
-  const URLs = {
-        fdmProd : "https://fdm-flask-l1bq.onrender.com",
-        fdmLocal : "http://localhost:5000"
-      }
   const userCurrentUrl = window.location.href;
-  const HomeURL = `${URLs.fdmLocal}/home`;
+  const HomeURL = `${URL.FDM_URL}/home`;
 
   let navButtons = document.querySelectorAll('.nav-list a');
     navButtons.forEach(link => link.addEventListener('click', event => {
@@ -191,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   );
 
-
   const flexContainer = document.querySelector('.flex-container');
   const cartIcon = document.querySelector('.cart-icon');
   const cartModal = document.querySelector('.cart-modal');
@@ -199,15 +152,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
   cartIcon.addEventListener('click', () => {
     cartModal.classList.add('open');
-    flexContainer.style.opacity = '0.6';
+    flexContainer.classList.add('opacity');
   });
   closeCartModal.addEventListener('click', () => {
     cartModal.classList.remove('open');
-    flexContainer.style.opacity = '1';
+    flexContainer.classList.remove('opacity');
   });
 
   document.querySelector('.full-cart-btn').addEventListener('click', () => {
-    window.location.href = `${URLs.fdmLocal}/cart-page`;
+    fetch('/cart-page', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cart: JSON.parse(localStorage.getItem('cart')) || [] })
+      }).then(response => response.json())
+      .then(data => {
+        if (data.status == 'success') {
+          console.log('Cart updated successfully');
+          window.location.href = '/cart-page';
+        }else console.log('Error updating cart');
+      }).catch(error => console.log('Error', error));
   });
 });
 </script>

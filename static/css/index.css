@@ -7,6 +7,7 @@
   --black-text-color: #000;
   --white-text-color: #eeee;
   --border-color: #cccccc;
+  color-scheme: light dark;
 }
 
 *{
@@ -19,7 +20,8 @@ html{
   scroll-padding-top: 100px;
 }
 body{
-  background-color: #eee;
+  background-color: light-dark(var(--primary-background-color), var(--secondary-background-color));
+  color: light-dark(var(--black-text-color), var(--white-text-color));
 }
 
 .table-group-divider {
@@ -32,9 +34,12 @@ body{
 .flex-container{
   width: 100%;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   position: relative;
   flex-wrap: wrap;
+}
+.opacity {
+  opacity: 0.5;
 }
 
 /* Header */
@@ -174,7 +179,8 @@ header {
   user-select: none;
 }
 .cartel img {
-  width: 40px;
+  width: 30px;
+  height: auto;
   margin-left: 15px;
 }
 
@@ -210,8 +216,8 @@ header {
 /* CAMBIAR A GRID */
 
 .catalogo-salsas {
-  margin: 20px 0;
-  padding: 18px 10px;
+  /* margin: 20px 0; */
+  padding: 40px 10px;
   display: grid;
   width: 100%;
   justify-content: center;
@@ -357,7 +363,7 @@ hr {
   top: 0;
   right: -350px;
   z-index: 10000;
-  background-color: #ffff;
+  background-color: #fff;
   transition: all 1s ease;
   margin: 0 auto;
 }
@@ -393,9 +399,19 @@ hr {
   padding: 10px 30px;
 }
 
+
 .article-container {
   width: 100%;
 }
+
+.empty-cart {
+  width: 100%;
+  text-align: center;
+  font-family: SofiaSans;
+  font-size: 20px;
+  padding: 20px 0;
+}
+
 .custom-width {
   width: 310px;
 }
@@ -403,6 +419,10 @@ hr {
 .cart-item {
   width: 100%;
   padding-top: 15px;
+}
+
+.cart-item input:focus {
+  outline: none;
 }
 
 .imgCartModalContainer {
@@ -441,11 +461,31 @@ hr {
 .full-cart-btn {
   width: 250px;
   padding: 10px 5px;
-  font-family: SofiaSansBold;
+  font-family: 'SofiaSans';
   font-size: 20px;
+  font-weight: 900;
   border: none;
   border-radius: 25px;
+  color: var(--black-text-color);
   background-color: var(--btn-background-color);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;
@@ -540,11 +580,12 @@ hr {
   letter-spacing: .1em;
 }
 .recetas-finDelMundo {
+  background-color: var(--primary-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: 'Times New Roman', serif;
+  font-family: SofiaSans;
 }
 .recetas-container {
   display: flex;
