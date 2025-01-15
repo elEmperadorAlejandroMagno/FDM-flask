@@ -1,14 +1,14 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, make_response, request, jsonify
+from flask import Flask, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list
-from utils.url import URL
-from utils.envios import LISTA_ENVIOS
+from utils.constants import URL, LISTA_ENVIOS
 import json
 
 app = Flask(__name__)
+# app.secret_key = 'super secret key'
 
 if __name__ == '__main__': 
   app.run()
@@ -196,11 +196,51 @@ def checkout():
 
 ###! ADMIN PANEL
 
+@app.route('/adminBoard/register', methods=['GET', 'POST'])
+def register():
+  if request.method == 'GET':
+    return render_template("admin_board/register.html")
+  if request.method == 'POST':
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if not username or not password:
+      return render_template("admin_board/register.html", message = "The from cannot be empty")
+    hash = generate_password_hash(password)
+    try:
+      db.execute("INSERT INTO users (username, password) VALUES (?, ?)", username, hash)
+      return redirect('/adminBoard/login')
+    except Exception as e:
+      return render_template("admin_board/register.html", message = str(e))
+
+@app.route('/adminBoard/login', methods=['GET', 'POST'])
+def login():
+  if request.method == 'GET':
+    return render_template("admin_board/login.html")
+  if request.method == 'POST':
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if not username or not password:
+      return render_template("admin_board/login.html", message = "The from cannot be empty")
+    user = db.execute("SELECT * FROM users WHERE username = ?", username)
+    if len(user) != 1 or not check_password_hash(user[0]['password'], password):
+      return render_template("admin_board/login.html", message = "Invalid credentials")
+    else:
+      session['user_id'] = user[0]['id']
+      return redirect('/adminBoard')
+
+@app.route('/adminBoard/logout', methods=['POST'])
+def logout():
+  if request.method == 'POST':
+    session.clear()
+    return redirect('/adminBoard/login')
+
 @app.route('/adminBoard')
+@login_required
 def panel_admin():
   return redirect('/adminBoard/orders')
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
+@login_required
 def panel_orders():
   if request.method == 'GET':
     filter = request.args.get('filter')
@@ -211,6 +251,7 @@ def panel_orders():
     return render_template("admin_board/orders.html", orders = orders)
 
 @app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE', 'PUT'])
+@login_required
 def panel_order_by_ID(id):
   if request.method == 'GET':
     order = db.execute("SELECT * FROM orders WHERE id = ?", id)
@@ -218,8 +259,9 @@ def panel_order_by_ID(id):
   elif request.method == 'DELETE':
     db.execute("DELETE FROM orders WHERE id = ?", id)
     return jsonify({'status': 'success'})
-    
+
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
+@login_required  
 def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
@@ -232,8 +274,9 @@ def panel_products():
       return jsonify({'status': 'success', 'product': newProduct})
     else:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
-  
+
 @app.route('/adminBoard/products/<int:id>', methods = ['GET', 'DELETE', 'PUT'])
+@login_required  
 def panel_product_by_ID(id):
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)

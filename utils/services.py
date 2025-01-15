@@ -1,6 +1,6 @@
 import requests
 import json
-from utils.url import URL
+from utils.constants import URL
 
 
 def get_products(filter):

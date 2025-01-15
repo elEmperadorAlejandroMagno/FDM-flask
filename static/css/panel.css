@@ -13,6 +13,7 @@
 .flex-container {
   display: flex;
   flex-wrap: wrap;
+  height: 100vh;
 }
 
 li {
@@ -56,6 +57,13 @@ aside {
   background-color: var(--secondary-background-color);
   width: 20%;
   min-height: 600px;
+}
+.menu-aside {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 20px;
 }
 
 .menu-button h3 {
@@ -118,15 +126,29 @@ ul a {
   background-color: #333;
 }
 
+.btn-container {
+  width: 100%;
+  text-align: center;
+}
+.finalBtn {
+  width: 120px;
+  background-color: var(--btn-background-color);
+  font-family: Oswald;
+  font-size: 18px;
+  color: #000;
+  outline: none;
+  padding: 4px 2px;
+  border-radius: 15px;
+  &:hover {
+    background-color: var(--btn-hover-color);
+    cursor: pointer;
+  }
+}
+
 /*! Table */
 
 .table-light.custom-width {
   width: 100%;
-}
-
-footer {
-  width: 100%; 
-  min-height: 200px;
 }
 
 @font-face {
@@ -142,4 +164,9 @@ footer {
 @font-face {
   font-family: Olvier;
   src: url(../fonts/Oliver-Regular.ttf);
+}
+
+@font-face {
+  font-family: Oswald;
+  src: url(../fonts/Oswald-VariableFont_wght.ttf);
 }
