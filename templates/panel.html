@@ -58,6 +58,14 @@
                 </div>
               </div>
             </div>
+        </div>
+        {% if session['user_id'] %}
+        <div class="btn-container">
+          <form action="/logout" method="POST">
+            <button type="submit" class="finalBtn">cerrar session</button>
+          </form>
+        </div>
+        {% endif %}
       </div>
     </aside>
     <main>
@@ -165,7 +173,93 @@
         (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
         (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
         '>\n' + document.documentElement.outerHTML;
-    });
+
+        const ordersBtn = document.querySelector('.menu-orders');
+        const productsBtn = document.querySelector('.menu-products');
+
+        ordersBtn.addEventListener('click', (e) => {
+          window.location.href = '/adminBoard/orders';
+        })
+
+        productsBtn.addEventListener('click', e => {
+          window.location.href = '/adminBoard/products';
+        })
+
+        if (window.location.href.includes('/orders')) {
+          document.querySelector("#collapseOne").classList.add('show');
+          ordersBtn.classList.remove('collapsed');
+          document.querySelector("#collapseTwo").remove('show');
+          productsBtn.classList.add('collapsed');
+        } else if (window.location.href.includes('/products')) {
+          document.querySelector("#collapseOne").classList.remove('show');
+          productsBtn.classList.remove('collapsed');
+          document.querySelector("#collapseTwo").classList.add('show');
+          ordersBtn.classList.add('collapsed');
+        }
+
+        if (window.location.href.includes('/adminBoard/orders')) {
+          delBtn = document.querySelectorAll('.btn-danger');
+          delBtn.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const orderID = btn.parentElement.parentElement.firstElementChild.innerText
+              fetch(`/adminBoard/orders/${orderID}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }).then(res => res.json())
+              .then(data => {
+                console.log(data);
+                if (data.status === 'success') {
+                  window.location.reload();
+                } else alert('Error al eliminar el pedido')
+              })
+            });
+          });
+        }
+        else if (window.location.href.includes('/adminBoard/products')) {
+          delBtn = document.querySelectorAll('.btn-danger');
+          delBtn.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const productID = btn.parentElement.parentElement.firstElementChild.innerText
+              fetch(`/adminBoard/products/${productID}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }).then(res => res.json())
+              .then(data => {
+                console.log(data);
+                if (data.status === 'success') {
+                  window.location.reload();
+                } else alert('Error al eliminar el producto')
+              })
+            });
+          });
+        }
+        const menuLinks = document.querySelectorAll('.menu-link');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', () => {
+          menuLinks.forEach(link => link.classList.remove('active'));
+          this.classList.add('active');
+          });
+        });
+
+        //! modal
+
+        const addBtn = document.getElementById('addBtn');
+        if (addBtn) {
+          addBtn.addEventListener('click', () => {
+            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+            modal.show();
+          });
+
+          const addProductForm = document.getElementById('addProductForm');
+          addProductForm.addEventListener('submit', () => {
+            modal.hide();
+          })
+        }
+      });
   </script>
 </body>
 </html>

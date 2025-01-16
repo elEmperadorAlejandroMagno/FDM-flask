@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../static/css/login.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <div class="flex-container">
+    <header>
+      <div class="nav-container">
+        <div class="nav-menu">
+          <div class="img-container">
+            <img src="../static/image/assets/logo-blanco.png" alt="logo fin del mundo">
+          </div>
+          <div>
+            <ul class="nav-list">
+              <li>Debes Registrarte para acceder al panel de administrador</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="form-container">
+        <form action="/register" method="POST">
+          <div class="mb-3 form-input-div">
+            <label for="exampleFormControlInput1" class="form-label custom-width">Usuario</label>
+            <input type="name" name="username" class="custom-width" id="exampleFormControlInput1" placeholder="usuario01example">
+          </div>
+          <div class="mb-3 form-input-div">
+            <label for="exampleFormControlInput1" class="form-label custom-width">Contraseña</label>
+            <input type="password" name="password" class="custom-width" id="exampleFormControlInput2" placeholder="12345example">
+          </div>
+          <div class="login-link">
+            <a href="/login">Iniciar sessión</a>
+          </div>
+          <div class="btn-container">
+            <button type="submit" class="finalBtn">Registrarse</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Adapted from https://stackoverflow.com/a/10162353
+      const html = '<!DOCTYPE ' +
+      document.doctype.name +
+      (document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
+      (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
+      (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
+      '>\n' + document.documentElement.outerHTML;
+    });
+  </script>
+</body>
+</html>
