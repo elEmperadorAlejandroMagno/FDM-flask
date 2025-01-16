@@ -3,7 +3,7 @@ from flask import Flask, redirect, render_template, make_response, request, json
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
-from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list
+from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
 from utils.constants import LISTA_ENVIOS
 import json
 import os
@@ -181,11 +181,12 @@ def checkout():
         purchase_data = json.loads(purchase_data)
         product_list = purchase_data['cart']
         product_ID_list = get_ID_product_list(product_list)
+        product_quantity_list = get_quantity_product_list(product_list)
         total_price = purchase_data['subtotal'] + purchase_data['envio']
         user_data = request.get_json()
         if user_data:
           try:
-            db.execute("INSERT INTO orders (name, email, phone, address, product_list, total_price) VALUES (?, ?, ?, ?, ?, ?)", user_data['name'], user_data['email'], user_data['phone'], user_data['address'], product_ID_list, total_price)
+            db.execute("INSERT INTO orders (nombre, email, telefono, direccion, lista_productos, cantidad_productos, precio_total) VALUES (?, ?, ?, ?, ?, ?, ?)", user_data['name'], user_data['email'], user_data['phone'], user_data['address'], product_ID_list, product_quantity_list, total_price)
 
             response = jsonify({'status': 'success'})
             response.set_cookie('cart', '', expires=0)
