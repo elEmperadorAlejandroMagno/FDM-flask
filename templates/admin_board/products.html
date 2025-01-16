@@ -1,9 +1,16 @@
 {% extends 'panel.html' %}
   {% block main %}
-
     <div class="row">
       <div class="col">
-        <h2>Productos</h2>
+        <div class="header">
+          {% if message %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endif %}
+          <h2>Productos</h2>
+          <button type="button" class="btn addBtn" id="addBtn"><i class="fa-solid fa-plus"></i>Agregar Producto</button>
+        </div>
         <table class="table-light custom-width">
           <thead>
             <tr>
@@ -17,10 +24,10 @@
           <tbody>
             {% for product in products %}
               <tr>
-                <th scope="row">{{ product['id'] }}</th>
-                <td><img src="{{ url }}{{ product['images'][0] }}" alt="{{ product['title'] }}" style="max-width: 80px;"></td>
-                <td>{{ product['title'] }}</td>
-                <td>{{ product['price'] |uru }}</td>
+                <th scope="row">{{ product.id }}</th>
+                <td><img src="{{ url }}{{ product.images[0] }}" alt="{{ product.title }}" style="max-width: 80px;"></td>
+                <td>{{ product.title }}</td>
+                <td>{{ product.price |uru }}</td>
                 <td>
                   <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
                   <button type="button" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
@@ -30,11 +37,33 @@
           </tbody>
         </table>
       </div>
+      <!-- Modal -->
+        <div class="modal" id="addProductModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <label for="productName" class="form-label">Nombre del Producto</label>
+                    <input type="text" name="name" class="form-control" id="productName" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="productPrice" class="form-label">Precio del Producto</label>
+                    <input type="number" name="price" class="form-control" id="productPrice" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="productImage" class="form-label">Imagen</label>
+                    <input type="file" name="images" class="form-control" id="productImage" required>
+                  </div>
+                  <button type="submit" class="btn addBtn">Agregar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
-
-  {% endblock %}
-
-  {% block script %}
-
-  {% endblock %}
- 
+{% endblock %}

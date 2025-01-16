@@ -69,7 +69,7 @@
         </div>
         {% if session['user_id'] %}
         <div class="btn-container">
-          <form action="/adminBoard/logout" method="POST">
+          <form action="/logout" method="POST">
             <button type="submit" class="finalBtn">cerrar session</button>
           </form>
         </div>
@@ -164,6 +164,21 @@
           this.classList.add('active');
           });
         });
+
+        //! modal
+
+        const addBtn = document.getElementById('addBtn');
+        if (addBtn) {
+          addBtn.addEventListener('click', () => {
+            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+            modal.show();
+          });
+
+          const addProductForm = document.getElementById('addProductForm');
+          addProductForm.addEventListener('submit', () => {
+            modal.hide();
+          })
+        }
       });
   </script>
 </body>

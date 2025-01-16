@@ -2,9 +2,11 @@ from cs50 import SQL
 from flask import Flask, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
 from utils.constants import LISTA_ENVIOS
+import requests
 import json
 import os
 from dotenv import load_dotenv
@@ -203,7 +205,7 @@ def checkout():
 
 ###! ADMIN PANEL
 
-@app.route('/adminBoard/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
   if request.method == 'GET':
     return render_template("admin_board/register.html")
@@ -219,7 +221,7 @@ def register():
     except Exception as e:
       return render_template("admin_board/register.html", message = str(e))
 
-@app.route('/adminBoard/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'GET':
     return render_template("admin_board/login.html")
@@ -235,7 +237,7 @@ def login():
       session['user_id'] = user[0]['id']
       return redirect('/adminBoard')
 
-@app.route('/adminBoard/logout', methods=['POST'])
+@app.route('/logout', methods=['POST'])
 def logout():
   if request.method == 'POST':
     session.clear()
@@ -274,12 +276,38 @@ def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
     PRODUCTS = get_products(filter)
-    return render_template("admin_board/products.html", products = PRODUCTS, url= API_URL)
+    return render_template("admin_board/products.html", products=PRODUCTS, url=API_URL)
   if request.method == 'POST':
-    data = request.get_json()
+    product_name = request.form.get('name')
+    product_price = float(request.form.get('price'))
+    product_img = request.files.get('images')
+    product_description = request.form.get('description', '')
+
+    if not product_name or not product_price or not product_img:
+      return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
+    
+    files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
+    response = requests.post(f"{API_URL}/uploads", files=files)
+    print(response)
+
+    if response.status_code != 200:
+      return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
+    
+    img_urls = response.json().get('files', [])
+
+    data = {
+      'title': product_name,
+      'price': product_price,
+      'available': True,
+      'image': img_urls[0] if img_urls else '',
+      'type': 'sauce',
+      'description': product_description
+    }
+
     newProduct = post_product(data)
+
     if newProduct:
-      return jsonify({'status': 'success', 'product': newProduct})
+      return redirect('/adminBoard/products')
     else:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
 
