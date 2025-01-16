@@ -20,8 +20,8 @@
             {% for order in orders %}
             <tr>
               <th scope="row">{{ order['id'] }}</th>
-              <td>{{ order['user_name'] }}</td>
-              <td>{{ order['user_email'] }}</td>
+              <td>{{ order['nombre'] }}</td>
+              <td>{{ order['phone'] }}</td>
               <td>{{ order['total_price'] | uru }}</td>
               <td>{{ order['status'] }}</td>
               <td>
