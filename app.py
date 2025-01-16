@@ -47,10 +47,12 @@ def hello():
 def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
+        print(SAUCES[0])
         MERCH = get_products_merch()
+        print(MERCH[0])
         return render_template("index.html", sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
 
-@app.route('/product-page/<int:id>', methods=['GET'])
+@app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
   print(id)
   PRODUCT = get_product_by_id(id)
@@ -260,7 +262,7 @@ def panel_orders():
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
     return render_template("admin_board/orders.html", orders = orders)
 
-@app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE', 'PUT'])
+@app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
   if request.method == 'GET':
@@ -281,25 +283,29 @@ def panel_products():
     product_name = request.form.get('name')
     product_price = float(request.form.get('price'))
     product_img = request.files.get('images')
-    product_description = request.form.get('description', '')
+    product_description = request.form.get('description', 'Por el momento mo hay una descripción disponible')
 
     if not product_name or not product_price or not product_img:
       return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
     
     files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
     response = requests.post(f"{API_URL}/uploads", files=files)
-    print(response)
 
     if response.status_code != 200:
       return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
     
-    img_urls = response.json().get('files', [])
+    response = response.json()
+    print(response)
+    
+    img_urls = response['files']
+    img_url = img_urls[0] if img_urls else ['/images/default.jpg']
+    print(img_url)
 
     data = {
       'title': product_name,
       'price': product_price,
       'available': True,
-      'image': img_urls[0] if img_urls else '',
+      'images': [img_url],
       'type': 'sauce',
       'description': product_description
     }
@@ -311,7 +317,7 @@ def panel_products():
     else:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
 
-@app.route('/adminBoard/products/<int:id>', methods = ['GET', 'DELETE', 'PUT'])
+@app.route('/adminBoard/products/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
   if request.method == 'GET':

@@ -216,6 +216,18 @@ ul a {
   width: 100%;
 }
 
+.product-id {
+  max-width: 80px;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
 @font-face {
   font-family: SofiaSansItalic;
   src: url(../fonts/SofiaSansCondensed-Italic-VariableFont_wght.ttf);

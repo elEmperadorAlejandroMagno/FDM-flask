@@ -82,7 +82,7 @@ def delete_product(id):
     return True
   except requests.RequestException as e:
     print(f"Request error: {e}")
-  return False
+    return False
 
 def update_product(id, product):
   url = f"{URL}/products/{id}"
