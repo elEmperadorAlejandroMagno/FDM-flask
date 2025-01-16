@@ -253,9 +253,9 @@ def panel_orders():
   if request.method == 'GET':
     filter = request.args.get('filter')
     if filter:
-      orders = db.execute("SELECT * FROM orders WHERE status = ?", filter)
+      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
     else:
-      orders = db.execute("SELECT * FROM orders")
+      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
     return render_template("admin_board/orders.html", orders = orders)
 
 @app.route('/adminBoard/orders/<int:id>', methods=['GET', 'DELETE', 'PUT'])
