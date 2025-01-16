@@ -36,7 +36,11 @@
               <a class="productLink" href="{{ url['fdm'] }}/product-page?id={{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
                   <div class="img-product-container">
+<<<<<<< Updated upstream
                     <img src="{{ url['API_URL'] }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
+=======
+                    <img src="{{ API_URL }}{{ sauce.images }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
+>>>>>>> Stashed changes
                   </div>
                   <div class="detail-container" style="color: #000;">
                     <h3 class="title">{{ sauce.title }}</h3>

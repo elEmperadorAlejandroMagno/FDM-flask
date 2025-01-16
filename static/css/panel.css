@@ -32,6 +32,10 @@ header {
   width: 100%;
 }
 
+.nav-container {
+  width: 100%;
+}
+
 .nav-menu {
   display: flex;
   justify-content: center;
