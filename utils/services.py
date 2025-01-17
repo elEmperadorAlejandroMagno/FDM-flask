@@ -6,7 +6,7 @@ URL = os.getenv('API_URL')
 def get_products(filter):
   if filter == 'sauce':
     return get_products_sauce()
-  elif filter == 'merchandising':
+  elif filter == 'merch':
     return get_products_merch()
   else:
     url = f"{URL}/products"
@@ -38,7 +38,18 @@ def get_products_sauce():
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
-    return data
+    products = []
+    for item in data:
+      product_info = item.get("product_info", {})
+      product = {
+        "title": product_info.get("title"),
+        "description": product_info.get("description"),
+        "price": product_info.get("price"),
+        "type": product_info.get("type"),
+        "images": item.get("images", [])
+      }
+    products.append(product)
+    return products
   except requests.RequestException as e:
     print(f"Request erro: {e}")
   except (KeyError, ValueError) as e:
@@ -46,17 +57,28 @@ def get_products_sauce():
   return None
 
 def get_products_merch():
-  url = f"{URL}/products?type=merchandising"
-  try: 
-    response = requests.get(url)
-    response.raise_for_status()
-    data = response.json()
-    return data
-  except requests.RequestException as e:
-    print(f"Request erro: {e}")
-  except (KeyError, ValueError) as e:
-    print(f"Data error: {e}")
-  return None
+    url = f"{URL}/products?type=merch"
+    try: 
+      response = requests.get(url)
+      response.raise_for_status()
+      data = response.json()
+      products = []
+      for item in data:
+        product_info = item.get("product_info", {})
+        product = {
+          "title": product_info.get("title"),
+          "description": product_info.get("description"),
+          "price": product_info.get("price"),
+          "type": product_info.get("type"),
+          "images": item.get("images", [])
+        }
+      products.append(product)
+      return products
+    except requests.RequestException as e:
+        print(f"Request error: {e}")
+    except (KeyError, ValueError) as e:
+        print(f"Data error: {e}")
+    return None
 
 def get_product_by_id(id):
   url = f"{URL}/products/{id}"
@@ -65,7 +87,15 @@ def get_product_by_id(id):
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
-    return data
+    product_info = data.get("product_info", {})
+    product = {
+      "title": product_info.get("title"),
+      "description": product_info.get("description"),
+      "price": product_info.get("price"),
+      "type": product_info.get("type"),
+      "images": data.get("images", [])
+    }
+    return product
   except requests.RequestException as e:
     print(f"Request error: {e}")
   except (KeyError, ValueError) as e:
@@ -78,7 +108,7 @@ def post_product(product):
     response = requests.post(url, json=product)
     response.raise_for_status()
     data = response.json()
-    return data
+    return True
   except requests.RequestException as e:
     print(f"Request error: {e}")
   except (KeyError, ValueError) as e:
@@ -101,7 +131,7 @@ def update_product(id, product):
     response = requests.put(url, json=product)
     response.raise_for_status()
     data = response.json()
-    return data
+    return True
   except requests.RequestException as e:
     print(f"Request error: {e}")
   except (KeyError, ValueError) as e:

@@ -51,8 +51,10 @@ def hello():
 def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
+        print(SAUCES)
         MERCH = get_products_merch()
-        return render_template(TEMPLATES.INDEX, sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
+        print(MERCH)
+        return render_template(TEMPLATES.INDEX, sauces=SAUCES, merch=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
@@ -255,7 +257,7 @@ def login():
     else:
       session['user_id'] = user[0]['id']
       session['user_role'] = user[0]['role']
-      if session['user_role'] == 'admin':
+      if session.get('user_role') == 'admin':
         return redirect('/adminBoard')
       else:
         return redirect('/myOrders')
@@ -271,7 +273,7 @@ def logout():
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
-  if session['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
     return redirect('/adminBoard/orders')
@@ -279,7 +281,7 @@ def panel_admin():
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
     filter = request.args.get('filter')
@@ -292,7 +294,7 @@ def panel_orders():
 @app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
     order = db.execute("SELECT * FROM orders WHERE id = ?", id)
@@ -304,7 +306,7 @@ def panel_order_by_ID(id):
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
     filter = request.args.get('filter') 
@@ -349,7 +351,7 @@ def panel_products():
 @app.route('/adminBoard/products/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)

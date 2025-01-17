@@ -4,7 +4,7 @@
   
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ url }}{{ product.images[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ url }}{{ product.images[0] }}">
+      <img src="{{ url }}{{ product.images }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ url }}{{ product.images }}">
       <div class="extraImgs">
         {% if product.images | length > 1 %}
           {% for img in product.images %}
