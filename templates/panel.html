@@ -19,7 +19,18 @@
           </div>
           <div>
             <ul class="nav-list">
-              <li>Panel de Administrador Fin del Mundo</li>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/home#salsas">products</a></li>
+              <li><a href="/home#merch">merch</a></li>
+              <li><a href="/home#findelmundo">findelmundo</a></li>
+              <li><a href="/home#querido-satan">querido satán</a></li>
+              <li><a href="/home#contact">contacto</a></li>
+              {% if session['user_id'] %}
+                {% if session['user_role'] == 'admin' %}
+                  <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+                {% else %}
+                  <li><a href="/myOrders"><i class="fa-regular fa-user"></i></a></li>
+              {% endif %}
             </ul>
           </div>
         </div>
@@ -30,30 +41,30 @@
           <div class="accordion" id="accordionExample">
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button menu-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button menu-button show menu-orders" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                   <h3>Pedidos</h3>
                 </button>
               </h2>
-              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+              <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
                   <ul>
-                    <li>Pendientes</li>
-                    <li>Enviados</li>
+                    <a href="/adminBoard/orders?filter=pendiente"><li class="menu-link">Pendientes</li></a>
+                    <a href="/adminBoard/orders?filter=enviado"><li class="menu-link">Enviados</li></a>
                   </ul>
                 </div>
               </div>
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed menu-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <button class="accordion-button collapsed menu-button menu-products" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                   <h3>Productos</h3>
                 </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
                   <ul>
-                    <li>Salsas</li>
-                    <li>Merch</li>
+                  <a href="/adminBoard/products?filter=sauce"><li class="menu-link">Salsas</li></a>
+                  <a href="/adminBoard/products?filter=merchandising"><li class="menu-link">Merch</li></a>
                   </ul>
                 </div>
               </div>
@@ -69,110 +80,20 @@
       </div>
     </aside>
     <main>
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <h2>Productos</h2>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Precio</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Producto 1</td>
-                  <td>$100</td>
-                  <td>10</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Producto 2</td>
-                  <td>$200</td>
-                  <td>20</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Producto 3</td>
-                  <td>$300</td>
-                  <td>30</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <h2>Pedidos</h2>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Correo</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Cliente 1</td>
-                  <td>cliente_01@gmail.com</td>
-                  <td>$100</td>
-                  <td>Pendiente</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Cliente 2</td>
-                  <td>cliente_02@yahoo.com</td>
-                  <td>$200</td>
-                  <td>Enviado</td>
-                  <td>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <div class="container">{% block main %}{% endblock %}</div>
     </main>
-    <footer style="background-color: black;"></footer>
+  {%block script%}{%endblock%}
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Adapted from https://stackoverflow.com/a/10162353
-        const html = '<!DOCTYPE ' +
-        document.doctype.name +
-        (document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
-        (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
-        (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
-        '>\n' + document.documentElement.outerHTML;
+  document.addEventListener('DOMContentLoaded', function() {
+  // Adapted from https://stackoverflow.com/a/10162353
+    const html = '<!DOCTYPE ' +
+    document.doctype.name +
+    (document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
+    (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
+    (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
+    '>\n' + document.documentElement.outerHTML;
 
         const ordersBtn = document.querySelector('.menu-orders');
         const productsBtn = document.querySelector('.menu-products');
@@ -195,69 +116,6 @@
           productsBtn.classList.remove('collapsed');
           document.querySelector("#collapseTwo").classList.add('show');
           ordersBtn.classList.add('collapsed');
-        }
-
-        if (window.location.href.includes('/adminBoard/orders')) {
-          delBtn = document.querySelectorAll('.btn-danger');
-          delBtn.forEach(btn => {
-            btn.addEventListener('click', () => {
-              const orderID = btn.parentElement.parentElement.firstElementChild.innerText
-              fetch(`/adminBoard/orders/${orderID}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }).then(res => res.json())
-              .then(data => {
-                console.log(data);
-                if (data.status === 'success') {
-                  window.location.reload();
-                } else alert('Error al eliminar el pedido')
-              })
-            });
-          });
-        }
-        else if (window.location.href.includes('/adminBoard/products')) {
-          delBtn = document.querySelectorAll('.btn-danger');
-          delBtn.forEach(btn => {
-            btn.addEventListener('click', () => {
-              const productID = btn.parentElement.parentElement.firstElementChild.innerText
-              fetch(`/adminBoard/products/${productID}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }).then(res => res.json())
-              .then(data => {
-                console.log(data);
-                if (data.status === 'success') {
-                  window.location.reload();
-                } else alert('Error al eliminar el producto')
-              })
-            });
-          });
-        }
-        const menuLinks = document.querySelectorAll('.menu-link');
-        menuLinks.forEach(link => {
-          link.addEventListener('click', () => {
-          menuLinks.forEach(link => link.classList.remove('active'));
-          this.classList.add('active');
-          });
-        });
-
-        //! modal
-
-        const addBtn = document.getElementById('addBtn');
-        if (addBtn) {
-          addBtn.addEventListener('click', () => {
-            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
-            modal.show();
-          });
-
-          const addProductForm = document.getElementById('addProductForm');
-          addProductForm.addEventListener('submit', () => {
-            modal.hide();
-          })
         }
       });
   </script>

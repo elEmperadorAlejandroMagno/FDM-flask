@@ -33,14 +33,10 @@
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="salsas">
             {% for sauce in sauces %}
-              <a class="productLink" href="{{ url['fdm'] }}/product-page?id={{ sauce.id }}">
+              <a class="productLink" href="{{ FDM_URL }}/product-page/{{ sauce.id }}">
               <div class="sauce-container producto" data-id="{{ sauce.id }}">
                   <div class="img-product-container">
-<<<<<<< Updated upstream
-                    <img src="{{ url['API_URL'] }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
-=======
-                    <img src="{{ API_URL }}{{ sauce.images }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
->>>>>>> Stashed changes
+                    <img src="{{ API_URL }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
                   </div>
                   <div class="detail-container" style="color: #000;">
                     <h3 class="title">{{ sauce.title }}</h3>
@@ -57,9 +53,9 @@
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merch">
           {% for merch in merchandising %}
-            <a class="productLink" href="{{ url['fdm'] }}/product-page?id={{ merch.id }}">
+            <a class="productLink" href="{{ FDM_URL }}/product-page/{{ merch.id }}">
               <div class="merch-container producto" data-id="{{ merch.id }}">
-                <img id="#a104" class="img-product-merchant" src="{{ url['API_URL'] }}{{ merch.images[0] }}" alt="{{ merch.title }}">
+                <img id="#a104" class="img-product-merchant" src="{{ API_URL }}{{ merch.images[0] }}" alt="{{ merch.title }}">
                 <div class="title">{{ merch.title }}</div>
                 <div class="divHrLine">
                   <hr class="hrLine">
@@ -179,14 +175,9 @@
   {% endblock %}
   {% block script %}
   <script>
-
-    const URLs = [
-      "https://poised-cyan-lentil.glitch.me",
-      "http://localhost:1234"
-    ];
-        // cambio de imagen de productos
-        const URL = URLs[0];
-        const products = document.querySelectorAll('.sauce-container');
+      const API_URL = '{{ API_URL }}';
+      // cambio de imagen de productos
+      const products = document.querySelectorAll('.sauce-container');
 
       products.forEach(product => {
         const imgElement = product.querySelector('.sauce-image');
@@ -194,12 +185,12 @@
 
         product.addEventListener('mouseenter', () => {
           if (images.length > 1) {
-            imgElement.src = URL + images[1];
+            imgElement.src = API_URL + images[1];
           }
         });
 
         product.addEventListener('mouseleave', () => {
-          imgElement.src = URL + images[0];
+          imgElement.src = API_URL + images[0];
         });
       });
 

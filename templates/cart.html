@@ -130,7 +130,8 @@
 
   <script type="module">
     import { formatCurrency, parseCurrency } from '../static/js/utils.js';
-    import { URL } from '../static/js/url.js';
+
+    const URL = '{{ FDM_URL }}';
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -187,7 +188,7 @@
 
       const finalBtn = document.querySelector('.finalBtn');
       finalBtn.addEventListener('click', () => {
-        window.location.href = URL.FDM_URL + '/checkout';
+        window.location.href = URL + '/checkout';
       });
     });
   </script>

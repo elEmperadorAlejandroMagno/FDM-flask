@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+  <div class="col">
+    <h2>Pedidos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Productos</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Total</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if orders|length == 0 %}
+        <tr>
+          <td colspan="7" class="text-center">No hay pedidos</td>
+        </tr>
+        {% endif %}
+        {% for order in orders %}
+        <tr>
+          <th scope="row">{{ order.id }}</th>
+          <td>{{ order.lista_productos }}</td>
+          <td>{{ order.cantidad_productos }}</td>
+          <td>{{ order.precio_total | uru }}</td>
+          <td>{{ order.direccion }}</td>
+          <td>{{ order.status }}</td>
+          <td>{{ order.fecha}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+  <link rel="stylesheet" href="../static/css/myOrders.css">
+  <script>
+
+  </script>
+{% endblock %}

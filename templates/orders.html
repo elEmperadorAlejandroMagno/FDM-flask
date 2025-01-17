@@ -1,0 +1,66 @@
+{% extends '/admin_board/panel.html' %}
+
+  {% block main %}
+    <div class="row">
+      <div class="col">
+        <h2>Pedidos</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Corréo</th>
+              <th scope="col">Productos</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Total</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <th scope="row">{{ order.id }}</th>
+              <td>{{ order.nombre }}</td>
+              <td>{{ order.email }}</td>
+              <td>{{ order.lista_productos }}</td>
+              <td>{{ order.cantidad_productos }}</td>
+              <td>{{ order.precio_total | uru }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.fecha}}</td>
+              <td class="actions">
+                <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" class="btn btn-danger del-orders"><i class="fa-regular fa-trash-can"></i></button>
+                <button type="button" class="btn btn-dark">Abrir</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endblock %}
+
+  {% block script %}
+  <script>
+    const delOrder = document.querySelectorAll('.del-orders');
+      delOrder.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const orderID = btn.parentElement.parentElement.firstElementChild.innerText;
+          fetch(`/adminBoard/orders/${orderID}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(res => res.json())
+          .then(data => {
+            console.log(data);
+            if (data.status === 'success') {
+              window.location.reload();
+            } else alert('Error al eliminar el pedido')
+          })
+        });
+    });
+  </script>
+  {% endblock %}

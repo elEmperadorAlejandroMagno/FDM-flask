@@ -22,11 +22,18 @@
         <div class="nav-menu">
           <ul class="nav-list">
             <li><a href="#home">Home</a></li>
-            <li><a href="#salsas">products</a></li>
-            <li><a href="#merch">merch</a></li>
-            <li><a href="#findelmundo">findelmundo</a></li>
-            <li><a href="#querido-satan">querido satán</a></li>
-            <li><a href="#contact">contacto</a></li>
+            <li><a href="/home#salsas">products</a></li>
+            <li><a href="/home#merch">merch</a></li>
+            <li><a href="/home#findelmundo">findelmundo</a></li>
+            <li><a href="/home#querido-satan">querido satán</a></li>
+            <li><a href="/home#contact">contacto</a></li>
+            {% if session['user_id'] %}
+              {% if session['user_role'] == 'admin' %}
+                <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+              {% else %}
+                <li><a href="/myOrders"><i class="fa-regular fa-user"></i></a></li>
+              {% endif %}
+            {% endif %}
           </ul>
         </div>
         <div class="cart-icon">
@@ -117,7 +124,6 @@
 </body>
 <script type="module">
   import { updateCart } from '../static/js/utils.js';
-  import { URL } from '../static/js/url.js'
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -127,23 +133,27 @@ document.addEventListener('DOMContentLoaded', function() {
   (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
   '>\n' + document.documentElement.outerHTML;
 
+  const URL = '{{ FDM_URL }}';
+  
   // Renderizar cart modal
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   updateCart(cart);
 
   const userCurrentUrl = window.location.href;
-  const HomeURL = `${URL.FDM_URL}/home`;
+  const HomeURL = `${URL}/home`;
 
-  let navButtons = document.querySelectorAll('.nav-list a');
-    navButtons.forEach(link => link.addEventListener('click', event => {
-      event.preventDefault();
-      const targetURL = link.getAttribute('href');
-
-      if (!userCurrentUrl.includes(HomeURL)) {
-        window.location.href = `${HomeURL}${targetURL}`;
-      } else window.location.href = targetURL;
-    })
-  );
+  const homeLink = document.querySelector('.nav-list li a[href="#home"]');
+  homeLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (!userCurrentUrl.includes(HomeURL)) {
+      window.location.href = HomeURL;
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  });
 
   const flexContainer = document.querySelector('.flex-container');
   const cartIcon = document.querySelector('.cart-icon');

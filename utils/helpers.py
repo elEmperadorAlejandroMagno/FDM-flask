@@ -7,11 +7,10 @@ def login_required(f):
 
     https://flask.palletsprojects.com/en/latest/patterns/viewdecorators/
     """
-
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
-            return redirect("/login")
+            return redirect("/adminBoard/login")
         return f(*args, **kwargs)
 
     return decorated_function
@@ -36,3 +35,8 @@ def get_ID_product_list(products):
     product_ID_list = [product['id'] for product in products]
     product_ID_str = ','.join(map(str, product_ID_list))
     return product_ID_str
+
+def get_quantity_product_list(products):
+    product = [product['quantity'] for product in products]
+    product_quantity_str = ','.join(map(str, product))
+    return product_quantity_str
