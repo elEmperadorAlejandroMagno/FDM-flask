@@ -14,7 +14,18 @@ def get_products(filter):
       response = requests.get(url)
       response.raise_for_status()
       data = response.json()
-      return data
+      products = []
+      for item in data:
+        product_info = item.get("product_info", {})
+        product = {
+          "title": product_info.get("title"),
+          "description": product_info.get("description"),
+          "price": product_info.get("price"),
+          "type": product_info.get("type"),
+          "images": item.get("images", [])
+        }
+      products.append(product)
+      return products
     except requests.RequestException as e:
       print(f"Request erro: {e}")
     except (KeyError, ValueError) as e:
