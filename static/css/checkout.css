@@ -33,22 +33,6 @@
   font-family: SofiaSansBold;
   font-size: 24px;
   color: var(--black-text-color);
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   &:hover {
     background-color: var(--btn-hover-color);
     cursor: pointer;

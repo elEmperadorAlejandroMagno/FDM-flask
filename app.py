@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
-from utils.constants import LISTA_ENVIOS
+from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
 import json
 import os
@@ -19,8 +19,12 @@ app.secret_key = os.getenv('SECRET_KEY')
 if __name__ == '__main__': 
   app.run()
 
-app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_USE_SIGNER"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
+app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER') # cargar archivos en el servidor (banner, libro etc)
 
 app.jinja_env.filters["uru"] = uru
 
@@ -47,17 +51,14 @@ def hello():
 def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
-        print(SAUCES[0])
         MERCH = get_products_merch()
-        print(MERCH[0])
-        return render_template("index.html", sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
+        return render_template(TEMPLATES.INDEX, sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
-  print(id)
   PRODUCT = get_product_by_id(id)
   if PRODUCT:
-    return render_template("product.html", product= PRODUCT, url= API_URL)
+    return render_template(TEMPLATES.PRODUCT_DETAILS, product= PRODUCT, url= API_URL)
   else: 
     return "Product not found", 404
 
@@ -81,7 +82,6 @@ def add_to_cart():
 def update_cart():
   if request.method == 'POST':
       data = request.get_json()
-      print(f"Data: {data}")
       cart_cookie = request.cookies.get('cart', '[]')
       CART_ITEMS = json.loads(cart_cookie)
       for item in CART_ITEMS:
@@ -130,7 +130,7 @@ def get_cart_info():
     CART_ITEMS = json.loads(cart_cookie)
     total = subtotal
     envio = request.cookies.get('envio', '0')
-    return render_template("cart.html", cart = CART_ITEMS, envio = envio, options_envio = LISTA_ENVIOS , subtotal = subtotal, total = total)
+    return render_template(TEMPLATES.CARRITO, cart = CART_ITEMS, envio = envio, options_envio = LISTA_ENVIOS , subtotal = subtotal, total = total)
 
 @app.route('/envio', methods=['POST', 'GET'])
 def get_envio():
@@ -159,7 +159,7 @@ def get_envio():
       CART_ITEMS = json.loads(cart_cookie)
       total = subtotal
       envio = request.cookies.get('envio', '0')
-      return render_template("cart.html", cart=CART_ITEMS, envio=envio, options_envio=LISTA_ENVIOS, subtotal=subtotal, total=total)
+      return render_template(TEMPLATES.CARRITO, cart=CART_ITEMS, envio=envio, options_envio=LISTA_ENVIOS, subtotal=subtotal, total=total)
       
    
 @app.route('/checkout', methods=['POST', 'GET'])
@@ -175,7 +175,7 @@ def checkout():
       'envio': float(envio_cookie)
     }
 
-    response = make_response(render_template("checkout.html", purchase = purchase))
+    response = make_response(render_template(TEMPLATES.CHECKOUT, purchase = purchase))
     response.set_cookie('purchase', json.dumps(purchase))
     return response
   
@@ -204,40 +204,61 @@ def checkout():
           return jsonify({'status': 'error', 'message': 'No user data provided'})
       else:
          return jsonify({'status': 'error', 'message': 'No purchase data found'})
-
-###! ADMIN PANEL
+      
+@app.route('/myOrders', methods=['GET'])
+@login_required
+def get_orders():
+  if session['user_id']:
+    if request.method == 'GET':
+      result = db.execute("SELECT email FROM users WHERE id = ?", session['user_id'])
+      if result:
+        email = result[0]['email']
+        try:
+          orders = db.execute("SELECT * FROM orders WHERE email= ?", (email))
+          return render_template(TEMPLATES.MY_ORDERS, orders = orders)
+        except Exception as e:
+          return jsonify({'status': 'error', 'message': str(e)})
+      else:
+        return render_template(TEMPLATES.MY_ORDERS, orders = [])
+      
+### TODO LOGIN 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
   if request.method == 'GET':
-    return render_template("admin_board/register.html")
+    return render_template(TEMPLATES.REGISTER)
   if request.method == 'POST':
     username = request.form.get('username')
+    email = request.form.get('email')
     password = request.form.get('password')
-    if not username or not password:
-      return render_template("admin_board/register.html", message = "The from cannot be empty")
+    if not username or not password or not email:
+      return render_template(TEMPLATES.REGISTER, message = "The from cannot be empty")
     hash = generate_password_hash(password)
     try:
-      db.execute("INSERT INTO users (username, password) VALUES (?, ?)", username, hash)
-      return redirect('/adminBoard/login')
+      db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, hash)
+      return redirect('/login')
     except Exception as e:
-      return render_template("admin_board/register.html", message = str(e))
+      return render_template(TEMPLATES.REGISTER, message = str(e))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'GET':
-    return render_template("admin_board/login.html")
+    return render_template(TEMPLATES.LOGIN)
   if request.method == 'POST':
     username = request.form.get('username')
     password = request.form.get('password')
     if not username or not password:
-      return render_template("admin_board/login.html", message = "The from cannot be empty")
+      return render_template(TEMPLATES.LOGIN, message = "The from cannot be empty")
     user = db.execute("SELECT * FROM users WHERE username = ?", username)
     if len(user) != 1 or not check_password_hash(user[0]['password'], password):
-      return render_template("admin_board/login.html", message = "Invalid credentials")
+      return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
     else:
       session['user_id'] = user[0]['id']
-      return redirect('/adminBoard')
+      session['user_role'] = user[0]['role']
+      if session['user_role'] == 'admin':
+        return redirect('/adminBoard')
+      else:
+        return redirect('/myOrders')
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -245,29 +266,37 @@ def logout():
     session.clear()
     return redirect('/adminBoard/login')
 
+###! ADMIN PANEL
+
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
+  if session['user_role'] != 'admin':
+    return redirect('/myOrders')
   if request.method == 'GET':
     return redirect('/adminBoard/orders')
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
+  if session.get['user_role'] != 'admin':
+    return redirect('/myOrders')
   if request.method == 'GET':
     filter = request.args.get('filter')
     if filter:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
     else:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-    return render_template("admin_board/orders.html", orders = orders)
+    return render_template(TEMPLATES.ORDERS, orders = orders)
 
 @app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
+  if session.get['user_role'] != 'admin':
+    return redirect('/myOrders')
   if request.method == 'GET':
     order = db.execute("SELECT * FROM orders WHERE id = ?", id)
-    return render_template("admin_board/orders.html", orders = order)
+    return render_template(TEMPLATES.ORDERS, orders = order)
   elif request.method == 'DELETE':
     db.execute("DELETE FROM orders WHERE id = ?", id)
     return jsonify({'status': 'success'})
@@ -275,10 +304,12 @@ def panel_order_by_ID(id):
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
+  if session.get['user_role'] != 'admin':
+    return redirect('/myOrders')
   if request.method == 'GET':
     filter = request.args.get('filter') 
     PRODUCTS = get_products(filter)
-    return render_template("admin_board/products.html", products=PRODUCTS, url=API_URL)
+    return render_template(TEMPLATES.PRODUCTS, products=PRODUCTS, url=API_URL)
   if request.method == 'POST':
     product_name = request.form.get('name')
     product_price = float(request.form.get('price'))
@@ -295,11 +326,9 @@ def panel_products():
       return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
     
     response = response.json()
-    print(response)
     
     img_urls = response['files']
     img_url = img_urls[0] if img_urls else ['/images/default.jpg']
-    print(img_url)
 
     data = {
       'title': product_name,
@@ -320,10 +349,12 @@ def panel_products():
 @app.route('/adminBoard/products/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
+  if session.get['user_role'] != 'admin':
+    return redirect('/myOrders')
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
-      return render_template("admin_board/product.html", product = PRODUCT, url= API_URL)
+      return render_template(TEMPLATES.PRODUCTS, product = PRODUCT, url= API_URL)
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
   if request.method == 'DELETE':

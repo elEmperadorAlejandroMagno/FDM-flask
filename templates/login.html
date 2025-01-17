@@ -25,9 +25,7 @@
     </header>
     <main>
       {% if message %}
-      <div class="message" style="width: 100%; text-align: center;">
-        <h3>{{ message }}</h3>
-      </div>
+        <span class="message">{{ message }}</span>
       {% endif %}
       <div class="form-container">
         <form action="/login" method="POST">

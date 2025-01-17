@@ -28,7 +28,11 @@
             <li><a href="/home#querido-satan">querido satán</a></li>
             <li><a href="/home#contact">contacto</a></li>
             {% if session['user_id'] %}
-            <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+              {% if session['user_role'] == 'admin' %}
+                <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+              {% else %}
+                <li><a href="/myOrders"><i class="fa-regular fa-user"></i></a></li>
+              {% endif %}
             {% endif %}
           </ul>
         </div>

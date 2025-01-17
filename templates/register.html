@@ -24,6 +24,9 @@
       </div>
     </header>
     <main>
+      {% if message %}
+        <span class="message">{{ message }}</span>
+      {% endif %}
       <div class="form-container">
         <form action="/register" method="POST">
           <div class="mb-3 form-input-div">
@@ -31,8 +34,12 @@
             <input type="name" name="username" class="custom-width" id="exampleFormControlInput1" placeholder="usuario01example">
           </div>
           <div class="mb-3 form-input-div">
+            <label for="exampleFormControlInput1" class="form-label custom-width">Email</label>
+            <input type="email" name="email" class="custom-width" id="exampleFormControlInput2" placeholder="usuario@example.com">
+          </div>
+          <div class="mb-3 form-input-div">
             <label for="exampleFormControlInput1" class="form-label custom-width">Contraseña</label>
-            <input type="password" name="password" class="custom-width" id="exampleFormControlInput2" placeholder="12345example">
+            <input type="password" name="password" class="custom-width" id="exampleFormControlInput3" placeholder="12345example">
           </div>
           <div class="login-link">
             <a href="/login">Iniciar sessión</a>

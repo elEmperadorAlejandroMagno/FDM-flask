@@ -1,7 +1,6 @@
 {% extends '/admin_board/panel.html' %}
 
   {% block main %}
-
     <div class="row">
       <div class="col">
         <h2>Pedidos</h2>
@@ -41,5 +40,27 @@
         </table>
       </div>
     </div>
+  {% endblock %}
 
+  {% block script %}
+  <script>
+    const delOrder = document.querySelectorAll('.del-orders');
+      delOrder.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const orderID = btn.parentElement.parentElement.firstElementChild.innerText;
+          fetch(`/adminBoard/orders/${orderID}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(res => res.json())
+          .then(data => {
+            console.log(data);
+            if (data.status === 'success') {
+              window.location.reload();
+            } else alert('Error al eliminar el pedido')
+          })
+        });
+    });
+  </script>
   {% endblock %}

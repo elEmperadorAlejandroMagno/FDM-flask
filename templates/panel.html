@@ -26,7 +26,10 @@
               <li><a href="/home#querido-satan">querido satán</a></li>
               <li><a href="/home#contact">contacto</a></li>
               {% if session['user_id'] %}
-              <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+                {% if session['user_role'] == 'admin' %}
+                  <li><a href="/adminBoard"><i class="fa-regular fa-user"></i></a></li>
+                {% else %}
+                  <li><a href="/myOrders"><i class="fa-regular fa-user"></i></a></li>
               {% endif %}
             </ul>
           </div>
@@ -77,11 +80,9 @@
       </div>
     </aside>
     <main>
-      <div class="container">
-        {% block main %}
-        {% endblock %}
-      </div>
+      <div class="container">{% block main %}{% endblock %}</div>
     </main>
+  {%block script%}{%endblock%}
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
@@ -115,57 +116,6 @@
           productsBtn.classList.remove('collapsed');
           document.querySelector("#collapseTwo").classList.add('show');
           ordersBtn.classList.add('collapsed');
-        }
-        const delOrder = document.querySelectorAll('.del-orders');
-            delOrder.forEach(btn => {
-              btn.addEventListener('click', () => {
-                const orderID = btn.parentElement.parentElement.firstElementChild.innerText;
-                fetch(`/adminBoard/orders/${orderID}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  }
-                }).then(res => res.json())
-                .then(data => {
-                  console.log(data);
-                  if (data.status === 'success') {
-                    window.location.reload();
-                  } else alert('Error al eliminar el pedido')
-                })
-              });
-          });
-        const delProduct = document.querySelectorAll('.del-products');
-          delProduct.forEach(btn => {
-            btn.addEventListener('click', () => {
-              const productID = btn.parentElement.parentElement.firstElementChild.innerText;
-              fetch(`/adminBoard/products/${productID}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }).then(res => res.json())
-              .then(data => {
-                console.log(data);
-                if (data.status === 'success') {
-                  window.location.reload();
-                } else alert('Error al eliminar el producto')
-              })
-            });
-          });
-
-        //! modal
-
-        const addBtn = document.getElementById('addBtn');
-        if (addBtn) {
-          addBtn.addEventListener('click', () => {
-            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
-            modal.show();
-          });
-
-          const addProductForm = document.getElementById('addProductForm');
-          addProductForm.addEventListener('submit', () => {
-            modal.hide();
-          })
         }
       });
   </script>
