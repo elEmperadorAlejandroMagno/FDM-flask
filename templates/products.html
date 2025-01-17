@@ -1,4 +1,4 @@
-{% extends '/admin_board/panel.html' %}
+{% extends '/panel.html' %}
   {% block main %}
     <div class="row">
       <div class="col">
@@ -25,7 +25,7 @@
             {% for product in products %}
               <tr class="table-group-divider">
                 <th scope="row" class="product-id">{{ product.id }}</th>
-                <td><img src="{{ url }}{{ product.images[0] }}" alt="{{ product.title }}" style="max-width: 100px;"></td>
+                <td><img src="{{ url }}{{ product.images.split(',')[0] }}" alt="{{ product.title }}" style="max-width: 120px; max-height: 120px; padding: 10px 20px;"></td>
                 <td>{{ product.title }}</td>
                 <td>{{ product.price |uru }}</td>
                 <td>

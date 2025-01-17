@@ -36,7 +36,7 @@
               <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
               <div class="sauce-container producto" data-id="{{ item.id }}">
                   <div class="img-product-container">
-                    <img src="{{ API_URL }}{{ item.images }}" alt="{{ item.title }}" data-images="{{ item.images | join(',')}}" class="sauce-image">
+                    <img src="{{ API_URL }}{{ item.images.split(',')[0] }}" alt="{{ item.title }}" data-images="{{ item.images }}" class="sauce-image">
                   </div>
                   <div class="detail-container" style="color: #000;">
                     <h3 class="title">{{ item.title }}</h3>
@@ -55,7 +55,7 @@
           {% for item in merch %}
             <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
               <div class="merch-container producto" data-id="{{ item.id }}">
-                <img id="#a104" class="img-product-merchant" src="{{ API_URL }}{{ item.images[0] }}" alt="{{ item.title }}">
+                <img id="#a104" class="img-product-merchant" src="{{ API_URL }}{{ item.images.split(',')[0] }}" alt="{{ item.title }}">
                 <div class="title">{{ item.title }}</div>
                 <div class="divHrLine">
                   <hr class="hrLine">

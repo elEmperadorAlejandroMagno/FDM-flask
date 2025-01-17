@@ -14,18 +14,8 @@ def get_products(filter):
       response = requests.get(url)
       response.raise_for_status()
       data = response.json()
-      products = []
-      for item in data:
-        product_info = item.get("product_info", {})
-        product = {
-          "title": product_info.get("title"),
-          "description": product_info.get("description"),
-          "price": product_info.get("price"),
-          "type": product_info.get("type"),
-          "images": item.get("images", [])
-        }
-      products.append(product)
-      return products
+
+      return data
     except requests.RequestException as e:
       print(f"Request erro: {e}")
     except (KeyError, ValueError) as e:
@@ -38,18 +28,8 @@ def get_products_sauce():
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
-    products = []
-    for item in data:
-      product_info = item.get("product_info", {})
-      product = {
-        "title": product_info.get("title"),
-        "description": product_info.get("description"),
-        "price": product_info.get("price"),
-        "type": product_info.get("type"),
-        "images": item.get("images", [])
-      }
-    products.append(product)
-    return products
+    print(data)
+    return data
   except requests.RequestException as e:
     print(f"Request erro: {e}")
   except (KeyError, ValueError) as e:
@@ -62,18 +42,8 @@ def get_products_merch():
       response = requests.get(url)
       response.raise_for_status()
       data = response.json()
-      products = []
-      for item in data:
-        product_info = item.get("product_info", {})
-        product = {
-          "title": product_info.get("title"),
-          "description": product_info.get("description"),
-          "price": product_info.get("price"),
-          "type": product_info.get("type"),
-          "images": item.get("images", [])
-        }
-      products.append(product)
-      return products
+      print(data)
+      return data
     except requests.RequestException as e:
         print(f"Request error: {e}")
     except (KeyError, ValueError) as e:
@@ -82,20 +52,12 @@ def get_products_merch():
 
 def get_product_by_id(id):
   url = f"{URL}/products/{id}"
-  print(url)
   try:
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
-    product_info = data.get("product_info", {})
-    product = {
-      "title": product_info.get("title"),
-      "description": product_info.get("description"),
-      "price": product_info.get("price"),
-      "type": product_info.get("type"),
-      "images": data.get("images", [])
-    }
-    return product
+    
+    return data[0]
   except requests.RequestException as e:
     print(f"Request error: {e}")
   except (KeyError, ValueError) as e:
