@@ -30,7 +30,7 @@ app.jinja_env.filters["uru"] = uru
 
 Session(app)
 
-API_URL = os.getenv('API_DB')
+API_URL = os.getenv('API_URL')
 FDM_URL = os.getenv('FDM_URL')
 
 db = SQL(os.getenv('DATA_BASE'))
