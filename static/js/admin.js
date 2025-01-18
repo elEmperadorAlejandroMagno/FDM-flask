@@ -1,144 +1,128 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_URL = 'https://season-colorful-help.glitch.me';
+    const API_URL = 'https://season-colorful-help.glitch.me';
     const genericModal = new bootstrap.Modal(document.getElementById('genericModal'));
+    const addProductBtn = document.getElementById('addProductBtn');
+    const viewProductBtn = document.getElementById('viewProductBtn');
+
     const modalTitle = document.getElementById('genericTitle');
     const modalBody = document.getElementById('genericBody');
-    const modalSubmitBtn = document.getElementById('modalSubmitBtn');
 
-    const showModal = (title, bodyContent, submitCallback) => {
-        modalTitle.textContent = title;
-        modalBody.innerHTML = bodyContent;
-        modalSubmitBtn.onclick = submitCallback;
-        genericModal.show();
-    };
-
-    // Modal para agregar un producto
-    document.getElementById('addProductBtn').addEventListener('click', () => {
-        const bodyContent = `
-            <form id="addProductForm">
-                <div class="mb-3">
-                    <label for="productName" class="form-label">Nombre del Producto</label>
-                    <input type="text" class="form-control" id="productName" name="name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="productName" class="form-label">Descripción del Producto</label>
-                    <input type="text" class="form-control" id="productName" name="description" required>
-                </div>
-                <div class="mb-3">
-                    <label for="productPrice" class="form-label">Precio del Producto</label>
-                    <input type="number" class="form-control" id="productPrice" name="price" required>
-                </div>
-                <div class="mb-3">
-                  <select class="form-select" name="type" required>
-                    <option value="0" selected disabled>Elige un tipo</option>
-                    <option value="sauce">Salsa</option>
-                    <option value="merch">Merchandising</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                    <label for="productImage" class="form-label">Imagen del Producto</label>
-                    <input type="file" class="form-control" id="productImage" name="images" required>
+    addProductBtn.addEventListener('click', () => {
+        modalTitle.innerText = 'Add Product';
+        modalBody.innerHTML = `
+            <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
+                  <div class="mb-3">
+                      <label for="productName" class="form-label">Nombre del Producto</label>
+                      <input type="text" class="form-control" id="productName" name="name" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="productName" class="form-label">Descripción del Producto</label>
+                      <input type="text" class="form-control" id="productName" name="description" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="productPrice" class="form-label">Precio del Producto</label>
+                      <input type="number" class="form-control" id="productPrice" name="price" required>
+                  </div>
+                  <div class="mb-3">
+                    <select class="form-select" name="type" required>
+                      <option value="0" selected disabled>Elige un tipo</option>
+                      <option value="sauce">Salsa</option>
+                      <option value="merch">Merchandising</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                      <label for="productImage" class="form-label">Imagen del Producto</label>
+                      <input type="file" class="form-control" id="productImage" name="images" required>
+                  </div>
+                  <div class="modal-footer" id="genericFooter">
+                    <button type="submit" class="btn btn-dark">Aceptar</button>
+                    <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </form>
-        `;
-        const submitCallback = () => {
-            const formData = new FormData(document.getElementById('addProductForm'));
-            fetch('/adminBoard/products', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Error al agregar el producto');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        };
-        showModal('Agregar Producto', bodyContent, submitCallback);
+            `;
+        genericModal.show();
     });
-
-    // Modal para ver y editar un producto
-    document.querySelectorAll('.viewProductBtn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const productId = btn.dataset.id;
-            fetch(`/adminBoard/products/${productId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const product = data.product;
-                const bodyContent = `
-                    <div id="viewProductContent">
-                        <h5 class="modal-title" id="exampleModalLabel">${product.title}</h5>
-                        <p>${product.description}</p>
-                        <p>${product.price}</p>
-                        <div class="productImages">
-                          ${product.images.split(',').map(img => `<img src="${API_URL}${img}" alt="${product.title}" style="max-width=120px;max-height: 120px;">`).join('')}
-                        </div>
-                        <button type="button" class="btn editBtn" data-bs-toggle="modal" data-bs-target="#editProductModal" data-product-id="${product._id}">Editar</button>
+    viewProductBtn.addEventListener('click', () => {
+        const id = viewProductBtn.getAttribute('data-id');
+        fetch(`/adminBoard/products/${id}`)
+        .then(res =>  res.json())
+        .then(product => {
+            product = product.product;
+            modalTitle.innerText = 'Ver Productos';
+            modalBody.innerHTML = `
+                <div id="productContainer">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Nombre del Producto</label>
+                        <h3>${product.title}</h3>
                     </div>
-                `;
-                const submitCallback = () => {}; // No submit action for view mode
-                showModal('Ver Producto', bodyContent, submitCallback);
-
-                document.querySelector('.editBtn').addEventListener('click', () => {
-                    const editBodyContent = `
-                        <form id="editProductForm">
-                            <div class="mb-3">
-                                <label for="productName" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="productName" name="title" value="${product.title}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productDescription" class="form-label">Descripción del Producto</label>
-                                <input type="text" class="form-control" id="productDescription" name="description" value="${product.description}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productPrice" class="form-label">Precio del Producto</label>
-                                <input type="number" class="form-control" id="productPrice" name="price" value="${product.price}" required>
-                            </div>
-                            <div class="mb-3">
-                                <div class="productImages">
-                                  ${product.images.split(',').map(img => `<img src="${API_URL}${img}" alt="${product.title}" style="max-width=120px;max-height: 120px;">`).join('')}
-                                </div>
-                                <label for="productImage" class="form-label">Imagen del Producto</label>
-                                <input type="file" class="form-control" id="productImage" name="images">
-                            </div>
-                        </form>
+                    <div class="mb-3">
+                        <label for="productDescription" class="form-label">Descripción del Producto</label>
+                        <p>${product.description}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Precio del Producto</label>
+                        <p>${product.price}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productType" class="form-label>">Tipo de Producto</label>
+                        <p>${product.type}</p>
+                    </div>
+                    <div class="mb-3">
+                        <div class="productImages" style="display: grid; grid-template-columns: repeat(auto-fit, 200px); gap: 1rem;">
+                            ${product.images.split(',').map(image => `<img src="${API_URL}${image}" alt="product image" class="productImage" style="max-width: 200px; max-height: 200px;">`).join('')}
+                        </div>
+                    </div>
+                    <div class="mb-3" style="text-align: end;">
+                        <button class="btn btn-dark" id="editBtn">Editar</button>
+                        <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            `;
+            genericModal.show();
+            const editBtn = document.getElementById('editBtn');
+            editBtn.addEventListener('click', () => {
+                modalTitle.innerText = 'Editar Producto';
+                modalBody.innerHTML = `
+                    <form id="editProductForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Nombre del Producto</label>
+                            <input type="text" class="form-control" id="productName" name="name" value="${product.title}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Descripción del Producto</label>
+                            <input type="text" class="form-control" id="productName" name="description" value="${product.description}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Precio del Producto</label>
+                            <input type="number" class="form-control" id="productPrice" name="price" value="${product.price}" required>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-dark" id="submitModalBtn">Guardar</button>
+                            <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
                     `;
-                    const editSubmitCallback = () => {
-                        const formData = new FormData(document.getElementById('editProductForm'));
-                        fetch(`/adminBoard/products/${productId}`, {
-                            method: 'PUT',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                window.location.reload();
-                            } else {
-                                alert('Error al editar el producto');
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-                    };
-                    showModal('Editar Producto', editBodyContent, editSubmitCallback);
+                const submitBtn = document.getElementById('submitModalBtn');
+                submitBtn.addEventListener('click', () => {
+                    const editProductForm = document.getElementById('editProductForm');
+                    const formData = new FormData(editProductForm);
+                    fetch(`/adminBoard/products/${id}`, {
+                        method: 'PUT',
+                        body: formData
+                    }).then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            genericModal.hide();
+                            window.location.reload();
+                        }
+                    }).catch(err => {
+                        console.log('Error:', err);
+                    });
                 });
-            })
-            .catch(error => console.error('Error:', error));
+            });
+        }).catch(err => {
+            console.log('Error:', err);
         });
     });
-
-    // Similarmente, puedes agregar eventos para manejar órdenes
 });
 

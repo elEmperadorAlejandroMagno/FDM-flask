@@ -25,11 +25,11 @@
             {% for product in products %}
               <tr class="table-group-divider">
                 <th scope="row" class="product-id">{{ product.id }}</th>
-                <td><img src="{{ url }}{{ product.images.split(',')[0] }}" alt="{{ product.title }}" style="max-width: 120px; max-height: 120px; padding: 10px 20px;"></td>
+                <td><img src="{{ url }}{{ product.images.split(',')[0] }}" alt="{{ product.title }}" style="max-width: 180px; max-height: 180px; padding: 10px 20px;"></td>
                 <td>{{ product.title }}</td>
                 <td>{{ product.price |uru }}</td>
                 <td>
-                  <button type="submit" class="btn btn-dark viewProductBtn" data-id="{{ product.id }}">Abrir</button>
+                  <button type="submit" class="btn btn-dark" id="viewProductBtn" data-id="{{ product.id }}">Abrir</button>
                   <button type="submit" class="btn btn-danger del-products"><i class="fa-regular fa-trash-can"></i></button>
                 </td>
               </tr>

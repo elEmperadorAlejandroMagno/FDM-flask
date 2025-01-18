@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, make_response, request, jsonify, session
+from flask import Flask, flash, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -24,7 +24,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
-app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER') # cargar archivos en el servidor (banner, libro etc)
+# app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER') # cargar archivos en el servidor (banner, libro etc)
 
 app.jinja_env.filters["uru"] = uru
 
@@ -323,22 +323,22 @@ def panel_products():
       return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
     
     files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
-    response = requests.post(f"{API_URL}/uploads", files=files)
+    response = requests.post(f"{API_URL}/upload", files=files)
 
     if response.status_code != 200:
       return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
     
     response = response.json()
-    
+    if 'files' not in response:
+      return jsonify({'status': 'error', 'message': 'No files found in response'})
     img_urls = response['files']
-    img_url = img_urls[0] if img_urls else ['/images/default.jpg']
+    print(img_urls[0])
 
     data = {
       'product_info': {
         'title': product_name,
         'price': product_price,
         'available': True,
-        'images': [img_url],
         'type': product_type,
         'description': product_description
       },
@@ -371,9 +371,10 @@ def panel_product_by_ID(id):
       return jsonify({'status': 'error', 'message': 'Error deleting product'})
   if request.method == 'PUT':
     data = request.get_json()
+
     updatedProduct = update_product(id, data)
     if updatedProduct:
-      return jsonify({'status': 'success', 'product': updatedProduct})
+      return jsonify({'status': 'success', 'message': 'Product updated'})
     else:
       return jsonify({'status': 'error', 'message': 'Error updating product'})
 
