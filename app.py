@@ -317,8 +317,9 @@ def panel_products():
     product_price = float(request.form.get('price'))
     product_img = request.files.get('images')
     product_description = request.form.get('description', 'Por el momento mo hay una descripción disponible')
+    product_type = request.form.get('type')
 
-    if not product_name or not product_price or not product_img:
+    if not product_name or not product_price or not product_img or not product_description or not product_type:
       return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
     
     files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
@@ -333,12 +334,15 @@ def panel_products():
     img_url = img_urls[0] if img_urls else ['/images/default.jpg']
 
     data = {
-      'title': product_name,
-      'price': product_price,
-      'available': True,
-      'images': [img_url],
-      'type': 'sauce',
-      'description': product_description
+      'product_info': {
+        'title': product_name,
+        'price': product_price,
+        'available': True,
+        'images': [img_url],
+        'type': product_type,
+        'description': product_description
+      },
+      'images': img_urls
     }
 
     newProduct = post_product(data)
@@ -356,7 +360,7 @@ def panel_product_by_ID(id):
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
-      return render_template(TEMPLATES.PRODUCTS, product = PRODUCT, url= API_URL)
+      return jsonify({ 'status': 'success', 'product': PRODUCT })
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
   if request.method == 'DELETE':

@@ -9,7 +9,7 @@
             </div>
           {% endif %}
           <h2>Productos</h2>
-          <button type="button" class="btn addBtn" id="addBtn"><i class="fa-solid fa-plus"></i>Agregar Producto</button>
+          <button type="button" class="btn addProductBtn" id="addProductBtn"><i class="fa-solid fa-plus"></i>Agregar Producto</button>
         </div>
         <table class="table-light custom-width">
           <thead>
@@ -29,43 +29,14 @@
                 <td>{{ product.title }}</td>
                 <td>{{ product.price |uru }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
+                  <button type="submit" class="btn btn-dark viewProductBtn" data-id="{{ product.id }}">Abrir</button>
                   <button type="submit" class="btn btn-danger del-products"><i class="fa-regular fa-trash-can"></i></button>
-                  <button type="submit" class="btn btn-dark">Abrir</button>
                 </td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-      <!-- Modal -->
-        <div class="modal" id="addProductModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
-                  <div class="mb-3">
-                    <label for="productName" class="form-label">Nombre del Producto</label>
-                    <input type="text" name="name" class="form-control" id="productName" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="productPrice" class="form-label">Precio del Producto</label>
-                    <input type="number" name="price" class="form-control" id="productPrice" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="productImage" class="form-label">Imagen</label>
-                    <input type="file" name="images" class="form-control" id="productImage" required>
-                  </div>
-                  <button type="submit" class="btn addBtn">Agregar</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
     </div>
 {% endblock %}
 {% block script %}
@@ -88,19 +59,5 @@
               })
             });
           });
-
-        //! modal
-      const addBtn = document.getElementById('addBtn');
-        if (addBtn) {
-          addBtn.addEventListener('click', () => {
-            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
-            modal.show();
-          });
-
-          const addProductForm = document.getElementById('addProductForm');
-          addProductForm.addEventListener('submit', () => {
-            modal.hide();
-          })
-        }
     </script>
 {% endblock %}

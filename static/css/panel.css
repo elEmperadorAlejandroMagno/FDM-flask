@@ -178,7 +178,7 @@ ul a {
   padding: 20px 0;
 }
 
-.btn.addBtn {
+.btn.addProductBtn {
   min-width: 200px;
   border-radius: 10px;
   background-color: var(--btn-background-color);
@@ -196,7 +196,7 @@ ul a {
   }
 }
 
-.btn.addBtn i {
+.btn.addProductBtn i {
   padding-right: 10px;
 }
 
@@ -212,7 +212,7 @@ ul a {
   flex-flow: column wrap;
 }
 
-#addProductForm .addBtn {
+#addProductForm .addProductBtn {
   align-self: center;
   width: 120px;
 }
@@ -268,7 +268,7 @@ ul a {
   padding: 20px 0;
 }
 
-.btn.addBtn {
+.btn.addProductBtn {
   min-width: 200px;
   border-radius: 10px;
   background-color: var(--btn-background-color);
@@ -286,7 +286,7 @@ ul a {
   }
 }
 
-.btn.addBtn i {
+.btn.addProductBtn i {
   padding-right: 10px;
 }
 
@@ -302,7 +302,7 @@ ul a {
   flex-flow: column wrap;
 }
 
-#addProductForm .addBtn {
+#addProductForm .addProductBtn {
   align-self: center;
   width: 120px;
 }
