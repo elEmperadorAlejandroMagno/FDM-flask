@@ -276,7 +276,10 @@ def panel_admin():
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-    return redirect('/adminBoard/orders')
+      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
+      if orders:
+        return render_template('orders.html', API_URL= API_URL, orders = orders)
+      return render_template('panel.html', API_URL= API_URL, message = 'Error loading orders')
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
@@ -289,7 +292,7 @@ def panel_orders():
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
     else:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-    return render_template(TEMPLATES.ORDERS, orders = orders)
+    return jsonify({'status': 'success', 'orders': orders})
 
 @app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
@@ -311,7 +314,7 @@ def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
     PRODUCTS = get_products(filter)
-    return render_template(TEMPLATES.PRODUCTS, products=PRODUCTS, url=API_URL)
+    return jsonify({'status': 'success', 'products': PRODUCTS})
   if request.method == 'POST':
     product_name = request.form.get('name')
     product_price = float(request.form.get('price'))
