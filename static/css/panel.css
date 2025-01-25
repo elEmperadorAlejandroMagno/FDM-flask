@@ -61,6 +61,14 @@ header {
   margin: 0;
 }
 
+.nav-list li {
+  transition: all 0.5s;
+}
+.nav-list li:hover {
+  cursor: pointer;
+  color: #98ff00;
+}
+
 .img-container {
   position: absolute;
   left: 0;
@@ -83,9 +91,10 @@ main {
 }
 
 aside {
-  background-color: var(--secondary-background-color);
+  background-color: #fff;
   width: 10%;
   min-height: 600px;
+  border-right: 0.5px solid #000;
 }
 .menu-aside {
   height: 85vh;
@@ -102,26 +111,18 @@ aside {
 }
 
 .accordion {
-  --bs-accordion-bg: var(--secondary-background-color)!important;
-  --bs-accordion-active-bg: var(--btn-background-color) !important;
-  --bs-accordion-color: #eeee!important;
+  --bs-accordion-bg: #fff !important;
+  --bs-accordion-color: var(--black-text-color)!important;
   --bs-accordion-border-width: 0!important;
   --bs-accordion-inner-border-radius: 0!important;
   --bs-accordion-btn-focus-box-shadow: none!important;
-  --bs-accordion-btn-bg: #000 !important;
-  --bs-accordion-btn-color: #eeee !important;
+  --bs-accordion-btn-bg: #fff !important;
+  --bs-accordion-btn-color: #000 !important;
 }
 
 .accordion-button:not(.collapsed) {
-  background-color: var(--btn-background-color) !important; /* Color de fondo azul oscuro cuando está expandido */
-  color: #000 !important; /* Color del texto blanco */
-}
-
-.accordion-button::after {
-  background-color: #eee!important; /* Color del texto blanco */
-}
-.accordion-button:not(.collapsed)::after {
-  background-color: var(--btn-background-color) !important; /* Color de fondo azul claro cuando se pasa el mouse */
+  background-color: #7777 !important; 
+  color: #000 !important; /
 }
 
 .accordion-body {
@@ -147,7 +148,7 @@ ul a {
   font-weight: 700;
   &:hover {
     cursor: pointer;
-    background-color: #333;
+    background-color: #7777;
   }
 }
 
