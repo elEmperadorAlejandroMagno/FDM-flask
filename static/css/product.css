@@ -60,24 +60,6 @@
   flex-direction: column;
 }
 
-.table-id {
-  max-width: 80px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.table-img {
-  width: 100px;
-  height: 140px;
-}
-
-.table-img img{ 
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
 .product-details .title {
   margin-bottom: 5px;
   font-family: SofiaSans;
@@ -92,6 +74,7 @@
   font-weight: 800;
 }
 .product-details .description {
+  max-width: 250px;
   font-family: SofiaSansItalic;
   font-size: 20px;
 }
