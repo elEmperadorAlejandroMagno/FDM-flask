@@ -96,6 +96,11 @@ main {
   margin: 0;
 }
 
+.table-container {
+  width: 100%;
+  padding: 20p 20px;
+}
+
 aside {
   background-color: #fff;
   width: 10%;
@@ -190,7 +195,7 @@ ul a {
   padding: 20px 0;
 }
 
-.btn.addProductBtn {
+.btn.addBtn {
   min-width: 200px;
   border-radius: 10px;
   background-color: var(--btn-background-color);
@@ -208,7 +213,7 @@ ul a {
   }
 }
 
-.btn.addProductBtn i {
+.btn.addBtn i {
   padding-right: 10px;
 }
 
@@ -239,8 +244,10 @@ ul a {
 }
 
 .table-img {
-  width: 100px;
-  height: 140px;
+  text-align: center;
+  width: 80px;
+  max-height: 100%;
+  margin: 0 auto;
 }
 
 .table-img img{ 
@@ -249,22 +256,8 @@ ul a {
   object-fit: cover;
 }
 
-.product-row .description {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .table-light.custom-width {
   width: 100%;
-}
-
-.actions {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: 10px;
 }
 
 .li-panel li.active {
@@ -296,7 +289,7 @@ ul a {
   width: 100%;
   flex-flow: row wrap;
   gap: 40px;
-  padding: 20px 0;
+  padding: 20px 20px;
 }
 
 .btn.addProductBtn {

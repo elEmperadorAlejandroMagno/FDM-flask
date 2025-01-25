@@ -42,13 +42,11 @@
           <div class="accordion" id="accordionExample">
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <form action="/adminBoard/orders" method="get">
-                  <button class="accordion-button menu-button show menu-orders" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    <h3>Pedidos</h3>
-                  </button>
-                </form>
+                <button class="accordion-button menu-button show menu-orders" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <h3>Pedidos</h3>
+                </button>
               </h2>
-              <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
                   <ul>
                     <li class="menu-link" id="pendientes">Pendientes</li></a>
@@ -59,11 +57,9 @@
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <form action="/adminBoard/products">
-                  <button class="accordion-button collapsed menu-button menu-products" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <h3>Productos</h3>
-                  </button>
-                </form>
+                <button class="accordion-button collapsed menu-button menu-products" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <h3>Productos</h3>
+                </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body li-panel">
@@ -99,7 +95,9 @@
   {%block script%}{%endblock%}
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script>
+  <script type="module">
+    import { renderOrders, renderProducts } from '../static/js/table_render.js';
+
   document.addEventListener('DOMContentLoaded', function() {
   // Adapted from https://stackoverflow.com/a/10162353
     const html = '<!DOCTYPE ' +
@@ -109,113 +107,11 @@
     (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
     '>\n' + document.documentElement.outerHTML;
 
-        const API_URL = '{{ API_URL }}';
-        const ordersBtn = document.querySelector('.menu-orders');
-        const productsBtn = document.querySelector('.menu-products');
+      const API_URL = '{{ API_URL}}';
+      const ordersBtn = document.querySelector('.menu-orders');
+      const productsBtn = document.querySelector('.menu-products');
 
-        ordersBtn.addEventListener('click', (e) => {
-          fetch('/adminBoard/orders')
-            .then(response => response.json())
-            .then(data => {
-              const orders = data.orders;
-              const ordersContainer = document.querySelector('.main');
-              ordersContainer.innerHTML = `
-                   <div class="row">
-                      <div class="col">
-                        <h2>Pedidos</h2>
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">ID</th>
-                              <th scope="col">Nombre</th>
-                              <th scope="col">Corréo</th>
-                              <th scope="col">Productos</th>
-                              <th scope="col">Cantidad</th>
-                              <th scope="col">Total</th>
-                              <th scope="col">Estado</th>
-                              <th scope="col">Fecha</th>
-                              <th scope="col">Acciones</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <!-- Aquí van los pedidos -->
-                            ${orders.map(order => `
-                                <tr>
-                                  <th scope="row" class="table-id">${order.id}</th>
-                                  <td>${order.nombre}</td>
-                                  <td>${order.email}</td>
-                                  <td>${order.lista_productos}</td>
-                                  <td>${order.cantidad_productos}</td>
-                                  <td>${order.precio_total}</td>
-                                  <td>${order.status}</td>
-                                  <td>${order.fecha}</td>
-                                  <td class="actions">
-                                    <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button type="submit" class="btn btn-danger del-orders"><i class="fa-regular fa-trash-can"></i></button>
-                                    <button type="button" class="btn btn-dark">Abrir</button>
-                                  </td>
-                                </tr>
-                            `).join('')}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-              `;
-            })
-            .catch(error => console.error('Error:', error));
-        });
-
-        productsBtn.addEventListener('click', e => {
-          fetch('/adminBoard/products')
-            .then(response => response.json())
-            .then(data => {
-              const products = data.products;
-              console.log(products);
-              const productsContainer = document.querySelector('.main');
-              productsContainer.innerHTML = `
-                <div class="row">
-                  <div class="col">
-                    <h2>Productos</h2>
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">ID</th>
-                          <th scope="col">Imagen</th>
-                          <th scope="col">Nombre</th>
-                          <th scope="col">Descripción</th>
-                          <th scope="col">Precio</th>
-                          <th scope="col">Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Aquí van los productos -->
-                        ${products.map(product => `
-                          <tr class="product-row">
-                            <th scope="row" class="table-id">${product.id}</th>
-                            <td>
-                              <div class="table-img"> 
-                                <img src="${API_URL}${product.images.split(',')[0]}" alt="${product.title}">
-                              </div>
-                            </td>
-                            <td>${product.title}</td>
-                            <td class="description">${product.description}</td>
-                            <td>${product.price}</td>
-                            <td class="actions">
-                              <button type="button" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button>
-                              <button type="submit" class="btn btn-danger del-products"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                          </tr>
-                        `).join('')}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              `;
-            })
-            .catch(error => console.error('Error:', error));
-        })
-
-        if (window.location.href.includes('/orders')) {
+      if (window.location.href.includes('/orders')) {
           document.querySelector("#collapseOne").classList.add('show');
           ordersBtn.classList.remove('collapsed');
           document.querySelector("#collapseTwo").remove('show');
@@ -226,8 +122,15 @@
           document.querySelector("#collapseTwo").classList.add('show');
           ordersBtn.classList.add('collapsed');
         }
-
+      
+      ordersBtn.addEventListener('click', () => {
+        renderOrders();
       });
+      productsBtn.addEventListener('click', () => {
+        renderProducts(API_URL);
+      });
+
+    });
   </script>
         <!-- Modal -->
         <div class="modal" id="genericModal">
@@ -243,6 +146,7 @@
             </div>
           </div>
         </div>
-  <script src="../static/js/admin.js"></script>
+  <script src="../static/js/admin_modals.js"></script>
+  <script type="module" src="../static/js/table_render.js"></script>
 </body>
 </html>

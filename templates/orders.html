@@ -1,9 +1,11 @@
 {% extends 'panel.html' %}
 
   {% block main %}
-    <div class="row">
+    <div class="table-container">
       <div class="col">
-        <h2>Pedidos</h2>
+        <div class="header">
+          <button type="button" class="btn addBtn" id="addOrderBtn"><i class="fa-solid fa-plus"></i>Agregar Pedido</button>
+        </div>
         <table class="table">
           <thead>
             <tr>
@@ -43,6 +45,7 @@
   {% endblock %}
 
   {% block script %}
+  <link rel="stylesheet" href="../static/css/panel.css">
   <script>
     const delOrder = document.querySelectorAll('.del-orders');
       delOrder.forEach(btn => {
