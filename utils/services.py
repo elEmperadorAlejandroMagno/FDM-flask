@@ -3,12 +3,7 @@ import os
 
 URL = os.getenv('API_URL')
 
-def get_products(filter):
-  if filter == 'sauce':
-    return get_products_sauce()
-  elif filter == 'merch':
-    return get_products_merch()
-  else:
+def get_products():
     url = f"{URL}/products"
     try: 
       response = requests.get(url)

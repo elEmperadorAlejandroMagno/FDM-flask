@@ -278,6 +278,16 @@ def panel_admin():
   if request.method == 'GET':
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
       if orders:
+        products = get_products()
+        for order in orders:
+          id_products = order['lista_productos'].split(',')
+          quantity_products = order['cantidad_productos'].split(',')
+          new_list = []
+          for i in range(len(id_products)):
+              for product in products:
+                  if str(id_products[i]) == str(product['id']):
+                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
+          order['lista_productos'] = new_list
         return render_template('orders.html', API_URL= API_URL, orders = orders)
       return render_template('panel.html', API_URL= API_URL, message = 'Error loading orders')
 
@@ -290,9 +300,32 @@ def panel_orders():
     filter = request.args.get('filter')
     if filter:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
+      products = get_products()
+      for order in orders:
+          id_products = order['lista_productos']
+          quantity_products = order['cantidad_productos']
+          new_list = []
+          i = 0
+          for i in range(len(id_products)):
+              for product in products:
+                  if id_products[i] == product['id']:
+                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
+          order['lista_productos'] = new_list
+          print(new_list)
+      return jsonify({'status': 'success', 'orders': orders})
     else:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-    return jsonify({'status': 'success', 'orders': orders})
+      products = get_products()
+      for order in orders:
+          id_products = order['lista_productos'].split(',')
+          quantity_products = order['cantidad_productos'].split(',')
+          new_list = []
+          for i in range(len(id_products)):
+              for product in products:
+                  if str(id_products[i]) == str(product['id']):
+                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
+          order['lista_productos'] = new_list
+      return jsonify({'status': 'success', 'orders': orders})
 
 @app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
@@ -313,7 +346,13 @@ def panel_products():
     return redirect('/myOrders')
   if request.method == 'GET':
     filter = request.args.get('filter') 
-    PRODUCTS = get_products(filter)
+    if filter:
+      if filter == 'sauce':
+        PRODUCTS = get_products_sauce()
+      elif filter == 'merch':
+        PRODUCTS = get_products_merch()
+      return jsonify({'status': 'success', 'products': PRODUCTS})
+    PRODUCTS = get_products()
     return jsonify({'status': 'success', 'products': PRODUCTS})
   if request.method == 'POST':
     product_name = request.form.get('name')

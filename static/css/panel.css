@@ -98,7 +98,7 @@ main {
 
 .table-container {
   width: 100%;
-  padding: 20p 20px;
+  padding: 20px 20px;
 }
 
 aside {
@@ -254,6 +254,13 @@ ul a {
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+.table-product-list {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-light.custom-width {

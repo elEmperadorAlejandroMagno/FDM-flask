@@ -5,6 +5,7 @@ export function renderOrders() {
       .then(response => response.json())
       .then(data => {
         const orders = data.orders;
+        console.log(orders);
         const ordersContainer = document.querySelector('.main');
         ordersContainer.innerHTML = `
             <div class="table-container">
@@ -19,7 +20,6 @@ export function renderOrders() {
                         <th scope="col">Nombre</th>
                         <th scope="col">Corréo</th>
                         <th scope="col">Productos</th>
-                        <th scope="col">Cantidad</th>
                         <th scope="col">Total</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Fecha</th>
@@ -33,8 +33,7 @@ export function renderOrders() {
                             <th scope="row" class="table-id">${order.id}</th>
                             <td>${order.nombre}</td>
                             <td>${order.email}</td>
-                            <td>${order.lista_productos}</td>
-                            <td>${order.cantidad_productos}</td>
+                            <td class="table-product-list">${order.lista_productos}</td>
                             <td>${formatCurrency(order.precio_total)}</td>
                             <td>${order.status}</td>
                             <td>${order.fecha}</td>
@@ -59,7 +58,6 @@ export function renderProducts(url) {
     .then(response => response.json())
     .then(data => {
       const products = data.products;
-      console.log(products);
       const productsContainer = document.querySelector('.main');
       productsContainer.innerHTML = `
         <div class="table-container">
