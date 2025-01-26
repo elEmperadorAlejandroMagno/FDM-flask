@@ -1,14 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Admin modals script loaded');
     const API_URL = 'https://season-colorful-help.glitch.me';
     const genericModal = new bootstrap.Modal(document.getElementById('genericModal'));
-    const addProductBtn = document.getElementById('addProductBtn');
-    const viewProductBtn = document.getElementById('viewProductBtn');
-
     const modalTitle = document.getElementById('genericTitle');
     const modalBody = document.getElementById('genericBody');
 
-    if (addProductBtn) {
-        addProductBtn.addEventListener('click', () => {
+    // Contenedor común
+    const adminPanel = document.getElementById('adminPanel');
+
+    adminPanel.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (target.id === 'addNewProductBtn') {
+            console.log('Add Product button clicked');
             modalTitle.innerText = 'Add Product';
             modalBody.innerHTML = `
                 <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
@@ -40,15 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </form>
-                `;
+            `;
             genericModal.show();
-        });
-    }
-    if (viewProductBtn) {
-        viewProductBtn.addEventListener('click', () => {
-            const id = viewProductBtn.getAttribute('data-id');
-            fetch(`/adminBoard/products/${id}`)
-            .then(res =>  res.json())
+        }
+
+        if (target.id === 'viewProductBtn') {
+            console.log('View Product button clicked');
+            const id = target.getAttribute('data-id');
+            fetch(`/adminBoard/product/${id}`)
+            .then(res => res.json())
             .then(product => {
                 product = product.product;
                 modalTitle.innerText = 'Ver Productos';
@@ -67,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p>${product.price}</p>
                         </div>
                         <div class="mb-3">
-                            <label for="productType" class="form-label>">Tipo de Producto</label>
+                            <label for="productType" class="form-label">Tipo de Producto</label>
                             <p>${product.type}</p>
                         </div>
                         <div class="mb-3">
@@ -84,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 genericModal.show();
                 const editBtn = document.getElementById('editBtn');
                 editBtn.addEventListener('click', () => {
+                    console.log('Edit button clicked');
                     modalTitle.innerText = 'Editar Producto';
                     modalBody.innerHTML = `
                         <form id="editProductForm">
@@ -92,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <input type="text" class="form-control" id="productName" name="name" value="${product.title}" required>
                             </div>
                             <div class="mb-3">
-                                <label for="productName" class="form-label">Descripción del Producto</label>
-                                <input type="text" class="form-control" id="productName" name="description" value="${product.description}" required>
+                                <label for="productDescription" class="form-label">Descripción del Producto</label>
+                                <input type="text" class="form-control" id="productDescription" name="description" value="${product.description}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="productPrice" class="form-label">Precio del Producto</label>
@@ -104,17 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </form>
-                        `;
+                    `;
                     const submitBtn = document.getElementById('submitModalBtn');
                     submitBtn.addEventListener('click', () => {
+                        console.log('Submit button clicked');
                         const editProductForm = document.getElementById('editProductForm');
                         const formData = new FormData(editProductForm);
-                        fetch(`/adminBoard/products/${id}`, {
+                        fetch(`/adminBoard/product/${id}`, {
                             method: 'PUT',
                             body: formData
                         }).then(res => res.json())
                         .then(data => {
-                            if(data.success) {
+                            if (data.success) {
                                 genericModal.hide();
                                 window.location.reload();
                             }
@@ -126,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch(err => {
                 console.log('Error:', err);
             });
-        });
-    }
+        }
+    });
 });
-

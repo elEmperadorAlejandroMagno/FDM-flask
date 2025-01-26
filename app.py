@@ -302,8 +302,8 @@ def panel_orders():
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
       products = get_products()
       for order in orders:
-          id_products = order['lista_productos']
-          quantity_products = order['cantidad_productos']
+          id_products = order['lista_productos'].split(',')
+          quantity_products = order['cantidad_productos'].split(',')
           new_list = []
           i = 0
           for i in range(len(id_products)):
@@ -327,7 +327,7 @@ def panel_orders():
           order['lista_productos'] = new_list
       return jsonify({'status': 'success', 'orders': orders})
 
-@app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
+@app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
   if session.get('user_role') != 'admin':
@@ -347,12 +347,14 @@ def panel_products():
   if request.method == 'GET':
     filter = request.args.get('filter') 
     if filter:
-      if filter == 'sauce':
+      if filter == 'salsas':
         PRODUCTS = get_products_sauce()
+        return jsonify({'status': 'success', 'products': PRODUCTS})
       elif filter == 'merch':
         PRODUCTS = get_products_merch()
-      return jsonify({'status': 'success', 'products': PRODUCTS})
+        return jsonify({'status': 'success', 'products': PRODUCTS})
     PRODUCTS = get_products()
+    print(PRODUCTS)
     return jsonify({'status': 'success', 'products': PRODUCTS})
   if request.method == 'POST':
     product_name = request.form.get('name')
@@ -390,11 +392,11 @@ def panel_products():
     newProduct = post_product(data)
 
     if newProduct:
-      return redirect('/adminBoard/products')
+      return jsonify({'status': 'success', 'message': 'Product created'})
     else:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
 
-@app.route('/adminBoard/products/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
+@app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
   if session.get('user_role') != 'admin':
@@ -408,7 +410,7 @@ def panel_product_by_ID(id):
   if request.method == 'DELETE':
     deletedProduct = delete_product(id)
     if deletedProduct:
-      return jsonify({'status': 'success', 'message': 'Product deleted'})
+      return redirect('/adminBoard')
     else:
       return jsonify({'status': 'error', 'message': 'Error deleting product'})
   if request.method == 'PUT':
