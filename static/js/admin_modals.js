@@ -1,5 +1,6 @@
 import { API_URL } from './constants.js';
 import { fetchProducts, fetchOrders } from './table_render.js';
+import { renderAddProductModal, renderViewProductModal, renderEditProductModal } from './render_modals.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Admin modals script loaded');
@@ -12,42 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adminPanel.addEventListener('click', (event) => {
         const target = event.target;
+        console.log('Clicked element:', target);
 
         if (target.id === 'addNewProductBtn') {
-            console.log('Add Product button clicked');
-            modalTitle.innerText = 'Add Product';
-            modalBody.innerHTML = `
-                <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="productName" class="form-label">Nombre del Producto</label>
-                        <input type="text" class="form-control" id="productName" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productName" class="form-label">Descripción del Producto</label>
-                        <input type="text" class="form-control" id="productName" name="description" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productPrice" class="form-label">Precio del Producto</label>
-                        <input type="number" class="form-control" id="productPrice" name="price" required>
-                    </div>
-                    <div class="mb-3">
-                        <select class="form-select" name="type" required>
-                        <option value="0" selected disabled>Elige un tipo</option>
-                        <option value="sauce">Salsa</option>
-                        <option value="merch">Merchandising</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productImage" class="form-label">Imagen del Producto</label>
-                        <input type="file" class="form-control" id="productImage" name="images" required>
-                    </div>
-                    <div class="modal-footer" id="genericFooter">
-                        <button type="button" class="btn btn-dark">Aceptar</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
-            `;
-            genericModal.show();
+            console.log('Add New Product button clicked');
+            renderAddProductModal(genericModal, modalTitle, modalBody);
 
             const submitBtn = document.getElementById('genericFooter').firstElementChild;
             submitBtn.addEventListener('click', () => {
@@ -75,63 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = target.getAttribute('data-id');
             fetch(`/adminBoard/product/${id}`)
             .then(res => res.json())
-            .then(product => {
-                product = product.product;
-                modalTitle.innerText = 'Ver Productos';
-                modalBody.innerHTML = `
-                    <div id="productContainer">
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Nombre del Producto</label>
-                            <h3>${product.title}</h3>
-                        </div>
-                        <div class="mb-3">
-                            <label for="productDescription" class="form-label">Descripción del Producto</label>
-                            <p>${product.description}</p>
-                        </div>
-                        <div class="mb-3">
-                            <label for="productPrice" class="form-label">Precio del Producto</label>
-                            <p>${product.price}</p>
-                        </div>
-                        <div class="mb-3">
-                            <label for="productType" class="form-label">Tipo de Producto</label>
-                            <p>${product.type}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="productImages" style="display: grid; grid-template-columns: repeat(auto-fit, 200px); gap: 1rem;">
-                                ${product.images.split(',').map(image => `<img src="${API_URL}${image}" alt="product image" class="productImage" style="max-width: 200px; max-height: 200px;">`).join('')}
-                            </div>
-                        </div>
-                        <div class="mb-3" style="text-align: end;">
-                            <button type="button" class="btn btn-dark" id="editBtn">Editar</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                    </div>
-                `;
-                genericModal.show();
+            .then(data => {
+                const product = data.product;
+                renderViewProductModal(product, API_URL, genericModal, modalTitle, modalBody);
+
                 const editBtn = document.getElementById('editBtn');
                 editBtn.addEventListener('click', () => {
                     console.log('Edit button clicked');
-                    modalTitle.innerText = 'Editar Producto';
-                    modalBody.innerHTML = `
-                        <form id="editProductForm" action="/adminBoard/product/${id}" method="PUT">
-                            <div class="mb-3">
-                                <label for="productName" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="productName" name="title" value="${product.title}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productDescription" class="form-label">Descripción del Producto</label>
-                                <input type="text" class="form-control" id="productDescription" name="description" value="${product.description}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productPrice" class="form-label">Precio del Producto</label>
-                                <input type="number" class="form-control" id="productPrice" name="price" value="${product.price}" required>
-                            </div>
-                            <div class="mb-3">
-                                <button type="button" class="btn btn-dark" id="submitModalBtn">Guardar</button>
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </form>
-                    `;
+                    renderEditProductModal(product, id, modalTitle, modalBody);
+
                     const submitBtn = document.getElementById('submitModalBtn');
                     submitBtn.addEventListener('click', () => {
                         console.log('Submit button clicked');
@@ -149,6 +71,74 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (data.status === 'success') {
                                 genericModal.hide();
                                 fetchProducts(API_URL);
+                            } else {
+                                console.log('Error:', data.message);
+                            }
+                        }).catch(err => {
+                            console.log('Error:', err);
+                        });
+                    });
+                });
+            }).catch(err => {
+                console.log('Error:', err);
+            });
+        }
+        else if (target.id === 'addNewOrderBtn') {
+            console.log('Add Order button clicked');
+            modalTitle.innerText = 'Add Order';
+            modalBody.innerHTML = addOrderModal;
+            genericModal.show();
+
+            const submitBtn = document.getElementById('genericFooter').firstElementChild;
+            submitBtn.addEventListener('click', () => {
+                const form = document.getElementById('addOrderForm');
+                const data = new FormData(form);
+
+                fetch('/adminBoard/orders', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        genericModal.hide();
+                        fetchOrders();
+                    } else {
+                        console.log('Error:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+        else if (target.id === 'viewOrderBtn') {
+            console.log('View Order button clicked');
+            fetch(`/adminBoard/order/${target.dataset.id}`)
+            .then(res => res.json())
+            .then(order => {
+                modalTitle.innerText = 'View Order';
+                modalBody.innerHTML = viewOrderModal;
+                genericModal.show();
+
+                const editOrderBtn = document.getElementById('editOrderBtn');
+                editOrderBtn.addEventListener('click', () => {
+                    console.log('Edit Order button clicked');
+                    modalTitle.innerText = 'Edit Order';
+                    modalBody.innerHTML = editOrderModal;
+
+                    const submitBtn = document.getElementById('submitModalBtn');
+                    submitBtn.addEventListener('click', () => {
+                        console.log('Submit button clicked');
+                        const editOrderForm = document.getElementById('editOrderForm');
+                        const formData = new FormData(editOrderForm);
+
+                        fetch(`/adminBoard/order/${target.dataset.id}`, {
+                            method: 'PUT',
+                            body: formData
+                        }).then(res => res.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                genericModal.hide();
+                                fetchOrders();
                             } else {
                                 console.log('Error:', data.message);
                             }
