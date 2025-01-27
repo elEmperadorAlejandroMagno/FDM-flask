@@ -1,3 +1,6 @@
+import { fetchOrders } from "./table_render.js";
+
+//? CLIENT FUNCTIONS */
 export function drawCartModal(cart) {
   const cartTable = document.querySelector('.table-body');
   if (cart.length === 0) {
@@ -52,7 +55,6 @@ export function parseCurrency(value) {
   }
   return parseFloat(value.replace(/[^0-9.-]+/g,""));
 }
-
 
 export function getCount(cart) {
   if (cart.length === 0) {
@@ -118,4 +120,153 @@ function addInputEventListeners(cart) {
       }
     });
   });
+}
+
+//? ADMIN PANEL FUNCTIONS */
+
+export function drawOrdersTable(orders) {
+  const ordersContainer = document.querySelector('.main');
+  ordersContainer.innerHTML = `
+      <div class="table-container">
+          <div class="col">
+            <div class="header">
+              <button type="button" class="btn addBtn" id="addNewOrderBtn"><i class="fa-solid fa-plus"></i>Agregar Pedido</button>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Corréo</th>
+                  <th scope="col">Productos</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Aquí van los pedidos -->
+                ${orders.map(order => `
+                    <tr>
+                      <th scope="row" class="table-id">${order.id}</th>
+                      <td>${order.nombre}</td>
+                      <td>${order.email}</td>
+                      <td class="table-product-list">${order.lista_productos}</td>
+                      <td>${formatCurrency(order.precio_total)}</td>
+                      <td>${order.status}</td>
+                      <td>${order.fecha}</td>
+                      <td class="actions">
+                        ${order.status === 'pendiente' ? `<button type="button" class="finalBtn" id="completeOrder" data-id=${order.id}>Completar</button>` : ''}
+                        <button type="button" class="btn btn-danger" id="del-order" data-id=${order.id}><i class="fa-regular fa-trash-can"></i></button>
+                        <button type="button" class="btn btn-dark" id="viewOrderBtn" data-id=${order.id}>Abrir</button>
+                      </td>
+                    </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+}
+
+export function drawProductsTable(products, url) {
+  const productsContainer = document.querySelector('.main');
+  productsContainer.innerHTML = `
+    <div class="table-container">
+      <div class="col">
+        <div class="header">
+          <button type="button" class="btn addBtn" id="addNewProductBtn"><i class="fa-solid fa-plus"></i>Agregar Producto</button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr class="align-content-center text-center">
+              <th scope="col">ID</th>
+              <th scope="col">Imagen</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Aquí van los productos -->
+            ${products.map(product => `
+              <tr class="product-row text-center">
+                <th scope="row" class="table-id align-content-center">${product.id}</th>
+                <td class="align-content-center">
+                  <div class="table-img"> 
+                    <img src="${url}${product.images.split(',')[0]}" alt="${product.title}">
+                  </div>
+                </td>
+                <td class="align-content-center">${product.title}</td>
+                <td class="align-content-center">${formatCurrency(product.price)}</td>
+                <td class="align-content-center">
+                  <button type="submit" class="btn btn-danger" id="del-product" data-id=${product.id}><i class="fa-regular fa-trash-can"></i></button>
+                  <button type="button" class="btn btn-dark" id="viewProductBtn" data-id=${product.id}>Abrir</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+export function deleteProduct(id) {
+  fetch(`/adminBoard/product/${id}`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.status === 'success') {
+      console.log('Product deleted');
+    } else console.log('Product not deleted');
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+export function deleteOrder(id) {
+  fetch(`/adminBoard/order/${id}`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if(!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      console.log('Order deleted');
+    } else console.log('Order not deleted');
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+export function completeOrder(id) {
+  fetch(`/adminBoard/complete_order/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status: "enviado" }),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.status === 'success') {
+      console.log('Order completed');
+      fetchOrders();
+    } else console.log('Order not completed');
+  })
 }

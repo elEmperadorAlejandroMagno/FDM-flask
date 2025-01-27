@@ -1,0 +1,1 @@
+export const API_URL = 'https://season-colorful-help.glitch.me';

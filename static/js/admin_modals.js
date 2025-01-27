@@ -1,6 +1,8 @@
+import { API_URL } from './constants.js';
+import { fetchProducts, fetchOrders } from './table_render.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Admin modals script loaded');
-    const API_URL = 'https://season-colorful-help.glitch.me';
     const genericModal = new bootstrap.Modal(document.getElementById('genericModal'));
     const modalTitle = document.getElementById('genericTitle');
     const modalBody = document.getElementById('genericBody');
@@ -40,15 +42,35 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="file" class="form-control" id="productImage" name="images" required>
                     </div>
                     <div class="modal-footer" id="genericFooter">
-                        <button type="submit" class="btn btn-dark">Aceptar</button>
-                        <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-dark">Aceptar</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </form>
             `;
             genericModal.show();
-        }
 
-        if (target.id === 'viewProductBtn') {
+            const submitBtn = document.getElementById('genericFooter').firstElementChild;
+            submitBtn.addEventListener('click', () => {
+                const form = document.getElementById('addProductForm');
+                const data = new FormData(form);
+
+                fetch('/adminBoard/products', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        genericModal.hide();
+                        fetchProducts(API_URL);
+                    } else {
+                        console.log('Error:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+        else if (target.id === 'viewProductBtn') {
             console.log('View Product button clicked');
             const id = target.getAttribute('data-id');
             fetch(`/adminBoard/product/${id}`)
@@ -80,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                         <div class="mb-3" style="text-align: end;">
-                            <button class="btn btn-dark" id="editBtn">Editar</button>
-                            <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-dark" id="editBtn">Editar</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 `;
@@ -91,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Edit button clicked');
                     modalTitle.innerText = 'Editar Producto';
                     modalBody.innerHTML = `
-                        <form id="editProductForm">
+                        <form id="editProductForm" action="/adminBoard/product/${id}" method="PUT">
                             <div class="mb-3">
                                 <label for="productName" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="productName" name="name" value="${product.title}" required>
+                                <input type="text" class="form-control" id="productName" name="title" value="${product.title}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="productDescription" class="form-label">Descripción del Producto</label>
@@ -105,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <input type="number" class="form-control" id="productPrice" name="price" value="${product.price}" required>
                             </div>
                             <div class="mb-3">
-                                <button class="btn btn-dark" id="submitModalBtn">Guardar</button>
-                                <button class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-dark" id="submitModalBtn">Guardar</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </form>
                     `;
@@ -115,14 +137,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log('Submit button clicked');
                         const editProductForm = document.getElementById('editProductForm');
                         const formData = new FormData(editProductForm);
+
+                        const price = formData.get('price');
+                        formData.set('price', parseInt(price));
+
                         fetch(`/adminBoard/product/${id}`, {
                             method: 'PUT',
                             body: formData
                         }).then(res => res.json())
                         .then(data => {
-                            if (data.success) {
+                            if (data.status === 'success') {
                                 genericModal.hide();
-                                window.location.reload();
+                                fetchProducts(API_URL);
+                            } else {
+                                console.log('Error:', data.message);
                             }
                         }).catch(err => {
                             console.log('Error:', err);

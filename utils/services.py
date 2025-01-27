@@ -23,7 +23,6 @@ def get_products_sauce():
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
-    print(data)
     return data
   except requests.RequestException as e:
     print(f"Request erro: {e}")
@@ -37,7 +36,6 @@ def get_products_merch():
       response = requests.get(url)
       response.raise_for_status()
       data = response.json()
-      print(data)
       return data
     except requests.RequestException as e:
         print(f"Request error: {e}")
@@ -88,7 +86,9 @@ def update_product(id, product):
     response = requests.put(url, json=product)
     response.raise_for_status()
     data = response.json()
-    return True
+    if data.get('updatedProduct') == False:
+      return False
+    return data.get('updatedProduct')
   except requests.RequestException as e:
     print(f"Request error: {e}")
   except (KeyError, ValueError) as e:

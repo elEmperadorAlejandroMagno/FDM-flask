@@ -51,9 +51,7 @@ def hello():
 def home():
   if request.method == 'GET':
         SAUCES = get_products_sauce()
-        print(SAUCES)
         MERCH = get_products_merch()
-        print(MERCH)
         return render_template(TEMPLATES.INDEX, sauces=SAUCES, merch=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
@@ -288,8 +286,9 @@ def panel_admin():
                   if str(id_products[i]) == str(product['id']):
                       new_list.append(product['title'] + ' x' + str(quantity_products[i]))
           order['lista_productos'] = new_list
-        return render_template('orders.html', API_URL= API_URL, orders = orders)
-      return render_template('panel.html', API_URL= API_URL, message = 'Error loading orders')
+        return render_template('panel.html', API_URL= API_URL)
+      else:
+        return render_template('panel.html', orders = [])
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
@@ -311,7 +310,6 @@ def panel_orders():
                   if id_products[i] == product['id']:
                       new_list.append(product['title'] + ' x' + str(quantity_products[i]))
           order['lista_productos'] = new_list
-          print(new_list)
       return jsonify({'status': 'success', 'orders': orders})
     else:
       orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
@@ -326,7 +324,17 @@ def panel_orders():
                       new_list.append(product['title'] + ' x' + str(quantity_products[i]))
           order['lista_productos'] = new_list
       return jsonify({'status': 'success', 'orders': orders})
-
+  if request.method == 'POST':
+    data = request.form.to_dict()
+    if data:
+      try:
+        db.execute("INSERT INTO orders (nombre, email, telefono, direccion, lista_productos, cantidad_productos, precio_total) VALUES (?, ?, ?, ?, ?, ?, ?)", data['nombre'], data['email'], data['telefono'], data['direccion'], data['lista_productos'], data['cantidad_productos'], data['precio_total'])
+        return jsonify({'status': 'success'})
+      except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    else:
+      return jsonify({'status': 'error', 'message': 'No data provided'})
+    
 @app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
@@ -338,6 +346,30 @@ def panel_order_by_ID(id):
   elif request.method == 'DELETE':
     db.execute("DELETE FROM orders WHERE id = ?", id)
     return jsonify({'status': 'success'})
+  elif request.method == 'PUT':
+    data = request.form.to_dict()
+    if data:
+      try:
+        db.execute("UPDATE orders SET status = ? list_products = ? cantidad_productos = ? total_price = ? WHERE id = ?", data['status'], data['list_products'], data['cantidad_productos'], data['total_price'], id)
+        return jsonify({'status': 'success'})
+      except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    else:
+      return jsonify({'status': 'error', 'message': 'No data provided'})
+        
+
+@app.route('/adminBoard/complete_order/<string:id>', methods=['PUT'])
+def complete_order(id):
+  if request.method == 'PUT':
+    data = request.get_json()
+    if data:
+      try:
+        db.execute("UPDATE orders SET status = ? WHERE id = ?", data['status'], id)
+        return jsonify({'status': 'success'})
+      except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    else:
+      return jsonify({'status': 'error', 'message': 'No data provided'})
 
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
@@ -354,7 +386,6 @@ def panel_products():
         PRODUCTS = get_products_merch()
         return jsonify({'status': 'success', 'products': PRODUCTS})
     PRODUCTS = get_products()
-    print(PRODUCTS)
     return jsonify({'status': 'success', 'products': PRODUCTS})
   if request.method == 'POST':
     product_name = request.form.get('name')
@@ -376,7 +407,6 @@ def panel_products():
     if 'files' not in response:
       return jsonify({'status': 'error', 'message': 'No files found in response'})
     img_urls = response['files']
-    print(img_urls[0])
 
     data = {
       'product_info': {
@@ -410,12 +440,13 @@ def panel_product_by_ID(id):
   if request.method == 'DELETE':
     deletedProduct = delete_product(id)
     if deletedProduct:
-      return redirect('/adminBoard')
+      return jsonify({'status': 'success', 'message': 'Product deleted'})
     else:
       return jsonify({'status': 'error', 'message': 'Error deleting product'})
   if request.method == 'PUT':
-    data = request.get_json()
-
+    data = request.form.to_dict()
+    if 'price' in data:
+       data['price'] = int(data['price'])
     updatedProduct = update_product(id, data)
     if updatedProduct:
       return jsonify({'status': 'success', 'message': 'Product updated'})

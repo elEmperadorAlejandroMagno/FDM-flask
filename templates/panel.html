@@ -110,7 +110,7 @@
           </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script type="module">
-    import { renderOrders, renderProducts } from '../static/js/table_render.js';
+    import { fetchOrders, fetchProducts } from '../static/js/table_render.js';
 
   document.addEventListener('DOMContentLoaded', function() {
   // Adapted from https://stackoverflow.com/a/10162353
@@ -120,14 +120,15 @@
     (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
     (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
     '>\n' + document.documentElement.outerHTML;
+    fetchOrders();
 
-      const API_URL = '{{ API_URL}}';
-      const ordersBtn = document.querySelector('.menu-orders');
-      const productsBtn = document.querySelector('.menu-products');
-      const salsasBtn = document.querySelector('#salsas');
-      const merchBtn = document.querySelector('#merch');
-      const pendientesBtn = document.querySelector('#pendientes');
-      const enviadosBtn = document.querySelector('#enviados');
+    const API_URL = '{{ API_URL}}';
+    const ordersBtn = document.querySelector('.menu-orders');
+    const productsBtn = document.querySelector('.menu-products');
+    const salsasBtn = document.querySelector('#salsas');
+    const merchBtn = document.querySelector('#merch');
+    const pendientesBtn = document.querySelector('#pendientes');
+    const enviadosBtn = document.querySelector('#enviados');
 
       if (window.location.href.includes('/orders')) {
           document.querySelector("#collapseOne").classList.add('show');
@@ -142,27 +143,27 @@
         }
       
       ordersBtn.addEventListener('click', () => {
-        renderOrders();
+        fetchOrders();
       });
       pendientesBtn.addEventListener('click', () => {
-        renderOrders('pendiente');
+        fetchOrders('pendiente');
       });
       enviadosBtn.addEventListener('click', () => {
-        renderOrders('enviado');
+        fetchOrders('enviado');
       });
       productsBtn.addEventListener('click', () => {
-        renderProducts(API_URL);
+        fetchProducts(API_URL);
       });
       salsasBtn.addEventListener('click', () => {
-        renderProducts(API_URL, 'salsas');
+        fetchProducts(API_URL, 'salsas');
       });
       merchBtn.addEventListener('click', () => {
-        renderProducts(API_URL, 'merch');
+        fetchProducts(API_URL, 'merch');
       });
 
   });
 </script>
-<script src="../static/js/admin_modals.js"></script>
+<script type="module" src="../static/js/admin_modals.js"></script>
 <script type="module" src="../static/js/table_render.js"></script>
 </body>
 </html>
