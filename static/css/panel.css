@@ -10,6 +10,10 @@
   color-scheme: light dark;
 }
 
+p {
+  margin: 0;
+}
+
 body {
   overflow: hidden;
 }
@@ -178,8 +182,7 @@ ul a {
   font-size: 18px;
   color: #000;
   outline: none;
-  padding: 8px 10px;
-  margin-top: 15px;
+  padding: 4px 10px;
   border-radius: 15px;
   &:hover {
     background-color: var(--btn-hover-color);
@@ -218,23 +221,6 @@ ul a {
   padding-right: 10px;
 }
 
-/*? MODAL */
-.modal show {
-  display: block;
-  opacity: 1;
-  z-index: 1000;
-}
-
-#addProductForm {
-  display: flex;
-  flex-flow: column wrap;
-}
-
-#addProductForm .addProductBtn {
-  align-self: center;
-  width: 120px;
-}
-
 /*! Table */
 
 .table-id {
@@ -244,6 +230,25 @@ ul a {
   text-overflow: ellipsis;
 }
 
+.orderProductTable:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orderProductTable {
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-width {
+  width: 200px;
+}
+
+.orderEmailTable{
+  width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
 .table-img {
   text-align: center;
   width: 80px;
@@ -309,10 +314,24 @@ ul a {
 }
 
 /*? MODAL */
+
+.orderContainer label {
+  width: 140px;
+  font-family: SofiaSans;
+  font-size: 26px;
+  font-weight: 600;
+}
+
 .modal show {
   display: block;
   opacity: 1;
   z-index: 1000;
+}
+
+.orders-container {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px;
 }
 
 #addProductForm {
@@ -331,6 +350,18 @@ ul a {
   max-width: 400px;
   padding: 10px 4px;
   margin: 10px 0;
+}
+
+.productListContainerModal {
+  overflow-y: scroll;
+  max-height: 500px;
+}
+.productModal {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px;
 }
 
 .productListContainer span {

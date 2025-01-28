@@ -127,6 +127,7 @@ function addInputEventListeners(cart) {
 export function drawOrdersTable(orders) {
   const ordersContainer = document.querySelector('.main');
   orders ? orders : orders = [];
+  console.log(orders);
   ordersContainer.innerHTML = `
       <div class="table-container">
           <div class="col">
@@ -154,17 +155,19 @@ export function drawOrdersTable(orders) {
                 <!-- Aquí van los pedidos -->
                 ${orders.map(order => `
                     <tr>
-                      <th scope="row" class="table-id">${order.id}</th>
+                      <th scope="row" class="table-id">${order.order_id}</th>
                       <td>${order.nombre}</td>
-                      <td>${order.email}</td>
-                      <td class="table-product-list">${order.product_title} x${order.product_quantity}</td>
+                      <td class="orderEmailTable custom-width">${order.email}</td>
+                      <td class="table-product-list">
+                      ${order.productos.map(producto => `<span class="orderProductTable"><p>${producto.product_title}</p><p>x${producto.cantidad}</p></span>`).join('')}
+                      </td>
                       <td>${formatCurrency(order.precio_total)}</td>
                       <td>${order.status}</td>
                       <td>${order.fecha}</td>
                       <td class="actions">
-                        ${order.status === 'pendiente' ? `<button type="button" class="finalBtn" id="completeOrder" data-id=${order.id}>Completar</button>` : ''}
-                        <button type="button" class="btn btn-danger" id="del-order" data-id=${order.id}><i class="fa-regular fa-trash-can"></i></button>
-                        <button type="button" class="btn btn-dark" id="viewOrderBtn" data-id=${order.id}>Abrir</button>
+                        ${order.status === 'pendiente' ? `<button type="button" class="finalBtn" id="completeOrder" data-id=${order.order_id}>Completar</button>` : ''}
+                        <button type="button" class="btn btn-danger" id="del-order" data-id=${order.order_id}><i class="fa-regular fa-trash-can"></i></button>
+                        <button type="button" class="btn btn-dark" id="viewOrderBtn" data-id=${order.order_id}>Abrir</button>
                       </td>
                     </tr>
                 `).join('')}

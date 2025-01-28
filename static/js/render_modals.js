@@ -150,6 +150,7 @@ export function renderAddOrderModal(modal, title, body) {
             const productListContainer = document.querySelector('.productListContainer');
             const newProductInput = document.createElement('span');
             newProductInput.innerHTML = `
+                <label>id</label>
                 <input type="text" class="form-control" name="product_id[]" placeholder="Salsa de viejo sabroso" required>
                 <input type="number" class="form-control" name="product_quantity[]" placeholder="1" min="1" max="9" value="1" required>
             `;
@@ -160,28 +161,36 @@ export function renderAddOrderModal(modal, title, body) {
 export function renderViewOrderModal(order, modal, title, body) {
     const viewOrderModal = `
     <div id="orderContainer">
-        div class="mb-3">
-            <span>Orden: ${order._id}</span>
-            <span>Fecha: ${order.date}</span>
-            <span>Estado: ${order.status}</span>
-        </div>
         <div class="mb-3">
+            <p>Orden ID: ${order.order_id}</p>
+            <div clas="d-flex justify-content-between">
+                <p>Fecha: ${order.fecha}</p>
+                <p>Estado: ${order.status}</p>
+            </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderName" class="form-label">Nombre del Cliente</label>
-            <p>${order.name}</p>
+            <p>${order.nombre}</p>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderEmail" class="form-label">Email del Cliente</label>
             <p>${order.email}</p>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderPhone" class="form-label">Teléfono del Cliente</label>
-            <p>${order.phone}</p>
+            <p>${order.telefono}</p>
         </div>
-        <div class="mb-3">
-            <label for="order" class="form-label">order</label>
-            <p>${order.products}</p>
+        <div class="mb-3 productListContainerModal">
+            <label for="order" class="form-label">Order</label>
+            ${order.productos.map(product => `
+                <div class="productModal">
+                    <p>${product.product_title}</p>
+                    <p>x${product.cantidad}</p>
+                </div>
+                <hr style="margin: 0">
+                `).join('')}
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderEnvio" class="form-label>Envio</label>
             <p>${order.envio}</p>
         </div>
@@ -192,7 +201,7 @@ export function renderViewOrderModal(order, modal, title, body) {
             </div>
         `: ''}
         <div class="modal-footer" id="genericFooter">
-            <button type="button" class="btn btn-dark" class="editOrderBtn">Editar</button>
+            <button type="button" class="btn btn-dark" id="editOrderBtn">Editar</button>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
         </div>
         `;
@@ -205,23 +214,24 @@ export function renderEditOrderModal(order, id, title, body) {
     <form id="editOrderForm" action="/adminBoard/order/${id}" method="PUT">
         <div class="mb-3">
             <label for="orderName" class="form-label">Nombre del Cliente</label>
-            <input>${order.name}</input>
+            <input class="form-control" value="${order.nombre}"></input>
         </div>
         <div class="mb-3">
             <label for="orderEmail" class="form-label">Email del Cliente</label>
-            <input>${order.email}</input>
+            <input class="form-control" value="${order.email}"></input>
         </div>
         <div class="mb-3">
             <label for="orderPhone" class="form-label">Teléfono del Cliente</label>
-            <input>${order.phone}</input>
+            <input class="form-control" value="${order.telefono}"></input>
         </div>
         <div class="mb-3">
         <div class="mb-3">
             <label for="product" class="form-label">Productos</label>
             <div class="productListContainer">
                 <span>
-                    <input type="text" name="product_name[]">${order.products['title']}</input>
-                    <input type="number" min="1" max="9">${order.products['cantidad']}</input>
+                    <label>id</label>
+                    <input class="form-control" type="text" name="product_name[]" value="${order.productos.product_title}"></input>
+                    <input class="form-control" type="number" min="1" max="9" value="${order.productos.cantidad}"></input>
                 </span>
             </div>
             <button type="button" class="btn finalBtn" id="addProductToOrder">Agregar producto</button>
@@ -239,7 +249,7 @@ export function renderEditOrderModal(order, id, title, body) {
         ${order.direccion ? `
             <div class="mb-3">
                 <label for="orderDireccion" class="form-label">Dirección de envío</label>
-                <input>${order.direccion}</input>
+                <input class="form-control" value="${order.direccion}"></input>
             </div>
         `: ''}
         <div class="modal-footer" id="genericFooter">
@@ -259,6 +269,7 @@ export function renderEditOrderModal(order, id, title, body) {
             const productListContainer = document.querySelector('.productListContainer');
             const newProductInput = document.createElement('span');
             newProductInput.innerHTML = `
+                <label>id</label>
                 <input type="text" class="form-control" name="product_id[]" placeholder="Id del producto" required>
                 <input type="number" class="form-control" name="product_quantity[]" placeholder="Cantidad" min="1" max="9" required>
             `;

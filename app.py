@@ -40,7 +40,7 @@ def get_db_connection():
     db_path = os.getenv('DATA_BASE')
     if not db_path:
         raise ValueError("No se ha definido la variable de entorno DATA_BASE")
-    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -298,15 +298,16 @@ def panel_orders():
         filter = request.args.get('filter')
         orders = []
         try:
+            db = get_db_connection()
             if filter:
-                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.direccion, o.precio_total, o.status, o.timestamp,
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
                                        FROM orders o
                                        INNER JOIN order_productos op ON o.id = op.order_id
                                        WHERE o.status = ?
                                        ORDER BY o.timestamp DESC''', filter).fetchall()
             else:
-                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.direccion, o.precio_total, o.status, o.timestamp,
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
                                        FROM orders o
                                        INNER JOIN order_productos op ON o.id = op.order_id
@@ -315,40 +316,40 @@ def panel_orders():
             if not orders:
                 return jsonify({'status': 'success', 'orders': [], 'message': 'No orders found'})
 
-            order_list = []
+            order_dict = {}
             for order in orders:
-                product_details = get_product_by_id(order['product_id'])
-                if product_details:
-                    order_list.append({
-                        'order_id': order['order_id'],
-                        'nombre': order['nombre'],
-                        'email': order['email'],
-                        'telefono': order['telefono'],
-                        'direccion': order['direccion'],
-                        'precio_total': order['precio_total'],
-                        'status': order['status'],
-                        'timestamp': order['timestamp'],
+                  order_id = order['order_id']
+                  if order_id not in order_dict:
+                    order_dict[order_id] = {
+                          'order_id': order['order_id'],
+                          'nombre': order['nombre'],
+                          'email': order['email'],
+                          'telefono': order['telefono'],
+                          'envio': order['envio'],
+                          'direccion': order['direccion'],
+                          'precio_total': order['precio_total'],
+                          'status': order['status'],
+                          'fecha': order['timestamp'],
+                          'productos': []
+                      }
+                  product_details = get_product_by_id(order['product_id'])
+                  if product_details:
+                    order_dict[order_id]['productos'].append({
                         'product_id': order['product_id'],
                         'product_title': product_details['title'],
                         'product_price': product_details['price'],
                         'cantidad': order['cantidad']
                     })
-                else:
-                    order_list.append({
-                        'order_id': order['order_id'],
-                        'nombre': order['nombre'],
-                        'email': order['email'],
-                        'telefono': order['telefono'],
-                        'direccion': order['direccion'],
-                        'precio_total': order['precio_total'],
-                        'status': order['status'],
-                        'timestamp': order['timestamp'],
+                  else:
+                    order_dict[order_id]['products'].append({
                         'product_id': order['product_id'],
                         'product_title': 'Producto no disponible',
                         'product_price': 'N/A',
                         'cantidad': order['cantidad']
                     })
 
+            order_list = list(order_dict.values())        
+            db.close()
             return jsonify({'status': 'success', 'orders': order_list})
         except Exception as e:
             print(f"Error: {e}")
@@ -356,19 +357,30 @@ def panel_orders():
   
     if request.method == 'POST':
       data = request.form.to_dict(flat=False)
-      print(data)
+
       if data:
         try:
-          lista_productos = json.dumps(data['product_id[]'])
-          cantidad_productos = json.dumps(data['product_quantity[]'])
+          db = get_db_connection()
+          lista_productos = data.get('product_id[]', [])
+          cantidad_productos = data.get('product_quantity[]', [])
 
-          db.execute("INSERT INTO orders (nombre, email, telefono, direccion, precio_total) VALUES (?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['direccion'][0], 0.00))
+          if not lista_productos or not cantidad_productos:
+            return jsonify({'status': 'error', 'message': 'Los campos de producto y cantidad no pueden estar vacías'})
+
+          if len(lista_productos) != len(cantidad_productos):
+            return jsonify({'status': 'error', 'message': 'Los datos no coninciden'})
+          
+          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], 0.00))
           
           order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1").fetchone()['id']
+          print("Order ID: ", order_id)
 
-          for i in range(len(data['product_id[]'])):
+          for i in range(len(lista_productos)):
             db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", (order_id, lista_productos[i], cantidad_productos[i]))
+          
+          db.commit()
 
+          db.close()
           return jsonify({'status': 'success'})
         except Exception as e:
           return jsonify({'status': 'error', 'message': str(e)})
@@ -384,16 +396,67 @@ def panel_order_by_ID(id):
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-    order = db.execute("SELECT * FROM orders WHERE id = ?", id)
-    return render_template(TEMPLATES.ORDERS, orders = order)
+    try:
+      db = get_db_connection()
+      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", (id,)).fetchall()
+
+      order_dict = {}
+      if order:
+        for item in order:
+          order_id = item['order_id']
+          if not order_id in order_dict:
+            order_dict[order_id] = {
+              'order_id': item['order_id'],
+              'nombre': item['nombre'],
+              'email': item['email'],
+              'telefono': item['telefono'],
+              'envio': item['envio'],
+              'direccion': item['direccion'],
+              'precio_total': item['precio_total'],
+              'status': item['status'],
+              'fecha': item['timestamp'],
+              'productos': []
+            }
+          product_details = get_product_by_id(item['product_id'])
+          if product_details:
+            order_dict[order_id]['productos'].append({
+              'product_id': item['product_id'],
+              'product_title': product_details['title'],
+              'product_price': product_details['price'],
+              'cantidad': item['cantidad']
+            })
+          else:
+            order_dict[order_id]['productos'].append({
+              'product_id': item['product_id'],
+              'product_title': 'Producto no disponible',
+              'product_price': 'N/A',
+              'cantidad': item['cantidad']
+            })
+
+        order_details = list(order_dict.values())
+        db.close()
+        return jsonify({'status': 'success', 'order': order_details})
+    except Exception as e:
+      return jsonify({'status': 'error', 'message': str(e)})
   elif request.method == 'DELETE':
-    db.execute("DELETE FROM orders WHERE id = ?", id)
-    return jsonify({'status': 'success'})
+    try:
+      db = get_db_connection()
+      db.execute("DELETE FROM orders WHERE id = ?", id)
+
+      db.commit()
+      db.close()
+      return jsonify({'status': 'success'})
+    except Exception as e:
+      return jsonify({'status': 'error', 'message': str(e)})
   elif request.method == 'PUT':
     data = request.form.to_dict()
     if data:
       try:
+        db = get_db_connection()
         db.execute("UPDATE orders SET status = ? list_products = ? cantidad_productos = ? total_price = ? WHERE id = ?", data['status'], data['list_products'], data['cantidad_productos'], data['total_price'], id)
+        db.commit()
+
+        db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
@@ -407,7 +470,10 @@ def complete_order(id):
     data = request.get_json()
     if data:
       try:
+        db = get_db_connection()
         db.execute("UPDATE orders SET status = ? WHERE id = ?", data['status'], id)
+
+        db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})

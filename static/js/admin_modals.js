@@ -113,7 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = target.getAttribute('data-id');
             fetch(`/adminBoard/order/${id}`)
             .then(res => res.json())
-            .then(order => {
+            .then(data => {
+                console.log(data);
+                const order = data.order[0];
                 renderViewOrderModal(order, genericModal, modalTitle, modalBody);
 
                 const editOrderBtn = document.getElementById('editOrderBtn');

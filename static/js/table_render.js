@@ -42,24 +42,26 @@ export function fetchProducts(url, filter) {
 };
 
 const adminPanel = document.getElementById('adminPanel');
+if (adminPanel != null) {
+  adminPanel.addEventListener('click', (event) => {
+    const target = event.target;
+  
+    if (target.id === 'del-product') {
+      console.log('Delete Product button clicked');
+      deleteProduct(target.dataset.id);
+      fetchProducts(API_URL);
+    }
+    else if (target.id === 'del-order') {
+      console.log('Delete Order button clicked');
+      deleteOrder(target.dataset.id);
+      fetchOrders();
+    }
+    else if (target.id === 'completeOrder') {
+      console.log('Complete Order button clicked');
+      completeOrder(target.dataset.id);
+      fetchOrders();
+    }
+  });
+}
 
-adminPanel.addEventListener('click', (event) => {
-  const target = event.target;
-
-  if (target.id === 'del-product') {
-    console.log('Delete Product button clicked');
-    deleteProduct(target.dataset.id);
-    fetchProducts(API_URL);
-  }
-  else if (target.id === 'del-order') {
-    console.log('Delete Order button clicked');
-    deleteOrder(target.dataset.id);
-    fetchOrders();
-  }
-  else if (target.id === 'completeOrder') {
-    console.log('Complete Order button clicked');
-    completeOrder(target.dataset.id);
-    fetchOrders();
-  }
-});
 
