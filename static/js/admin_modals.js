@@ -1,6 +1,6 @@
 import { API_URL } from './constants.js';
 import { fetchProducts, fetchOrders } from './table_render.js';
-import { renderAddProductModal, renderViewProductModal, renderEditProductModal } from './render_modals.js';
+import { renderAddProductModal, renderViewProductModal, renderEditProductModal, renderAddOrderModal, renderViewOrderModal, renderEditOrderModal } from './render_modals.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Admin modals script loaded');
@@ -85,9 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else if (target.id === 'addNewOrderBtn') {
             console.log('Add Order button clicked');
-            modalTitle.innerText = 'Add Order';
-            modalBody.innerHTML = addOrderModal;
-            genericModal.show();
+            renderAddOrderModal(genericModal, modalTitle, modalBody);
 
             const submitBtn = document.getElementById('genericFooter').firstElementChild;
             submitBtn.addEventListener('click', () => {
@@ -112,18 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else if (target.id === 'viewOrderBtn') {
             console.log('View Order button clicked');
-            fetch(`/adminBoard/order/${target.dataset.id}`)
+            const id = target.getAttribute('data-id');
+            fetch(`/adminBoard/order/${id}`)
             .then(res => res.json())
             .then(order => {
-                modalTitle.innerText = 'View Order';
-                modalBody.innerHTML = viewOrderModal;
-                genericModal.show();
+                renderViewOrderModal(order, genericModal, modalTitle, modalBody);
 
                 const editOrderBtn = document.getElementById('editOrderBtn');
                 editOrderBtn.addEventListener('click', () => {
                     console.log('Edit Order button clicked');
-                    modalTitle.innerText = 'Edit Order';
-                    modalBody.innerHTML = editOrderModal;
+                    renderEditOrderModal(order, id, modalTitle, modalBody);
 
                     const submitBtn = document.getElementById('submitModalBtn');
                     submitBtn.addEventListener('click', () => {
@@ -131,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const editOrderForm = document.getElementById('editOrderForm');
                         const formData = new FormData(editOrderForm);
 
-                        fetch(`/adminBoard/order/${target.dataset.id}`, {
+                        fetch(`/adminBoard/order/${id}`, {
                             method: 'PUT',
                             body: formData
                         }).then(res => res.json())

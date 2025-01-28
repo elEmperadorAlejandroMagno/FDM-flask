@@ -172,13 +172,14 @@ ul a {
   text-align: center;
 }
 .finalBtn {
-  width: 120px;
+  width: max-content;
   background-color: var(--btn-background-color);
   font-family: Oswald;
   font-size: 18px;
   color: #000;
   outline: none;
-  padding: 4px 2px;
+  padding: 8px 10px;
+  margin-top: 15px;
   border-radius: 15px;
   &:hover {
     background-color: var(--btn-hover-color);
@@ -275,20 +276,6 @@ ul a {
   width: 100%;
   text-align: center;
 }
-.finalBtn {
-  width: 120px;
-  background-color: var(--btn-background-color);
-  font-family: Oswald;
-  font-size: 18px;
-  color: #000;
-  outline: none;
-  padding: 4px 2px;
-  border-radius: 15px;
-  &:hover {
-    background-color: var(--btn-hover-color);
-    cursor: pointer;
-  }
-}
 
 /* main */
 .header {
@@ -336,6 +323,25 @@ ul a {
 #addProductForm .addProductBtn {
   align-self: center;
   width: 120px;
+}
+
+#envioSelect {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 4px;
+  margin: 10px 0;
+}
+
+.productListContainer span {
+  display: flex; 
+  gap: 1rem;
+  padding-bottom: 10px;
+}
+
+.productListContainer span input[type="number"]{
+  width: 56px;
+  padding-right: 6px;
 }
 
 /*! Table */
