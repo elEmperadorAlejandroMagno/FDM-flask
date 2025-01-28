@@ -99,7 +99,7 @@ export function renderAddOrderModal(modal, title, body) {
         <form id="addOrderForm" action="/adminBoard/orders" method="POST">
             <div class="mb-3">
                 <label for="name" class="form-label">Nombre completo</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <input type="text" class="form-control" id="name" name="nombre" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -109,7 +109,8 @@ export function renderAddOrderModal(modal, title, body) {
                 <label for="product" class="form-label">Productos</label>
                 <div class="productListContainer">
                     <span>
-                        <input type="text" class="form-control" name="product_name[]" required value="Salsa de Arandanos">
+                        <label>id</label>
+                        <input type="text" class="form-control" name="product_id[]" placeholder="Id del producto: 12fa12-asfaf-12" required>
                         <input type="number" class="form-control" name="product_quantity[]" min="1" max="9" value="1">
                     </span>
                 </div>
@@ -125,7 +126,11 @@ export function renderAddOrderModal(modal, title, body) {
             </div>
             <div class="mb-3">
                 <label for="phone">Teléfono</label>
-                <input type="tel" class="form-control" id="phone" name="phone" required>
+                <input type="tel" class="form-control" id="phone" name="telefono" required>
+            </div>
+            <div class="mb-3" style="display: none;">
+                <label for="direccion">Dirección de envío</label>
+                <input type="text" class="form-control" id="direccion" name="direccion" value="No se ha proveido de una dirección">
             </div>
             <div class="modal-footer" id="genericFooter">
                 <button type="button" class="btn btn-dark">Aceptar</button>
@@ -145,7 +150,7 @@ export function renderAddOrderModal(modal, title, body) {
             const productListContainer = document.querySelector('.productListContainer');
             const newProductInput = document.createElement('span');
             newProductInput.innerHTML = `
-                <input type="text" class="form-control" name="product_name[]" placeholder="Salsa de viejo sabroso" required>
+                <input type="text" class="form-control" name="product_id[]" placeholder="Salsa de viejo sabroso" required>
                 <input type="number" class="form-control" name="product_quantity[]" placeholder="1" min="1" max="9" value="1" required>
             `;
             productListContainer.appendChild(newProductInput);
@@ -215,7 +220,7 @@ export function renderEditOrderModal(order, id, title, body) {
             <label for="product" class="form-label">Productos</label>
             <div class="productListContainer">
                 <span>
-                    <input>${order.products['title']}</input>
+                    <input type="text" name="product_name[]">${order.products['title']}</input>
                     <input type="number" min="1" max="9">${order.products['cantidad']}</input>
                 </span>
             </div>
@@ -238,7 +243,7 @@ export function renderEditOrderModal(order, id, title, body) {
             </div>
         `: ''}
         <div class="modal-footer" id="genericFooter">
-            <button type="button" class="btn btn-dark" class="submitModalBtn">Guardar</button>
+            <button type="button" class="btn btn-dark">Guardar</button>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
         </div>
     </form>
@@ -254,7 +259,7 @@ export function renderEditOrderModal(order, id, title, body) {
             const productListContainer = document.querySelector('.productListContainer');
             const newProductInput = document.createElement('span');
             newProductInput.innerHTML = `
-                <input type="text" class="form-control" name="product_name[]" placeholder="Nombre del Producto" required>
+                <input type="text" class="form-control" name="product_id[]" placeholder="Id del producto" required>
                 <input type="number" class="form-control" name="product_quantity[]" placeholder="Cantidad" min="1" max="9" required>
             `;
             productListContainer.appendChild(newProductInput);

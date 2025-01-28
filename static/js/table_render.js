@@ -15,11 +15,12 @@ export function fetchOrders(filter) {
   fetch('/adminBoard/orders')
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       const orders = data.orders;
       drawOrdersTable(orders);
     })
     .catch(error => console.error('Error:', error));
-  };
+};
 
 export function fetchProducts(url, filter) {
   if (filter != null) {

@@ -9,6 +9,7 @@ from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
 import json
 import os
+import sqlite3
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,7 +34,17 @@ Session(app)
 API_URL = os.getenv('API_URL')
 FDM_URL = os.getenv('FDM_URL')
 
-db = SQL(os.getenv('DATA_BASE'))
+
+
+def get_db_connection():
+    db_path = os.getenv('DATA_BASE')
+    if not db_path:
+        raise ValueError("No se ha definido la variable de entorno DATA_BASE")
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+db = get_db_connection()
 
 @app.after_request
 def after_request(response):
@@ -274,66 +285,98 @@ def panel_admin():
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-      if orders:
-        products = get_products()
-        for order in orders:
-          id_products = order['lista_productos'].split(',')
-          quantity_products = order['cantidad_productos'].split(',')
-          new_list = []
-          for i in range(len(id_products)):
-              for product in products:
-                  if str(id_products[i]) == str(product['id']):
-                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
-          order['lista_productos'] = new_list
-        return render_template('panel.html', API_URL= API_URL)
-      else:
-        return render_template('panel.html', orders = [])
+      return render_template('panel.html', API_URL= API_URL)
+  return render_template('panel.html', API_URL= API_URL)
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-  if session.get('user_role') != 'admin':
-    return redirect('/myOrders')
-  if request.method == 'GET':
-    filter = request.args.get('filter')
-    if filter:
-      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
-      products = get_products()
-      for order in orders:
-          id_products = order['lista_productos'].split(',')
-          quantity_products = order['cantidad_productos'].split(',')
-          new_list = []
-          i = 0
-          for i in range(len(id_products)):
-              for product in products:
-                  if id_products[i] == product['id']:
-                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
-          order['lista_productos'] = new_list
-      return jsonify({'status': 'success', 'orders': orders})
+    if session.get('user_role') != 'admin':
+        return redirect('/myOrders')
+    
+    if request.method == 'GET':
+        filter = request.args.get('filter')
+        orders = []
+        try:
+            if filter:
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.direccion, o.precio_total, o.status, o.timestamp,
+                                              op.product_id, op.cantidad
+                                       FROM orders o
+                                       INNER JOIN order_productos op ON o.id = op.order_id
+                                       WHERE o.status = ?
+                                       ORDER BY o.timestamp DESC''', filter).fetchall()
+            else:
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.direccion, o.precio_total, o.status, o.timestamp,
+                                              op.product_id, op.cantidad
+                                       FROM orders o
+                                       INNER JOIN order_productos op ON o.id = op.order_id
+                                       ORDER BY o.timestamp DESC''').fetchall()
+
+            if not orders:
+                return jsonify({'status': 'success', 'orders': [], 'message': 'No orders found'})
+
+            order_list = []
+            for order in orders:
+                product_details = get_product_by_id(order['product_id'])
+                if product_details:
+                    order_list.append({
+                        'order_id': order['order_id'],
+                        'nombre': order['nombre'],
+                        'email': order['email'],
+                        'telefono': order['telefono'],
+                        'direccion': order['direccion'],
+                        'precio_total': order['precio_total'],
+                        'status': order['status'],
+                        'timestamp': order['timestamp'],
+                        'product_id': order['product_id'],
+                        'product_title': product_details['title'],
+                        'product_price': product_details['price'],
+                        'cantidad': order['cantidad']
+                    })
+                else:
+                    order_list.append({
+                        'order_id': order['order_id'],
+                        'nombre': order['nombre'],
+                        'email': order['email'],
+                        'telefono': order['telefono'],
+                        'direccion': order['direccion'],
+                        'precio_total': order['precio_total'],
+                        'status': order['status'],
+                        'timestamp': order['timestamp'],
+                        'product_id': order['product_id'],
+                        'product_title': 'Producto no disponible',
+                        'product_price': 'N/A',
+                        'cantidad': order['cantidad']
+                    })
+
+            return jsonify({'status': 'success', 'orders': order_list})
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+  
+    if request.method == 'POST':
+      data = request.form.to_dict(flat=False)
+      print(data)
+      if data:
+        try:
+          lista_productos = json.dumps(data['product_id[]'])
+          cantidad_productos = json.dumps(data['product_quantity[]'])
+
+          db.execute("INSERT INTO orders (nombre, email, telefono, direccion, precio_total) VALUES (?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['direccion'][0], 0.00))
+          
+          order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1").fetchone()['id']
+
+          for i in range(len(data['product_id[]'])):
+            db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", (order_id, lista_productos[i], cantidad_productos[i]))
+
+          return jsonify({'status': 'success'})
+        except Exception as e:
+          return jsonify({'status': 'error', 'message': str(e)})
+      else:
+        return jsonify({'status': 'error', 'message': 'No data provided'})
+      
     else:
-      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-      products = get_products()
-      for order in orders:
-          id_products = order['lista_productos'].split(',')
-          quantity_products = order['cantidad_productos'].split(',')
-          new_list = []
-          for i in range(len(id_products)):
-              for product in products:
-                  if str(id_products[i]) == str(product['id']):
-                      new_list.append(product['title'] + ' x' + str(quantity_products[i]))
-          order['lista_productos'] = new_list
-      return jsonify({'status': 'success', 'orders': orders})
-  if request.method == 'POST':
-    data = request.form.to_dict()
-    if data:
-      try:
-        db.execute("INSERT INTO orders (nombre, email, telefono, direccion, lista_productos, cantidad_productos, precio_total) VALUES (?, ?, ?, ?, ?, ?, ?)", data['nombre'], data['email'], data['telefono'], data['direccion'], data['lista_productos'], data['cantidad_productos'], data['precio_total'])
-        return jsonify({'status': 'success'})
-      except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
-    else:
-      return jsonify({'status': 'error', 'message': 'No data provided'})
+        return jsonify({'status': 'error', 'message': 'Método no permitido'}), 405
     
 @app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required

@@ -126,13 +126,18 @@ function addInputEventListeners(cart) {
 
 export function drawOrdersTable(orders) {
   const ordersContainer = document.querySelector('.main');
+  orders ? orders : orders = [];
   ordersContainer.innerHTML = `
       <div class="table-container">
           <div class="col">
             <div class="header">
               <button type="button" class="btn addBtn" id="addNewOrderBtn"><i class="fa-solid fa-plus"></i>Agregar Pedido</button>
             </div>
-            <table class="table">
+            ${orders.length === 0 
+              ? 
+              '<h3 style="text-align: center;">No hay pedidos</h3>' 
+              :
+              `<table class="table">
               <thead>
                 <tr>
                   <th scope="col">ID</th>
@@ -152,7 +157,7 @@ export function drawOrdersTable(orders) {
                       <th scope="row" class="table-id">${order.id}</th>
                       <td>${order.nombre}</td>
                       <td>${order.email}</td>
-                      <td class="table-product-list">${order.lista_productos}</td>
+                      <td class="table-product-list">${order.product_title} x${order.product_quantity}</td>
                       <td>${formatCurrency(order.precio_total)}</td>
                       <td>${order.status}</td>
                       <td>${order.fecha}</td>
@@ -164,10 +169,11 @@ export function drawOrdersTable(orders) {
                     </tr>
                 `).join('')}
               </tbody>
-            </table>
+            </table>` 
+            }
           </div>
         </div>
-      `;
+    `;
 }
 
 export function drawProductsTable(products, url) {
