@@ -100,26 +100,31 @@ export function renderEditProductModal(product, id, title, body) {
 export function renderAddOrderModal(modal, title, body) {
     const addOrderModal = `
         <form id="addOrderForm" action="/adminBoard/orders" method="POST">
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-between">
                 <label for="name" class="form-label">Nombre completo</label>
-                <input type="text" class="form-control" id="name" name="nombre" required>
+                <input type="text" class="form-control textInput" id="name" name="nombre" required>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-between">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <input type="email" class="form-control textInput" id="email" name="email" required>
+            </div>
+            <div class="mb-3 d-flex justify-content-between">
+                <label for="phone" class="form-label">Teléfono</label>
+                <input type="number" class="form-control numInput" id="phone" name="telefono" required>
             </div>
             <div class="mb-3 text-center">
                 <label for="product" class="form-label">Productos</label>
                 <div class="productListContainer">
                     <span>
-                        <label>id</label>
+                        <label class="align-self-center">id</label>
                         <input type="text" class="form-control" name="product_id[]" placeholder="Id del producto: 12fa12-asfaf-12" required>
                         <input type="number" class="form-control" name="product_quantity[]" min="1" max="9" value="1">
                     </span>
                 </div>
                 <button type="button" class="finalBtn" id="addProductToOrder">Agregar producto</button>
             </div>
-            <div class="mb-3 text-center">
+            <div class="mb-3 d-flex justify-content-between custom-padding">
+            <label for="envio" class="form-label align-self-center">Envio</label>
             <select name="envio" id="envioSelect">
                 <option value="50">Montevideo</option>
                 <option value="50">Ciudad de la costa</option>
@@ -127,11 +132,11 @@ export function renderAddOrderModal(modal, title, body) {
                 <option value="Free">Retiro del lugar</option>
             </select>
             </div>
-            <div class="mb-3">
-                <label for="phone">Teléfono</label>
-                <input type="tel" class="form-control" id="phone" name="telefono" required>
+            <div class="d-flex justify-content-between custom-padding">
+                <label for="total" class="form-label align-self-center">Total</label>
+                <input type="number" class="form-control totalInput" id="total" name="total" required>
             </div>
-            <div class="mb-3" style="display: none;">
+            <div class="mb-3">
                 <label for="direccion">Dirección de envío</label>
                 <input type="text" class="form-control" id="direccion" name="direccion" value="No se ha proveido de una dirección">
             </div>
@@ -220,7 +225,8 @@ export function renderViewOrderModal(order, modal, title, body) {
 }
 export function renderEditOrderModal(order, id, title, body) {
     const editOrderModal = `
-    <form id="editOrderForm" action="/adminBoard/order/${id}" method="PUT">
+    <form id="editOrderForm" action="/adminBoard/order/${id}" method="POST">
+        <input type="hidden" name="_method" value="PUT">
         <div class="mb-3 d-flex justify-content-between">
             <label for="orderName" class="form-label">Nombre del Cliente</label>
             <input class="form-control textInput" name="name" value="${order.nombre}"></input>
@@ -246,7 +252,7 @@ export function renderEditOrderModal(order, id, title, body) {
             </div>
             <button type="button" class="finalBtn" id="addProductToOrder">Agregar producto</button>
         </div>
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between custom-padding">
             <label for="orderEnvio" class="form-label align-self-center">Envio</label>
             <select name="envio" id="envioSelect">
                 <option value=${order.envio} selected>${order.envio}</option>
@@ -256,7 +262,7 @@ export function renderEditOrderModal(order, id, title, body) {
                 <option value="Free">Retiro del lugar</option>
             </select>
         </div>
-        <div class="d-flex gap-4">
+        <div class="d-flex justify-content-between custom-padding">
             <label for="orderTotal" class="form-label align-self-center">Total</label>
             <input class="form-control totalInput" name="total" value="${order.precio_total}" required></input>
         </div>
@@ -277,7 +283,6 @@ export function renderEditOrderModal(order, id, title, body) {
 
     // Delegación de eventos para agregar productos
     body.addEventListener('click', (event) => {
-        console.log('Body button clicked');
         if (event.target && event.target.id === 'addProductToOrder') {
             console.log('Add Product button clicked');
             const productListContainer = document.querySelector('.productListContainer');

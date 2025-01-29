@@ -377,7 +377,7 @@ def panel_orders():
           if len(lista_productos) != len(cantidad_productos):
             return jsonify({'status': 'error', 'message': 'Los datos no coninciden'})
           
-          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], 0.00))
+          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
           
           order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1").fetchone()['id']
 
@@ -467,7 +467,6 @@ def panel_order_by_ID(id):
         db = get_db_connection()
 
         lista_productos = data.get('product_id[]', [])
-        print(lista_productos)
         cantidad_productos = data.get('product_quantity[]', [])
 
         db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
