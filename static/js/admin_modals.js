@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adminPanel.addEventListener('click', (event) => {
         const target = event.target;
-        console.log('Clicked element:', target);
+
 
         if (target.id === 'addNewProductBtn') {
-            console.log('Add New Product button clicked');
+
             renderAddProductModal(genericModal, modalTitle, modalBody);
 
             const submitBtn = document.getElementById('genericFooter').firstElementChild;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         else if (target.id === 'viewProductBtn') {
-            console.log('View Product button clicked');
+
             const id = target.getAttribute('data-id');
             fetch(`/adminBoard/product/${id}`)
             .then(res => res.json())
@@ -51,12 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const editBtn = document.getElementById('editBtn');
                 editBtn.addEventListener('click', () => {
-                    console.log('Edit button clicked');
+
                     renderEditProductModal(product, id, modalTitle, modalBody);
 
                     const submitBtn = document.getElementById('submitModalBtn');
                     submitBtn.addEventListener('click', () => {
-                        console.log('Submit button clicked');
+
                         const editProductForm = document.getElementById('editProductForm');
                         const formData = new FormData(editProductForm);
 
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         else if (target.id === 'addNewOrderBtn') {
-            console.log('Add Order button clicked');
+
             renderAddOrderModal(genericModal, modalTitle, modalBody);
 
             const submitBtn = document.getElementById('genericFooter').firstElementChild;
@@ -109,23 +109,22 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         else if (target.id === 'viewOrderBtn') {
-            console.log('View Order button clicked');
+
             const id = target.getAttribute('data-id');
             fetch(`/adminBoard/order/${id}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+
                 const order = data.order[0];
                 renderViewOrderModal(order, genericModal, modalTitle, modalBody);
 
-                const editOrderBtn = document.getElementById('editOrderBtn');
+                const editOrderBtn = document.getElementById('genericFooter').firstElementChild;
                 editOrderBtn.addEventListener('click', () => {
-                    console.log('Edit Order button clicked');
+
                     renderEditOrderModal(order, id, modalTitle, modalBody);
 
-                    const submitBtn = document.getElementById('submitModalBtn');
-                    submitBtn.addEventListener('click', () => {
-                        console.log('Submit button clicked');
+                    const saveChangesBtn = document.getElementById('genericFooter').firstElementChild;
+                    saveChangesBtn.addEventListener('click', () => {
                         const editOrderForm = document.getElementById('editOrderForm');
                         const formData = new FormData(editOrderForm);
 

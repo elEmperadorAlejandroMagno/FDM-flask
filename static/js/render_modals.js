@@ -1,5 +1,6 @@
-import { formatCurrency } from './utils.js';
+import { formatCurrency } from './draw_component.js';
 
+/* PRODUCT MODAL */
 export function renderAddProductModal(modal, title, body) {
     const addProductModal = `
     <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
@@ -94,6 +95,8 @@ export function renderEditProductModal(product, id, title, body) {
     title.innerText = 'Editar Producto';
     body.innerHTML = editProductModal;
 }
+
+/* ORDER MODAL */
 export function renderAddOrderModal(modal, title, body) {
     const addOrderModal = `
         <form id="addOrderForm" action="/adminBoard/orders" method="POST">
@@ -163,16 +166,16 @@ export function renderViewOrderModal(order, modal, title, body) {
     <div id="orderContainer">
         <div class="mb-3">
             <p>Orden ID: ${order.order_id}</p>
-            <div clas="d-flex justify-content-between">
+            <span class="d-flex justify-content-between"> 
                 <p>Fecha: ${order.fecha}</p>
                 <p>Estado: ${order.status}</p>
-            </div>
+            </span>
         </div>
-        <div class="mb-3 d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
             <label for="orderName" class="form-label">Nombre del Cliente</label>
             <p>${order.nombre}</p>
         </div>
-        <div class="mb-3 d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
             <label for="orderEmail" class="form-label">Email del Cliente</label>
             <p>${order.email}</p>
         </div>
@@ -180,19 +183,25 @@ export function renderViewOrderModal(order, modal, title, body) {
             <label for="orderPhone" class="form-label">Teléfono del Cliente</label>
             <p>${order.telefono}</p>
         </div>
-        <div class="mb-3 productListContainerModal">
-            <label for="order" class="form-label">Order</label>
+        <div class="mb-3">
+            <label for="order" class="form-label">Productos</label>
+            <div class="productListContainer">
             ${order.productos.map(product => `
-                <div class="productModal">
+                <span class="d-flex justify-content-between">
                     <p>${product.product_title}</p>
                     <p>x${product.cantidad}</p>
-                </div>
+                </span>
                 <hr style="margin: 0">
                 `).join('')}
+            </div>
         </div>
-        <div class="mb-3 d-flex justify-content-between">
-            <label for="orderEnvio" class="form-label>Envio</label>
-            <p>${order.envio}</p>
+        <div class="d-flex justify-content-between custom-padding">
+                <label for="orderEnvio" class="form-label">Envio</label>
+                <p>${order.envio}</p>
+        </div>
+        <div class="d-flex justify-content-between custom-padding">
+                <label for="orderTotal" class="form-label">Total</label>
+                <p>${formatCurrency(order.precio_total)}</p>
         </div>
         ${order.direccion ? `
             <div class="mb-3">
@@ -212,44 +221,49 @@ export function renderViewOrderModal(order, modal, title, body) {
 export function renderEditOrderModal(order, id, title, body) {
     const editOrderModal = `
     <form id="editOrderForm" action="/adminBoard/order/${id}" method="PUT">
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderName" class="form-label">Nombre del Cliente</label>
-            <input class="form-control" value="${order.nombre}"></input>
+            <input class="form-control textInput" name="name" value="${order.nombre}"></input>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderEmail" class="form-label">Email del Cliente</label>
-            <input class="form-control" value="${order.email}"></input>
+            <input class="form-control textInput" name="email" value="${order.email}"></input>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="orderPhone" class="form-label">Teléfono del Cliente</label>
-            <input class="form-control" value="${order.telefono}"></input>
-        </div>
-        <div class="mb-3">
-        <div class="mb-3">
-            <label for="product" class="form-label">Productos</label>
-            <div class="productListContainer">
-                <span>
-                    <label>id</label>
-                    <input class="form-control" type="text" name="product_name[]" value="${order.productos.product_title}"></input>
-                    <input class="form-control" type="number" min="1" max="9" value="${order.productos.cantidad}"></input>
-                </span>
-            </div>
-            <button type="button" class="btn finalBtn" id="addProductToOrder">Agregar producto</button>
+            <input class="form-control textInput" name="phone" value="${order.telefono}"></input>
         </div>
         <div class="mb-3 text-center">
-            <label for="orderEnvio" class="form-label>Envio</label>
+            <label for="product" class="form-label">Productos</label>
+            <div class="productListContainer">
+            ${order.productos.map(product => `
+                <span class="d-flex justify-content-between">
+                    <label class="align-self-center">id</label>
+                    <input class="form-control text-center" type="text" name="product_id[]" value="${product.product_id}"></input>
+                    <input class="form-control" type="number" name="product_quantity[]" min="1" max="9" value="${product.cantidad}"></input>
+                </span>
+                `).join('')}
+            </div>
+            <button type="button" class="finalBtn" id="addProductToOrder">Agregar producto</button>
+        </div>
+        <div class="d-flex justify-content-between">
+            <label for="orderEnvio" class="form-label align-self-center">Envio</label>
             <select name="envio" id="envioSelect">
-                <option value=${order.envio} selected disabled>${order.envio}</option>
+                <option value=${order.envio} selected>${order.envio}</option>
                 <option value="50">Montevideo</option>
                 <option value="50">Ciudad de la costa</option>
                 <option value="A definir">Resto del país</option>
                 <option value="Free">Retiro del lugar</option>
             </select>
         </div>
+        <div class="d-flex gap-4">
+            <label for="orderTotal" class="form-label align-self-center">Total</label>
+            <input class="form-control totalInput" name="total" value="${order.precio_total}" required></input>
+        </div>
         ${order.direccion ? `
             <div class="mb-3">
                 <label for="orderDireccion" class="form-label">Dirección de envío</label>
-                <input class="form-control" value="${order.direccion}"></input>
+                <input class="form-control" name="address" value="${order.direccion}"></input>
             </div>
         `: ''}
         <div class="modal-footer" id="genericFooter">
@@ -270,8 +284,8 @@ export function renderEditOrderModal(order, id, title, body) {
             const newProductInput = document.createElement('span');
             newProductInput.innerHTML = `
                 <label>id</label>
-                <input type="text" class="form-control" name="product_id[]" placeholder="Id del producto" required>
-                <input type="number" class="form-control" name="product_quantity[]" placeholder="Cantidad" min="1" max="9" required>
+                <input type="text" class="form-control text-center" name="product_id[]" placeholder="ej 456awd-4654awd-bdawr" required>
+                <input type="number" class="form-control" name="product_quantity[]" placeholder="0" min="1" max="9" required>
             `;
             productListContainer.appendChild(newProductInput);
         }

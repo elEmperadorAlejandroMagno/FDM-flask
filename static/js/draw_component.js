@@ -1,5 +1,3 @@
-import { fetchOrders } from "./table_render.js";
-
 //? CLIENT FUNCTIONS */
 export function drawCartModal(cart) {
   const cartTable = document.querySelector('.table-body');
@@ -127,7 +125,6 @@ function addInputEventListeners(cart) {
 export function drawOrdersTable(orders) {
   const ordersContainer = document.querySelector('.main');
   orders ? orders : orders = [];
-  console.log(orders);
   ordersContainer.innerHTML = `
       <div class="table-container">
           <div class="col">
@@ -222,60 +219,3 @@ export function drawProductsTable(products, url) {
   `;
 }
 
-export function deleteProduct(id) {
-  fetch(`/adminBoard/product/${id}`, {
-    method: 'DELETE',
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.status === 'success') {
-      console.log('Product deleted');
-    } else console.log('Product not deleted');
-  })
-  .catch(error => console.error('Error:', error));
-}
-
-export function deleteOrder(id) {
-  fetch(`/adminBoard/order/${id}`, {
-    method: 'DELETE',
-  })
-  .then(response => {
-    if(!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.success) {
-      console.log('Order deleted');
-    } else console.log('Order not deleted');
-  })
-  .catch(error => console.error('Error:', error));
-}
-
-export function completeOrder(id) {
-  fetch(`/adminBoard/complete_order/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ status: "enviado" }),
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.status === 'success') {
-      console.log('Order completed');
-      fetchOrders();
-    } else console.log('Order not completed');
-  })
-}

@@ -315,13 +315,6 @@ ul a {
 
 /*? MODAL */
 
-.orderContainer label {
-  width: 140px;
-  font-family: SofiaSans;
-  font-size: 26px;
-  font-weight: 600;
-}
-
 .modal show {
   display: block;
   opacity: 1;
@@ -332,6 +325,21 @@ ul a {
   display: flex;
   flex-flow: column wrap;
   gap: 20px;
+}
+
+.form-control.textInput {
+  max-width: 300px;
+}
+
+.totalInput {
+  max-width: 100px;
+}
+
+.form-label {
+  font-family: Oswald;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
 }
 
 #addProductForm {
@@ -352,17 +360,18 @@ ul a {
   margin: 10px 0;
 }
 
-.productListContainerModal {
+.productListContainer {
+  padding: 4px 20px;
   overflow-y: scroll;
   max-height: 500px;
 }
-.productModal {
+/* .productModal {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   padding: 10px 10px;
-}
+} */
 
 .productListContainer span {
   display: flex; 
@@ -373,6 +382,10 @@ ul a {
 .productListContainer span input[type="number"]{
   width: 56px;
   padding-right: 6px;
+}
+
+.custom-padding {
+  padding: 4px 20px;
 }
 
 /*! Table */

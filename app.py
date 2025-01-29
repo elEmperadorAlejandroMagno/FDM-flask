@@ -1,4 +1,4 @@
-from cs50 import SQL
+from cs50 import SQL # Ya no se usa. Ahora se usa sqlite3
 from flask import Flask, flash, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -246,7 +246,9 @@ def register():
       return render_template(TEMPLATES.REGISTER, message = "The from cannot be empty")
     hash = generate_password_hash(password)
     try:
+      db = get_db_connection()
       db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, hash)
+      db.close()
       return redirect('/login')
     except Exception as e:
       return render_template(TEMPLATES.REGISTER, message = str(e))
@@ -260,16 +262,21 @@ def login():
     password = request.form.get('password')
     if not username or not password:
       return render_template(TEMPLATES.LOGIN, message = "The from cannot be empty")
-    user = db.execute("SELECT * FROM users WHERE username = ?", username)
-    if len(user) != 1 or not check_password_hash(user[0]['password'], password):
-      return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
-    else:
-      session['user_id'] = user[0]['id']
-      session['user_role'] = user[0]['role']
-      if session.get('user_role') == 'admin':
-        return redirect('/adminBoard')
+    try:
+      db = get_db_connection()
+      user = db.execute("SELECT id, role, password FROM users WHERE username = ?", (username,)).fetchall()
+      db.close()
+      if len(user) != 1 or not check_password_hash(user[0]['password'], password):
+        return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
-        return redirect('/myOrders')
+        session['user_id'] = user[0]['id']
+        session['user_role'] = user[0]['role']
+        if session.get('user_role') != 'admin':
+          return redirect('/myOrders')
+        else:
+          return redirect('/adminBoard')
+    except Exception as e:
+      return render_template(TEMPLATES.LOGIN, message = str(e))
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -373,10 +380,10 @@ def panel_orders():
           db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], 0.00))
           
           order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1").fetchone()['id']
-          print("Order ID: ", order_id)
 
           for i in range(len(lista_productos)):
-            db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", (order_id, lista_productos[i], cantidad_productos[i]))
+            db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", 
+                       (order_id, lista_productos[i], cantidad_productos[i]))
           
           db.commit()
 
@@ -398,7 +405,8 @@ def panel_order_by_ID(id):
   if request.method == 'GET':
     try:
       db = get_db_connection()
-      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", (id,)).fetchall()
+      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", 
+                         (id,)).fetchall()
 
       order_dict = {}
       if order:
@@ -441,7 +449,10 @@ def panel_order_by_ID(id):
   elif request.method == 'DELETE':
     try:
       db = get_db_connection()
-      db.execute("DELETE FROM orders WHERE id = ?", id)
+      db.execute("DELETE FROM orders WHERE id = ?", 
+                 (id,))
+      db.execute("DELETE FROM order_productos WHERE order_id = ?", 
+                 (id,))
 
       db.commit()
       db.close()
@@ -450,12 +461,24 @@ def panel_order_by_ID(id):
       return jsonify({'status': 'error', 'message': str(e)})
   elif request.method == 'PUT':
     data = request.form.to_dict()
+    print(data)
     if data:
       try:
         db = get_db_connection()
-        db.execute("UPDATE orders SET status = ? list_products = ? cantidad_productos = ? total_price = ? WHERE id = ?", data['status'], data['list_products'], data['cantidad_productos'], data['total_price'], id)
-        db.commit()
 
+        lista_productos = data.get('product_id[]', [])
+        print(lista_productos)
+        cantidad_productos = data.get('product_quantity[]', [])
+
+        db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
+
+        db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
+
+        for i in range(len(lista_productos)):
+          db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?,?,?)", 
+                     (id, lista_productos[i], cantidad_productos[i]))
+
+        db.commit()
         db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
@@ -471,7 +494,8 @@ def complete_order(id):
     if data:
       try:
         db = get_db_connection()
-        db.execute("UPDATE orders SET status = ? WHERE id = ?", data['status'], id)
+        db.execute("UPDATE orders SET status = ? WHERE id = ?", 
+                   (data['status'], id))
 
         db.close()
         return jsonify({'status': 'success'})
