@@ -4,20 +4,21 @@ import { formatCurrency } from './draw_component.js';
 export function renderAddProductModal(modal, title, body) {
     const addProductModal = `
     <form id="addProductForm" action="/adminBoard/products" method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="productName" class="form-label">Nombre del Producto</label>
-            <input type="text" class="form-control" id="productName" name="name" required>
+            <input type="text" class="form-control textInput" id="productName" name="name" required>
         </div>
         <div class="mb-3">
             <label for="productName" class="form-label">Descripción del Producto</label>
             <input type="text" class="form-control" id="productName" name="description" required>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between">
             <label for="productPrice" class="form-label">Precio del Producto</label>
-            <input type="number" class="form-control" id="productPrice" name="price" required>
+            <input type="number" class="form-control priceInput" id="productPrice" name="price" required>
         </div>
-        <div class="mb-3">
-            <select class="form-select" name="type" required>
+        <div class="mb-3 d-flex justify-content-between">
+            <label for="productType" class="form-label">Tipo de Producto</label>
+            <select class="form-select custom-width" name="type" required>
             <option value="0" selected disabled>Elige un tipo</option>
             <option value="sauce">Salsa</option>
             <option value="merch">Merchandising</option>

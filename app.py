@@ -496,6 +496,7 @@ def complete_order(id):
         db.execute("UPDATE orders SET status = ? WHERE id = ?", 
                    (data['status'], id))
 
+        db.commit()
         db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
