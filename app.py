@@ -3,7 +3,7 @@ from flask import Flask, flash, redirect, render_template, make_response, reques
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
+from utils.services import  get_products, get_product_by_id, get_products_by_category, delete_product, update_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
 from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
@@ -31,10 +31,7 @@ app.jinja_env.filters["uru"] = uru
 
 Session(app)
 
-API_URL = os.getenv('API_URL')
-FDM_URL = os.getenv('FDM_URL')
-
-
+URL = os.getenv('FDM_URL')
 
 def get_db_connection():
     db_path = os.getenv('DATA_BASE')
@@ -61,17 +58,21 @@ def hello():
 @app.route('/home', methods=['GET'])
 def home():
   if request.method == 'GET':
-        SAUCES = get_products_sauce()
-        MERCH = get_products_merch()
-        return render_template(TEMPLATES.INDEX, sauces=SAUCES, merch=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
+        PRODUCTS = get_products()
+        return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
   PRODUCT = get_product_by_id(id)
   if PRODUCT:
-    return render_template(TEMPLATES.PRODUCT_DETAILS, product= PRODUCT, url= API_URL)
+    return render_template(TEMPLATES.PRODUCT_DETAILS, product= PRODUCT, url= URL)
   else: 
     return "Product not found", 404
+  
+@app.route('/products?category=<string:category>', methods=['GET'])
+def products_by_category(category):
+  PRODUCTS = get_products_by_category(category)
+  return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -509,50 +510,15 @@ def complete_order(id):
 def panel_products():
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
+  
   if request.method == 'GET':
-    filter = request.args.get('filter') 
-    if filter:
-      if filter == 'salsas':
-        PRODUCTS = get_products_sauce()
-        return jsonify({'status': 'success', 'products': PRODUCTS})
-      elif filter == 'merch':
-        PRODUCTS = get_products_merch()
-        return jsonify({'status': 'success', 'products': PRODUCTS})
     PRODUCTS = get_products()
     return jsonify({'status': 'success', 'products': PRODUCTS})
+  
   if request.method == 'POST':
-    product_name = request.form.get('name')
-    product_price = float(request.form.get('price'))
-    product_img = request.files.get('images')
-    product_description = request.form.get('description', 'Por el momento mo hay una descripción disponible')
-    product_type = request.form.get('type')
-
-    if not product_name or not product_price or not product_img or not product_description or not product_type:
-      return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
-    
-    files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
-    response = requests.post(f"{API_URL}/upload", files=files)
-
-    if response.status_code != 200:
-      return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
-    
-    response = response.json()
-    if 'files' not in response:
-      return jsonify({'status': 'error', 'message': 'No files found in response'})
-    img_urls = response['files']
-
-    data = {
-      'product_info': {
-        'title': product_name,
-        'price': product_price,
-        'available': True,
-        'type': product_type,
-        'description': product_description
-      },
-      'images': img_urls
-    }
-
-    newProduct = post_product(data)
+    # create mew product
+    newProduct = Product(request.form['name'], request.form['price'], request.form['stock'], request.form['description'], request.form['image'], request.form['category'])
+    # add images and upload to server
 
     if newProduct:
       return jsonify({'status': 'success', 'message': 'Product created'})
@@ -564,25 +530,24 @@ def panel_products():
 def panel_product_by_ID(id):
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
+  
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
       return jsonify({ 'status': 'success', 'product': PRODUCT })
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
+    
   if request.method == 'DELETE':
-    deletedProduct = delete_product(id)
-    if deletedProduct:
-      return jsonify({'status': 'success', 'message': 'Product deleted'})
-    else:
-      return jsonify({'status': 'error', 'message': 'Error deleting product'})
+    is_deleted = delete_product(id)
+    if not is_deleted:
+      return jsonify({'status': 'error', 'message': 'Product not found'})
+    return jsonify({'status': 'success', 'message': 'Product deleted'})
+  
   if request.method == 'PUT':
     data = request.form.to_dict()
-    if 'price' in data:
-       data['price'] = int(data['price'])
-    updatedProduct = update_product(id, data)
-    if updatedProduct:
-      return jsonify({'status': 'success', 'message': 'Product updated'})
-    else:
-      return jsonify({'status': 'error', 'message': 'Error updating product'})
+    is_updated = update_product(id, data)
+    if not is_updated:
+      return jsonify({'status': 'error', 'message': 'Product not found'})
+    return jsonify({'status': 'success', 'message': 'Product updated successfully'})
 
