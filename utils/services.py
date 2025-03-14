@@ -33,6 +33,9 @@ def get_product_by_id(id):
         product['images'] = [image['image'] for image in images]
     return product
 
+def create_product(data):
+    pass
+
 def update_product(id, data):
     PRODUCT_DATA = get_product_by_id(id)
 

@@ -3,7 +3,7 @@ from flask import Flask, flash, redirect, render_template, make_response, reques
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from utils.services import  get_products, get_product_by_id, get_products_by_category, delete_product, update_product
+from utils.services import  get_products, get_product_by_id, get_products_by_category, delete_product, update_product, create_product
 from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
 from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
@@ -293,8 +293,8 @@ def panel_admin():
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-      return render_template('panel.html', API_URL= API_URL)
-  return render_template('panel.html', API_URL= API_URL)
+      return render_template('panel.html', URL= URL)
+  return render_template('panel.html', URL= URL)
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
@@ -516,14 +516,13 @@ def panel_products():
     return jsonify({'status': 'success', 'products': PRODUCTS})
   
   if request.method == 'POST':
-    # create mew product
-    newProduct = Product(request.form['name'], request.form['price'], request.form['stock'], request.form['description'], request.form['image'], request.form['category'])
+    data = request.form.to_dict()
+    is_created = create_product(data)
     # add images and upload to server
-
-    if newProduct:
-      return jsonify({'status': 'success', 'message': 'Product created'})
-    else:
+    if not is_created:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
+    else:
+      return jsonify({'status': 'success', 'message': 'Product created'})
 
 @app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
