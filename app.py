@@ -1,4 +1,4 @@
-from cs50 import SQL # Ya no se usa. Ahora se usa sqlite3
+from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,7 +9,6 @@ from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
 import json
 import os
-import sqlite3
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,15 +32,7 @@ Session(app)
 
 URL = os.getenv('FDM_URL')
 
-def get_db_connection():
-    db_path = os.getenv('DATA_BASE')
-    if not db_path:
-        raise ValueError("No se ha definido la variable de entorno DATA_BASE")
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-db = get_db_connection()
+db = SQL(os.getenv('DATA_BASE'))
 
 @app.after_request
 def after_request(response):
@@ -59,7 +50,9 @@ def hello():
 def home():
   if request.method == 'GET':
         PRODUCTS = get_products()
-        return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
+        SALSAS = [product for product in PRODUCTS if product['category'] == 'salsa']
+        MERCH = [product for product in PRODUCTS if product['category'] == 'merch']
+        return render_template(TEMPLATES.INDEX, salsas = SALSAS, merch = MERCH, url = URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
@@ -247,9 +240,7 @@ def register():
       return render_template(TEMPLATES.REGISTER, message = "The from cannot be empty")
     hash = generate_password_hash(password)
     try:
-      db = get_db_connection()
       db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, hash)
-      db.close()
       return redirect('/login')
     except Exception as e:
       return render_template(TEMPLATES.REGISTER, message = str(e))
@@ -264,9 +255,7 @@ def login():
     if not username or not password:
       return render_template(TEMPLATES.LOGIN, message = "The from cannot be empty")
     try:
-      db = get_db_connection()
-      user = db.execute("SELECT id, role, password FROM users WHERE username = ?", (username,)).fetchall()
-      db.close()
+      user = db.execute("SELECT id, role, password FROM users WHERE username = ?", (username,))
       if len(user) != 1 or not check_password_hash(user[0]['password'], password):
         return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
@@ -306,20 +295,19 @@ def panel_orders():
         filter = request.args.get('filter')
         orders = []
         try:
-            db = get_db_connection()
             if filter:
                 orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
                                        FROM orders o
                                        INNER JOIN order_productos op ON o.id = op.order_id
                                        WHERE o.status = ?
-                                       ORDER BY o.timestamp DESC''', filter).fetchall()
+                                       ORDER BY o.timestamp DESC''', filter)
             else:
                 orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
                                        FROM orders o
                                        INNER JOIN order_productos op ON o.id = op.order_id
-                                       ORDER BY o.timestamp DESC''').fetchall()
+                                       ORDER BY o.timestamp DESC''')
 
             if not orders:
                 return jsonify({'status': 'success', 'orders': [], 'message': 'No orders found'})
@@ -368,7 +356,6 @@ def panel_orders():
 
       if data:
         try:
-          db = get_db_connection()
           lista_productos = data.get('product_id[]', [])
           cantidad_productos = data.get('product_quantity[]', [])
 
@@ -378,17 +365,15 @@ def panel_orders():
           if len(lista_productos) != len(cantidad_productos):
             return jsonify({'status': 'error', 'message': 'Los datos no coninciden'})
           
-          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
+          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", 
+                     (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
           
-          order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1").fetchone()['id']
+          order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1")['id']
 
           for i in range(len(lista_productos)):
             db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", 
                        (order_id, lista_productos[i], cantidad_productos[i]))
-          
-          db.commit()
-
-          db.close()
+      
           return jsonify({'status': 'success'})
         except Exception as e:
           return jsonify({'status': 'error', 'message': str(e)})
@@ -405,10 +390,7 @@ def panel_order_by_ID(id):
     return redirect('/myOrders')
   if request.method == 'GET':
     try:
-      db = get_db_connection()
-      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", 
-                         (id,)).fetchall()
-
+      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", (id,))
       order_dict = {}
       if order:
         for item in order:
@@ -449,14 +431,8 @@ def panel_order_by_ID(id):
       return jsonify({'status': 'error', 'message': str(e)})
   elif request.method == 'DELETE':
     try:
-      db = get_db_connection()
-      db.execute("DELETE FROM orders WHERE id = ?", 
-                 (id,))
-      db.execute("DELETE FROM order_productos WHERE order_id = ?", 
-                 (id,))
-
-      db.commit()
-      db.close()
+      db.execute("DELETE FROM orders WHERE id = ?", (id,))
+      db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
       return jsonify({'status': 'success'})
     except Exception as e:
       return jsonify({'status': 'error', 'message': str(e)})
@@ -465,12 +441,11 @@ def panel_order_by_ID(id):
     print(data)
     if data:
       try:
-        db = get_db_connection()
-
         lista_productos = data.get('product_id[]', [])
         cantidad_productos = data.get('product_quantity[]', [])
 
-        db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
+        db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", 
+                   (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
 
         db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
 
@@ -478,8 +453,6 @@ def panel_order_by_ID(id):
           db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?,?,?)", 
                      (id, lista_productos[i], cantidad_productos[i]))
 
-        db.commit()
-        db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
@@ -493,12 +466,9 @@ def complete_order(id):
     data = request.get_json()
     if data:
       try:
-        db = get_db_connection()
         db.execute("UPDATE orders SET status = ? WHERE id = ?", 
                    (data['status'], id))
 
-        db.commit()
-        db.close()
         return jsonify({'status': 'success'})
       except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})

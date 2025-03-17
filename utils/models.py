@@ -6,7 +6,7 @@ import os
 
 dotenv.load_dotenv()
 
-db = SQL(os.getenv('DATABASE_URL'))
+db = SQL(os.getenv('DATA_BASE'))
 
 class Product:
     

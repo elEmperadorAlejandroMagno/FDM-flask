@@ -20,8 +20,7 @@ html{
   scroll-padding-top: 100px;
 }
 body{
-  background-color: light-dark(var(--primary-background-color), var(--secondary-background-color));
-  color: light-dark(var(--black-text-color), var(--white-text-color));
+  background-color: var(--primary-background-color);
 }
 
 .table-group-divider {
@@ -516,7 +515,7 @@ hr {
 }
 
 .info{
-  background-color: var(--main-background-color);
+  background-color: var(--secondary-background-color);
   color: var(--black-text-color);
   width: 100%;
 }

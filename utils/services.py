@@ -10,10 +10,10 @@ db = SQL(os.getenv('DATABASE_URL'))
 
 def get_products():
     products = db.execute("SELECT * FROM products")
-    for product in products:
-        image_ids = product['images']
-        images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
-        product['images'] = [image['image'] for image in images]
+    # for product in products:
+    #     image_ids = product['images']
+    #     images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
+    #     product['images'] = [image['image'] for image in images]
     return products
 
 def get_products_by_category(category):
