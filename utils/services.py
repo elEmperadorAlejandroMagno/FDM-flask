@@ -10,10 +10,10 @@ db = SQL(os.getenv('DATABASE_URL'))
 
 def get_products():
     products = db.execute("SELECT * FROM products")
-    # for product in products:
-    #     image_ids = product['images']
-    #     images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
-    #     product['images'] = [image['image'] for image in images]
+    for product in products:
+        image_ids = product['images']
+        images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
+        product['images'] = [image['image'] for image in images]
     return products
 
 def get_products_by_category(category):
@@ -33,8 +33,13 @@ def get_product_by_id(id):
         product['images'] = [image['image'] for image in images]
     return product
 
-def create_product(data):
-    pass
+def create_product(data, images):
+    product = Product(**data)
+    product.save_to_db()
+
+    for image in images:
+        product.add_image(image)
+    return True
 
 def update_product(id, data):
     PRODUCT_DATA = get_product_by_id(id)
@@ -72,4 +77,3 @@ def delete_product(id):
     product = Product(**PRODUCT_DATA)
     product.delete_from_db()
     return True
-    

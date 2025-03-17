@@ -10,24 +10,33 @@ db = SQL(os.getenv('DATA_BASE'))
 
 class Product:
     
-    def _init_(self, name, price, stock, description, image, category, id):
+    def _init_(self, name, price, stock, description, category, id):
         self.id = id or str(uuid.uuid4())
         self.name = name
         self.price = price
         self.stock = stock or 0
         self.description = description
-        self.images = []
         self.category = category
+        self.images = self.get_images()
+
+    def get_images(self):
+        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", self.id)
+        return [image['image'] for image in images]
 
     def add_image(self, image):
         image_id = str(uuid.uuid4())
         db.execute('''INSERT INTO product_images (id, product_id, image) 
                     VALUES (?, ?, ?)''', image_id, self.id, image)
-        self.images.append(image_id)
 
     def save_to_db(self):
-        db.execute('''INSERT INTO products (id, name, price, stock, description, image, category) 
-                    VALUES(?, ?, ?, ?, ?, ?, ?)''', self.id, self.name, self.price, self.stock, self.description, self.images, self.category)
+        exist_product = db.execute("SELECT * FROM products WHERE id = ?", self.id)
+        if exist_product:
+            db.execute("UPDATE PRODUCTS SET name = ?, price = ?, stock = ?, description = ?, category = ? WHERE id = ?", 
+                    self.name, self.price, self.stock, self.description, self.category, self.id)
+        else:
+            db.execute('''INSERT INTO products (id, name, price, stock, description, category) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?)''', 
+                    self.id, self.name, self.price, self.stock, self.description, self.images, self.category)
         
     def update_stock(self, amount):
         self.stock += amount
