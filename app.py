@@ -499,7 +499,7 @@ def panel_products():
 def panel_product_by_ID(id):
   if session.get('user_role') != 'admin':
     return redirect('/myOrders')
-  
+
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
@@ -519,4 +519,16 @@ def panel_product_by_ID(id):
     if not is_updated:
       return jsonify({'status': 'error', 'message': 'Product not found'})
     return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+  
+@app.route('/adminBoard/product/<string:id>', methods = ['PUT'])
+@login_required
+def update_single_field(id):
+  if session.get('user_role') == 'admin':
+    data = request.get_json()
+    if data:
+      is_updated = update_single_field(id, field = data['field'], value = data['value'])
+      if not is_updated:
+        return jsonify({'status': 'error', 'message': 'Error trying to update '})
+      return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+    
 

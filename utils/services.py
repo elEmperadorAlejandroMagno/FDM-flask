@@ -3,34 +3,80 @@ from cs50 import SQL
 import os
 import dotenv
 from utils.models import Product
+from utils.constants import FIELDS 
 
 dotenv.load_dotenv()
 
 db = SQL(os.getenv('DATABASE_URL'))
 
 def get_products():
-    products = db.execute("SELECT * FROM products")
-    for product in products:
-        image_ids = product['images']
-        images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
-        product['images'] = [image['image'] for image in images]
-    return products
+    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+    query = """
+        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
+        LEFT JOIN product_images pi ON p.id = pi.product_id
+    """
+    products = {}
+    rows = db.execute(query)
+    for row in rows:
+        if row['id'] not in products:
+            products[row['id']] = {
+                'id': row['id'],
+                'name': row['name'],
+                'price': row['price'],
+                'stock': row['stock'],
+                'description': row['description'],
+                'category': row['category'],
+                'images': []
+            }
+        if row['image']:
+            products[row['id']]['images'].append(row['image'])
+    return list(products.values())
 
 def get_products_by_category(category):
-    products = db.execute("SELECT * FROM products WHERE category = ?", category)
-    for product in products:
-        image_ids = product['images']
-        images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
-        product['images'] = [image['image'] for image in images]
-    return products 
+    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+    query = """
+        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
+        LEFT JOIN product_images pi ON p.id = pi.product_id
+        WHERE p.category = ?
+    """
+    products = {}
+    rows = db.execute(query, category)
+    for row in rows:
+        if row['id'] not in products:
+            products[row['id']] = {
+                'id': row['id'],
+                'name': row['name'],
+                'price': row['price'],
+                'stock': row['stock'],
+                'description': row['description'],
+                'category': row['category'],
+                'images': []
+            }
+        if row['image']:
+            products[row['id']]['images'].append(row['image'])
+    return list(products.values())
 
 def get_product_by_id(id):
-    product = db.execute("SELECT * FROM products WHERE id = ?", id)
-    if product:
-        product = product[0]
-        image_ids = product['images']
-        images = db.execute("SELECT * FROM product_images WHERE id IN (?)", image_ids)
-        product['images'] = [image['image'] for image in images]
+    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+    query = """
+        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
+        LEFT JOIN product_images pi ON p.id = pi.product_id
+        WHERE p.id = ?
+    """
+    rows = db.execute(query, id)
+
+    if not rows:
+        return None
+    
+    product = {
+                'id': rows['id'],
+                'name': rows['name'],
+                'price': rows['price'],
+                'stock': rows['stock'],
+                'description': rows['description'],
+                'category': rows['category'],
+                'images': [row['image'] for row in rows if row['image']]
+            }
     return product
 
 def create_product(data, images):
@@ -41,7 +87,28 @@ def create_product(data, images):
         product.add_image(image)
     return True
 
+def update_single_field(id, field, value):
+    #! Actualiza un solo campo del producto
+    if field not in FIELDS:
+        return False
+    PRODUCT_DATA = get_product_by_id(id)
+    product = Product(**PRODUCT_DATA)
+    if field == 'name':
+        product.update_name(value)
+    if field == 'stock':
+        product.update_stock(value)
+    elif field == 'price':
+        product.update_price(value)
+    elif field == 'description':
+        product.update_description(value)
+    elif field == 'image':
+        product.update_image(value)
+    else:
+        return False
+    return True
+
 def update_product(id, data):
+    #!actualiza el producto completo (no recomendado)
     PRODUCT_DATA = get_product_by_id(id)
 
     if not PRODUCT_DATA:

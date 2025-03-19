@@ -17,6 +17,8 @@ LISTA_ENVIOS = [
       }
 ]
 
+FIELDS = ['name', 'price', 'stock', 'description', 'image']
+
 class DotDict(dict):
     """Permite el acceso a las claves del diccionario utilizando la sintaxis de punto."""
     def __getattr__(self, attr):

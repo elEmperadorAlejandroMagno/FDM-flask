@@ -37,7 +37,11 @@ class Product:
             db.execute('''INSERT INTO products (id, name, price, stock, description, category) 
                     VALUES(?, ?, ?, ?, ?, ?, ?)''', 
                     self.id, self.name, self.price, self.stock, self.description, self.images, self.category)
-        
+
+    def update_name(self, new_name):
+        self.name = new_name
+        self._update_db('name', self.name)
+
     def update_stock(self, amount):
         self.stock += amount
         self._update_db('stock', self.stock)
@@ -71,4 +75,58 @@ class Product:
     def delete_from_db(self):
         db.execute("DELETE FROM products WHERE id = ?", self.id)
         db.execute("DELETE FROM product_images WHERE product_id = ?", self.id)
-        
+
+    # METODOS ESTATICOS PARA OBTENER PRODUCTOS
+    @staticmethod
+    def get_products():
+        pass
+    @staticmethod
+    def get_product_by_id(id):
+        pass
+    @staticmethod
+    def get_products_by_category(category):
+        pass
+
+class Orders:
+    def __init__(self, id, nombre, email, telefono, envio, direccion, precio_total, timestamp = None, country = 'Uruguay', status = 'Pendiente'):
+        self.id = id or str(uuid.uuid4())
+        self.nombre = nombre
+        self.email = email
+        self.telefono = telefono
+        self.envio = envio
+        self.direccion = direccion
+        self.country = country
+        self.status = status
+        self.precio_total = precio_total
+        self.timestamp = timestamp
+
+    def save_to_db(self):
+        exist_order = db.execute("SELECT * FROM orders WHERE id = ?", self.id)
+        if exist_order:
+            db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, direccion = ?, country = ?, status = ?, precio_total = ?, timestamp = ? WHERE id = ?", 
+                    self.nombre, self.email, self.telefono, self.envio, self.direccion, self.country, self.status, self.precio_total, self.timestamp, self.id)
+        else:
+            db.execute('''INSERT INTO orders (id, nombre, email, telefono, envio, direccion, country, status, precio_total, timestamp) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                    self.id, self.nombre, self.email, self.telefono, self.envio, self.direccion, self.country, self.status, self.precio_total, self.timestamp)
+    
+    def update_status(self, new_status):
+        self.status = new_status
+        self._update_db('status', self.status)
+
+    def delete_from_db(self):
+        db.execute("DELETE FROM orders WHERE id = ?", self.id)
+    
+    def _update_db(self, field, value):
+        db.execute("UPDATE orders SET ? = ? WHERE id = ?", field, value, self.id)
+
+    # METODOS ESTATICOS PARA OBTENER ORDENES
+    @staticmethod
+    def get_orders():
+        pass
+    @staticmethod
+    def get_orders_by_status(status):
+        pass
+    @staticmethod
+    def get_order_by_id(id):
+        pass
