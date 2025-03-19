@@ -334,6 +334,8 @@ ul a {
 }
 
 .orders-container {
+  padding: 110px 8px 20px 8px;
+  margin-top: 20px;
   display: flex;
   flex-flow: column wrap;
   gap: 20px;

@@ -466,24 +466,6 @@ hr {
   border-radius: 25px;
   color: var(--black-text-color);
   background-color: var(--btn-background-color);
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;

@@ -19,8 +19,8 @@ class Product:
         self.category = category
         self.images = self.get_images()
 
-    def get_images(self):
-        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", self.id)
+    def get_images(id):
+        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", id)
         return [image['image'] for image in images]
 
     def add_image(self, image):
@@ -79,13 +79,67 @@ class Product:
     # METODOS ESTATICOS PARA OBTENER PRODUCTOS
     @staticmethod
     def get_products():
-        pass
-    @staticmethod
-    def get_product_by_id(id):
-        pass
+        """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+        query = """
+            SELECT p.id, p.name, p.price, p.stock, p.description, p.category FROM products p
+        """
+        products = {}
+        rows = db.execute(query)
+        for row in rows:
+            if row['id'] not in products:
+                products[row['id']] = {
+                    'id': row['id'],
+                    'name': row['name'],
+                    'price': row['price'],
+                    'stock': row['stock'],
+                    'description': row['description'],
+                    'category': row['category'],
+                    'images': Product.get_images(row['id'])
+                }
+        return list(products.values())
     @staticmethod
     def get_products_by_category(category):
-        pass
+        """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+        query = """
+            SELECT p.id, p.name, p.price, p.stock, p.description, p.category FROM products p
+            WHERE p.category = ?
+        """
+        products = {}
+        rows = db.execute(query, category)
+        for row in rows:
+            if row['id'] not in products:
+                products[row['id']] = {
+                    'id': row['id'],
+                    'name': row['name'],
+                    'price': row['price'],
+                    'stock': row['stock'],
+                    'description': row['description'],
+                    'category': row['category'],
+                    'images': Product.get_images(row['id'])
+                }
+        return list(products.values())
+    @staticmethod
+    def get_product_by_id(id):
+        """Obtiene todos los productos de la base de datos junto con sus imágenes."""
+        query = """
+            SELECT p.id, p.name, p.price, p.stock, p.description, p.category FROM products p
+            WHERE p.id = ?
+        """
+        row = db.execute(query, id)
+
+        if not row:
+            return None
+        
+        product = {
+                    'id': row['id'],
+                    'name': row['name'],
+                    'price': row['price'],
+                    'stock': row['stock'],
+                    'description': row['description'],
+                    'category': row['category'],
+                    'images': Product.get_images(row['id'])
+                }
+        return product
 
 class Orders:
     def __init__(self, id, nombre, email, telefono, envio, direccion, precio_total, timestamp = None, country = 'Uruguay', status = 'Pendiente'):
@@ -99,6 +153,7 @@ class Orders:
         self.status = status
         self.precio_total = precio_total
         self.timestamp = timestamp
+        self.products = self.get_products()
 
     def save_to_db(self):
         exist_order = db.execute("SELECT * FROM orders WHERE id = ?", self.id)
@@ -110,12 +165,28 @@ class Orders:
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
                     self.id, self.nombre, self.email, self.telefono, self.envio, self.direccion, self.country, self.status, self.precio_total, self.timestamp)
     
+    def get_products(self):
+        rows = db.execute('''
+                SELECT op.product_id, op.cantidad, p.name, p.price FROM order_products op
+                          JOIN products p ON op.product_id = p.id
+                          WHERE op.order_id = ?
+                ''', self.id)
+        return [{'product_id': row['product_id'], 'cantidad': row['cantidad'], 'name': row['name'], 'price': row['price']} for row in rows]
+
+    def add_product(self, product_id, cantidad):
+        db.execute(''' INSERT INTO order_products(order_id, product_id, cantidad)
+                    VALUES(?, ?, ?)''', self.id, product_id, cantidad)
+
     def update_status(self, new_status):
         self.status = new_status
         self._update_db('status', self.status)
 
+    def delete_product(self, product_id):
+        db.execute("DELETE FROM order_products WHERE order_id = ? AND product_id = ?", self.id, product_id)
+
     def delete_from_db(self):
         db.execute("DELETE FROM orders WHERE id = ?", self.id)
+        db.execute("DELETE FROM order_products WHERE order_id = ?", self.id)
     
     def _update_db(self, field, value):
         db.execute("UPDATE orders SET ? = ? WHERE id = ?", field, value, self.id)
@@ -123,10 +194,24 @@ class Orders:
     # METODOS ESTATICOS PARA OBTENER ORDENES
     @staticmethod
     def get_orders():
-        pass
+        rows = db.execute('''SELECT * FROM orders''')
+        orders = []
+        for row in rows:
+            order = Orders(row['id'], row['nombre'], row['email'], row['telefono'], row['envio'], row['direccion'], row['precio_total'], row['timestamp'], row['country'], row['status'])
+            orders.append(order)
+        return orders
     @staticmethod
     def get_orders_by_status(status):
-        pass
+        rows = db.execute('''SELECT * FROM orders WHERE status = ?''', status)
+        orders = []
+        for row in rows:
+            order = Orders(row['id'], row['nombre'], row['email'], row['telefono'], row['envio'], row['direccion'], row['precio_total'], row['timestamp'], row['country'], row['status'])
+            orders.append(order)
+        return orders
     @staticmethod
     def get_order_by_id(id):
-        pass
+        row = db.execute('''SELECT * FROM orders WHERE id = ?''', id)
+        if not row:
+            return None
+        order = Orders(row['id'], row['nombre'], row['email'], row['telefono'], row['envio'], row['direccion'], row['precio_total'], row['timestamp'], row['country'], row['status'])
+        return order

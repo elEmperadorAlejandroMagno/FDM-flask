@@ -4,7 +4,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from utils.services import  get_products, get_product_by_id, get_products_by_category, delete_product, update_product, create_product
-from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
+from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list, save_images
 from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
 import json
@@ -487,8 +487,18 @@ def panel_products():
   
   if request.method == 'POST':
     data = request.form.to_dict()
-    is_created = create_product(data)
     # add images and upload to server
+    if not request.files.get('images'):
+      images_urls = ['/static/images/default.png']
+    else:
+      files = request.files.getlist('images')
+      try: 
+        images_urls = save_images(files, upload_folder = 'products')
+      except Exception:
+        return jsonify({'status': 'error', 'message': 'Error uploading images'})
+
+    is_created = create_product(data, images_urls)
+
     if not is_created:
       return jsonify({'status': 'error', 'message': 'Error creating product'})
     else:

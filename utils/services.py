@@ -7,76 +7,18 @@ from utils.constants import FIELDS
 
 dotenv.load_dotenv()
 
-db = SQL(os.getenv('DATABASE_URL'))
+db = SQL(os.getenv('DATA_BASE'))
 
 def get_products():
-    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
-    query = """
-        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
-    """
-    products = {}
-    rows = db.execute(query)
-    for row in rows:
-        if row['id'] not in products:
-            products[row['id']] = {
-                'id': row['id'],
-                'name': row['name'],
-                'price': row['price'],
-                'stock': row['stock'],
-                'description': row['description'],
-                'category': row['category'],
-                'images': []
-            }
-        if row['image']:
-            products[row['id']]['images'].append(row['image'])
-    return list(products.values())
+    products = Product.get_products()
+    return products
 
 def get_products_by_category(category):
-    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
-    query = """
-        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE p.category = ?
-    """
-    products = {}
-    rows = db.execute(query, category)
-    for row in rows:
-        if row['id'] not in products:
-            products[row['id']] = {
-                'id': row['id'],
-                'name': row['name'],
-                'price': row['price'],
-                'stock': row['stock'],
-                'description': row['description'],
-                'category': row['category'],
-                'images': []
-            }
-        if row['image']:
-            products[row['id']]['images'].append(row['image'])
-    return list(products.values())
+    products = Product.get_products_by_category(category)
+    return products
 
 def get_product_by_id(id):
-    """Obtiene todos los productos de la base de datos junto con sus imágenes."""
-    query = """
-        SELECT p.id, p.name, p.price, p.stock, p.description, p.category, pi.image FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
-        WHERE p.id = ?
-    """
-    rows = db.execute(query, id)
-
-    if not rows:
-        return None
-    
-    product = {
-                'id': rows['id'],
-                'name': rows['name'],
-                'price': rows['price'],
-                'stock': rows['stock'],
-                'description': rows['description'],
-                'category': rows['category'],
-                'images': [row['image'] for row in rows if row['image']]
-            }
+    product = Product.get_product_by_id(id)
     return product
 
 def create_product(data, images):

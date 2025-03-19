@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/panel.css') }}">
+{% endblock %}
 {% block main %}
 
 <div class="orders-container">
   <div class="col">
-    <button class="btn">cerrar sesión</button>
+    <span>
+      <form action="/logout" method="POST">
+        <button type="submit" class="finalBtn">cerrar sesión</button>
+      </form>
+    </span>
     <h2>Pedidos</h2>
     <table class="table">
       <thead>
@@ -41,15 +48,6 @@
 {% endblock %}
 
 {% block script %}
-  <link rel="stylesheet" href="../static/css/myOrders.css">
   <script>
-    const closeBtn = document.querySelector('.btn');
-    closeBtn.addEventListener('click', () => {
-      fetch('/logout', {
-        method: 'POST'
-      }).then(() => {
-        window.location.href = '/home';
-      });
-    });
   </script>
 {% endblock %}
