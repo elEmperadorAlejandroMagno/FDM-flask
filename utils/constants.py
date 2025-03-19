@@ -17,6 +17,8 @@ LISTA_ENVIOS = [
       }
 ]
 
+FIELDS = ['name', 'price', 'stock', 'description', 'image']
+
 class DotDict(dict):
     """Permite el acceso a las claves del diccionario utilizando la sintaxis de punto."""
     def __getattr__(self, attr):
@@ -33,9 +35,9 @@ TEMPLATES = DotDict({
   "PRODUCT_DETAILS": "product.html",
   "CARRITO": "cart.html",
   "CHECKOUT": "checkout.html",
-  "MY_ORDERS": "myOrders.html",
-  "ORDERS": "orders.html",
-  "PRODUCTS": "products.html",
+  "MY_ORDERS": "user_panel/myOrders.html",
+  "ORDERS": "admin_panel/orders.html",
+  "PRODUCTS": "admin_panel/products.html",
   "LOGIN": "login.html",
   "REGISTER": "register.html",
 })

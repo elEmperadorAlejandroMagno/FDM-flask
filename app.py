@@ -1,10 +1,10 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, make_response, request, jsonify, session
+from flask import Flask, flash, redirect, render_template, make_response, request, jsonify, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from utils.services import  get_products, get_product_by_id, get_products_sauce, get_products_merch, post_product, delete_product, update_product
-from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list
+from utils.services import  get_products, get_product_by_id, get_products_by_category, delete_product, update_product, create_product
+from utils.helpers import uru, login_required, sumItemPrices, get_ID_product_list, get_quantity_product_list, save_images
 from utils.constants import LISTA_ENVIOS, TEMPLATES
 import requests
 import json
@@ -24,14 +24,13 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
-app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER') # cargar archivos en el servidor (banner, libro etc)
+# app.config["UPLOAD_FOLDER"] = os.getenv('UPLOAD_FOLDER') # cargar archivos en el servidor (banner, libro etc)
 
 app.jinja_env.filters["uru"] = uru
 
 Session(app)
 
-API_URL = os.getenv('API_URL')
-FDM_URL = os.getenv('FDM_URL')
+URL = os.getenv('FDM_URL')
 
 db = SQL(os.getenv('DATA_BASE'))
 
@@ -50,17 +49,23 @@ def hello():
 @app.route('/home', methods=['GET'])
 def home():
   if request.method == 'GET':
-        SAUCES = get_products_sauce()
-        MERCH = get_products_merch()
-        return render_template(TEMPLATES.INDEX, sauces=SAUCES, merchandising=MERCH, API_URL= API_URL, FDM_URL= FDM_URL)
+        PRODUCTS = get_products()
+        SALSAS = [product for product in PRODUCTS if product['category'] == 'salsa']
+        MERCH = [product for product in PRODUCTS if product['category'] == 'merch']
+        return render_template(TEMPLATES.INDEX, salsas = SALSAS, merch = MERCH, url = URL)
 
 @app.route('/product-page/<string:id>', methods=['GET'])
 def product_page(id):
   PRODUCT = get_product_by_id(id)
   if PRODUCT:
-    return render_template(TEMPLATES.PRODUCT_DETAILS, product= PRODUCT, url= API_URL)
+    return render_template(TEMPLATES.PRODUCT_DETAILS, product= PRODUCT, url= URL)
   else: 
     return "Product not found", 404
+  
+@app.route('/products?category=<string:category>', methods=['GET'])
+def products_by_category(category):
+  PRODUCTS = get_products_by_category(category)
+  return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -249,16 +254,19 @@ def login():
     password = request.form.get('password')
     if not username or not password:
       return render_template(TEMPLATES.LOGIN, message = "The from cannot be empty")
-    user = db.execute("SELECT * FROM users WHERE username = ?", username)
-    if len(user) != 1 or not check_password_hash(user[0]['password'], password):
-      return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
-    else:
-      session['user_id'] = user[0]['id']
-      session['user_role'] = user[0]['role']
-      if session['user_role'] == 'admin':
-        return redirect('/adminBoard')
+    try:
+      user = db.execute("SELECT id, role, password FROM users WHERE username = ?", (username,))
+      if len(user) != 1 or not check_password_hash(user[0]['password'], password):
+        return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
-        return redirect('/myOrders')
+        session['user_id'] = user[0]['id']
+        session['user_role'] = user[0]['role']
+        if session.get('user_role') != 'admin':
+          return redirect('/myOrders')
+        else:
+          return redirect('/adminBoard')
+    except Exception as e:
+      return render_template(TEMPLATES.LOGIN, message = str(e))
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -271,103 +279,265 @@ def logout():
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
-  if session['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-    return redirect('/adminBoard/orders')
+      return render_template('panel.html', URL= URL)
+  return render_template('panel.html', URL= URL)
 
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-  if session.get['user_role'] != 'admin':
-    return redirect('/myOrders')
-  if request.method == 'GET':
-    filter = request.args.get('filter')
-    if filter:
-      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders WHERE status = ?", filter)
-    else:
-      orders = db.execute("SELECT *, strftime('%Y-%m-%d', timestamp) AS fecha FROM orders")
-    return render_template(TEMPLATES.ORDERS, orders = orders)
+    if session.get('user_role') != 'admin':
+        return redirect('/myOrders')
+    
+    if request.method == 'GET':
+        filter = request.args.get('filter')
+        orders = []
+        try:
+            if filter:
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
+                                              op.product_id, op.cantidad
+                                       FROM orders o
+                                       INNER JOIN order_productos op ON o.id = op.order_id
+                                       WHERE o.status = ?
+                                       ORDER BY o.timestamp DESC''', filter)
+            else:
+                orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
+                                              op.product_id, op.cantidad
+                                       FROM orders o
+                                       INNER JOIN order_productos op ON o.id = op.order_id
+                                       ORDER BY o.timestamp DESC''')
 
-@app.route('/adminBoard/orders/<string:id>', methods=['GET', 'DELETE', 'PUT'])
+            if not orders:
+                return jsonify({'status': 'success', 'orders': [], 'message': 'No orders found'})
+
+            order_dict = {}
+            for order in orders:
+                  order_id = order['order_id']
+                  if order_id not in order_dict:
+                    order_dict[order_id] = {
+                          'order_id': order['order_id'],
+                          'nombre': order['nombre'],
+                          'email': order['email'],
+                          'telefono': order['telefono'],
+                          'envio': order['envio'],
+                          'direccion': order['direccion'],
+                          'precio_total': order['precio_total'],
+                          'status': order['status'],
+                          'fecha': order['timestamp'],
+                          'productos': []
+                      }
+                  product_details = get_product_by_id(order['product_id'])
+                  if product_details:
+                    order_dict[order_id]['productos'].append({
+                        'product_id': order['product_id'],
+                        'product_title': product_details['title'],
+                        'product_price': product_details['price'],
+                        'cantidad': order['cantidad']
+                    })
+                  else:
+                    order_dict[order_id]['products'].append({
+                        'product_id': order['product_id'],
+                        'product_title': 'Producto no disponible',
+                        'product_price': 'N/A',
+                        'cantidad': order['cantidad']
+                    })
+
+            order_list = list(order_dict.values())        
+            db.close()
+            return jsonify({'status': 'success', 'orders': order_list})
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+  
+    if request.method == 'POST':
+      data = request.form.to_dict(flat=False)
+
+      if data:
+        try:
+          lista_productos = data.get('product_id[]', [])
+          cantidad_productos = data.get('product_quantity[]', [])
+
+          if not lista_productos or not cantidad_productos:
+            return jsonify({'status': 'error', 'message': 'Los campos de producto y cantidad no pueden estar vacías'})
+
+          if len(lista_productos) != len(cantidad_productos):
+            return jsonify({'status': 'error', 'message': 'Los datos no coninciden'})
+          
+          db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", 
+                     (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
+          
+          order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1")['id']
+
+          for i in range(len(lista_productos)):
+            db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", 
+                       (order_id, lista_productos[i], cantidad_productos[i]))
+      
+          return jsonify({'status': 'success'})
+        except Exception as e:
+          return jsonify({'status': 'error', 'message': str(e)})
+      else:
+        return jsonify({'status': 'error', 'message': 'No data provided'})
+      
+    else:
+        return jsonify({'status': 'error', 'message': 'Método no permitido'}), 405
+    
+@app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
   if request.method == 'GET':
-    order = db.execute("SELECT * FROM orders WHERE id = ?", id)
-    return render_template(TEMPLATES.ORDERS, orders = order)
+    try:
+      order = db.execute("SELECT * FROM orders as o INNER JOIN order_productos as op ON o.id = op.order_id WHERE id = ?", (id,))
+      order_dict = {}
+      if order:
+        for item in order:
+          order_id = item['order_id']
+          if not order_id in order_dict:
+            order_dict[order_id] = {
+              'order_id': item['order_id'],
+              'nombre': item['nombre'],
+              'email': item['email'],
+              'telefono': item['telefono'],
+              'envio': item['envio'],
+              'direccion': item['direccion'],
+              'precio_total': item['precio_total'],
+              'status': item['status'],
+              'fecha': item['timestamp'],
+              'productos': []
+            }
+          product_details = get_product_by_id(item['product_id'])
+          if product_details:
+            order_dict[order_id]['productos'].append({
+              'product_id': item['product_id'],
+              'product_title': product_details['title'],
+              'product_price': product_details['price'],
+              'cantidad': item['cantidad']
+            })
+          else:
+            order_dict[order_id]['productos'].append({
+              'product_id': item['product_id'],
+              'product_title': 'Producto no disponible',
+              'product_price': 'N/A',
+              'cantidad': item['cantidad']
+            })
+
+        order_details = list(order_dict.values())
+        db.close()
+        return jsonify({'status': 'success', 'order': order_details})
+    except Exception as e:
+      return jsonify({'status': 'error', 'message': str(e)})
   elif request.method == 'DELETE':
-    db.execute("DELETE FROM orders WHERE id = ?", id)
-    return jsonify({'status': 'success'})
+    try:
+      db.execute("DELETE FROM orders WHERE id = ?", (id,))
+      db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
+      return jsonify({'status': 'success'})
+    except Exception as e:
+      return jsonify({'status': 'error', 'message': str(e)})
+  elif request.method == 'PUT':
+    data = request.form.to_dict()
+    print(data)
+    if data:
+      try:
+        lista_productos = data.get('product_id[]', [])
+        cantidad_productos = data.get('product_quantity[]', [])
+
+        db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", 
+                   (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
+
+        db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
+
+        for i in range(len(lista_productos)):
+          db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?,?,?)", 
+                     (id, lista_productos[i], cantidad_productos[i]))
+
+        return jsonify({'status': 'success'})
+      except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    else:
+      return jsonify({'status': 'error', 'message': 'No data provided'})
+        
+
+@app.route('/adminBoard/complete_order/<string:id>', methods=['PUT'])
+def complete_order(id):
+  if request.method == 'PUT':
+    data = request.get_json()
+    if data:
+      try:
+        db.execute("UPDATE orders SET status = ? WHERE id = ?", 
+                   (data['status'], id))
+
+        return jsonify({'status': 'success'})
+      except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    else:
+      return jsonify({'status': 'error', 'message': 'No data provided'})
 
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
+  
   if request.method == 'GET':
-    filter = request.args.get('filter') 
-    PRODUCTS = get_products(filter)
-    return render_template(TEMPLATES.PRODUCTS, products=PRODUCTS, url=API_URL)
+    PRODUCTS = get_products()
+    return jsonify({'status': 'success', 'products': PRODUCTS})
+  
   if request.method == 'POST':
-    product_name = request.form.get('name')
-    product_price = float(request.form.get('price'))
-    product_img = request.files.get('images')
-    product_description = request.form.get('description', 'Por el momento mo hay una descripción disponible')
-
-    if not product_name or not product_price or not product_img:
-      return jsonify({'status': 'error', 'message': 'Todos los campos son obligatorios'})
-    
-    files = {'images': (secure_filename(product_img.filename), product_img.stream, product_img.mimetype)}
-    response = requests.post(f"{API_URL}/uploads", files=files)
-
-    if response.status_code != 200:
-      return jsonify({'status': 'error', 'message': 'Error cargando la imagen'})
-    
-    response = response.json()
-    
-    img_urls = response['files']
-    img_url = img_urls[0] if img_urls else ['/images/default.jpg']
-
-    data = {
-      'title': product_name,
-      'price': product_price,
-      'available': True,
-      'images': [img_url],
-      'type': 'sauce',
-      'description': product_description
-    }
-
-    newProduct = post_product(data)
-
-    if newProduct:
-      return redirect('/adminBoard/products')
+    data = request.form.to_dict()
+    # add images and upload to server
+    if not request.files.get('images'):
+      images_urls = ['/static/images/default.png']
     else:
-      return jsonify({'status': 'error', 'message': 'Error creating product'})
+      files = request.files.getlist('images')
+      try: 
+        images_urls = save_images(files, upload_folder = 'products')
+      except Exception:
+        return jsonify({'status': 'error', 'message': 'Error uploading images'})
 
-@app.route('/adminBoard/products/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
+    is_created = create_product(data, images_urls)
+
+    if not is_created:
+      return jsonify({'status': 'error', 'message': 'Error creating product'})
+    else:
+      return jsonify({'status': 'success', 'message': 'Product created'})
+
+@app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
-  if session.get['user_role'] != 'admin':
+  if session.get('user_role') != 'admin':
     return redirect('/myOrders')
+
   if request.method == 'GET':
     PRODUCT = get_product_by_id(id)
     if PRODUCT:
-      return render_template(TEMPLATES.PRODUCTS, product = PRODUCT, url= API_URL)
+      return jsonify({ 'status': 'success', 'product': PRODUCT })
     else:
       return jsonify({'status': 'error', 'message': 'Product not found'})
+    
   if request.method == 'DELETE':
-    deletedProduct = delete_product(id)
-    if deletedProduct:
-      return jsonify({'status': 'success', 'message': 'Product deleted'})
-    else:
-      return jsonify({'status': 'error', 'message': 'Error deleting product'})
+    is_deleted = delete_product(id)
+    if not is_deleted:
+      return jsonify({'status': 'error', 'message': 'Product not found'})
+    return jsonify({'status': 'success', 'message': 'Product deleted'})
+  
   if request.method == 'PUT':
+    data = request.form.to_dict()
+    is_updated = update_product(id, data)
+    if not is_updated:
+      return jsonify({'status': 'error', 'message': 'Product not found'})
+    return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+  
+@app.route('/adminBoard/product/<string:id>', methods = ['PUT'])
+@login_required
+def update_single_field(id):
+  if session.get('user_role') == 'admin':
     data = request.get_json()
-    updatedProduct = update_product(id, data)
-    if updatedProduct:
-      return jsonify({'status': 'success', 'product': updatedProduct})
-    else:
-      return jsonify({'status': 'error', 'message': 'Error updating product'})
-
+    if data:
+      is_updated = update_single_field(id, field = data['field'], value = data['value'])
+      if not is_updated:
+        return jsonify({'status': 'error', 'message': 'Error trying to update '})
+      return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+    
