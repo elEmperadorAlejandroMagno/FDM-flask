@@ -46,6 +46,7 @@ class Carrito {
     this.products.push(item);
     this.getCost(); //update cost
     this.getCount; //update count of items
+    this.saveToCookie();//update navigator cookie
   }
 
   subtractItem(name) {
@@ -58,6 +59,7 @@ class Carrito {
         this.products.splice(itemIndex, 1); // Removes item from array
       }
     }
+    this.saveToCookie();
   }
   //! provisional
   showCarrito() {

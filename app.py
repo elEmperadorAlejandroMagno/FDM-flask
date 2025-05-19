@@ -67,55 +67,13 @@ def products_by_category(category):
   PRODUCTS = get_products_by_category(category)
   return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
 
-@app.route('/add_to_cart', methods=['POST'])
-def add_to_cart():
-    if request.method == 'POST':
-        product = request.get_json()
-        cart_cookie = request.cookies.get('cart', '[]')
-        CART_ITEMS = json.loads(cart_cookie)
-        for item in CART_ITEMS:
-            if item['id'] == product['id']:
-                product['quantity'] += item['quantity']
-                break
-        subtotal = sumItemPrices(CART_ITEMS)
-        response = jsonify({'status': 'success', 'subtotal': subtotal})
-        response.set_cookie('subtotal', json.dumps(subtotal))
-        response.set_cookie('cart', json.dumps(CART_ITEMS))
-        return response
-
-@app.route('/update_cart', methods=['POST', 'GET'])
-def update_cart():
-  if request.method == 'POST':
-      data = request.get_json()
-      cart_cookie = request.cookies.get('cart', '[]')
-      CART_ITEMS = json.loads(cart_cookie)
-      for item in CART_ITEMS:
-        if item['id'] == data['id']:
-          item['quantity'] = data['quantity']
-          break
-      response = jsonify({ 'subtotal': sumItemPrices(CART_ITEMS), 'total': sumItemPrices(CART_ITEMS) })
-      response.set_cookie('cart', json.dumps(CART_ITEMS))
-      return response
-  if request.method == 'GET':
-    cart_cookie = request.cookies.get('cart', '[]')
-    CART_ITEMS = json.loads(cart_cookie)
-    subtotal = sumItemPrices(CART_ITEMS)
-    response = jsonify({ 'subtotal': subtotal})
-    return response
-    
-@app.route('/remove_from_cart', methods=['POST'])
-def remove_from_cart():
-    if request.method == 'POST':
-        id = request.form.get('id')
-        cart_cookie = request.cookies.get('cart', '[]')
-        CART_ITEMS = json.loads(cart_cookie)
-        for item in CART_ITEMS:
-            if item['id'] == id:
-                CART_ITEMS.remove(item)
-                break
-        response = redirect('/cart-page')
-        response.set_cookie('cart', json.dumps(CART_ITEMS))
-        return response
+@app.route('/product/<string:id>', methods=['GET'])
+def api_get_product_by_id(id):
+    product = get_product_by_id(id)
+    if product:
+      return jsonify({'status': 'success', 'product': product})
+    else:
+      return jsonify({'status': 'error', 'message': 'Product not found'}), 404
 
 @app.route('/cart-page', methods = ['POST', 'GET'])
 def get_cart_info():
@@ -540,5 +498,5 @@ def update_single_field(id):
       if not is_updated:
         return jsonify({'status': 'error', 'message': 'Error trying to update '})
       return jsonify({'status': 'success', 'message': 'Product updated successfully'})
-    
+
 

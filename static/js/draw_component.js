@@ -66,11 +66,7 @@ export function getCount(cart) {
 
 export function drawSubtotal(cart) {
   let cartSubtotal = document.querySelector('#subtotal');
-  let subtotal = cart.reduce((acc, item) => {
-    const price = Number(item.price);
-    const quantity = Number(item.quantity);
-    return acc + (isNaN(price) || isNaN(quantity) ? 0 : price * quantity);
-  }, 0);
+  let subtotal = cart["cost"];
   if (subtotal === null) {
     subtotal = 0;
   }
@@ -82,7 +78,7 @@ export function updateCart(cart) {
   cart = JSON.parse(localStorage.getItem('cart')) || [];
   drawCartModal(cart);
   drawSubtotal(cart);
-  const count = getCount(cart);
+  const count = cart["count"];
   document.querySelector('.cart-count').textContent = count;
   addInputEventListeners(cart);
 }

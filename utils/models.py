@@ -10,7 +10,7 @@ db = SQL(os.getenv('DATA_BASE'))
 
 class Product:
     
-    def _init_(self, name, price, stock, description, category, id):
+    def _init_(self, id, name, price, stock, description, category):
         self.id = id or str(uuid.uuid4())
         self.name = name
         self.price = price
@@ -140,6 +140,26 @@ class Product:
                     'images': Product.get_images(row['id'])
                 }
         return product
+    
+class Salsa(Product):
+        def __init__(self, id, name, price, stock, description, category="Salsa", spicy_level=None):
+            super().__init__(name, price, stock, description, category, id)
+            self.spicy_level = spicy_level
+
+        def update_spicy_level(self, new_level):
+            self.spicy_level = new_level
+
+class Merch(Product):
+    def __init__(self, id, name, price, stock, description, category="Merch", talla=None, color=None):
+        super().__init__(name, price, stock, description, category, id)
+        self.talla = talla
+        self.color = color
+
+    def update_talla(self, nueva_talla):
+        self.talla = nueva_talla
+
+    def update_color(self, nuevo_color):
+        self.color = nuevo_color
 
 class Orders:
     def __init__(self, id, nombre, email, telefono, envio, direccion, precio_total, timestamp = None, country = 'Uruguay', status = 'Pendiente'):
@@ -168,8 +188,8 @@ class Orders:
     def get_products(self):
         rows = db.execute('''
                 SELECT op.product_id, op.cantidad, p.name, p.price FROM order_products op
-                          JOIN products p ON op.product_id = p.id
-                          WHERE op.order_id = ?
+                        JOIN products p ON op.product_id = p.id
+                        WHERE op.order_id = ?
                 ''', self.id)
         return [{'product_id': row['product_id'], 'cantidad': row['cantidad'], 'name': row['name'], 'price': row['price']} for row in rows]
 

@@ -31,8 +31,7 @@
 
   <script type="module">
     import { formatCurrency, parseCurrency, drawSubtotal, getCount, updateCart } from '../static/js/utils.js';
-
-
+    import { Producto, Carrito } from '../static/js/cart.js';
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -55,41 +54,41 @@
         });
       }
 
-      const addToCartBtn = document.querySelector('.addBtn');
-      const quantity = document.querySelector('.product-details input');
-      const img = document.querySelector('.main-image').src;
-      const price = parseFloat(parseCurrency(document.querySelector('.price').textContent));
+      // Obtengo los datos del producto y creo un nuevo producto con class Producto
 
-      addToCartBtn.addEventListener('click', () => {
-        const PRODUCT = {
-          id: document.querySelector('.product-details').dataset.id,
-          title: document.querySelector('.title').textContent,
-          price: price,
-          quantity: parseInt(quantity.value),
-          image: img
-        }
+      addToCartBtn.addEventListener('click', async () => {
+        const productID = document.querySelector(".product-details").getAttribute("data-id");
+        const response = await fetch(`/get/${productID}`);
+        if (response.ok) {
+          const data = await response.json();
+          // Aquí puedes crear el producto y agregarlo al carrito
+          let producto;
+          if (data.type === 'salsa') {
+            producto = new Salsa(data.id, data.title, data.price, 1);
+          } else if (data.type === 'merch') {
+            producto = new Merch(data.id, data.title, data.price, 1);
+          } else {
+            producto = new Producto(data.id, data.title, data.price, 1);
+          }
 
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingProductIndex = cart.findIndex(item => item.id === PRODUCT.id);
-        
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].quantity += PRODUCT.quantity;
+          const cartCookie = document.cookie.split('; ').find(row => row.startsWith('cart='));
+          const { products: cartProducts = [], cost: cartCost = 0, count: cartCount = 0 } = cartCookie ? JSON.parse(decodeURIComponent(cartCookie.split('=')[1])) : {};
+          const carrito = new Carrito(cartProducts, cartCost, cartCount);
+          try {
+            carrito.addItem(producto);
+          }
+          catch(e) {
+            console.log("Error al agregar un producto al carrito")
+          }
+          // El resto del código se ejecuta después de la respuesta exitosa
+          document.querySelector('.cart-count').innerHTML = carrito.count;
+          document.querySelector('.cart-modal').classList.add('open');
+          document.querySelector('.flex-container').classList.add('opacity');
         } else {
-          cart.push(PRODUCT);
+          // Manejar error si la petición falla
+          alert('No se pudo agregar el producto al carrito.');
+          return;
         }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        const updateCookie = fetch('/add_to_cart', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(PRODUCT)
-        });
-        let count = getCount(cart);
-        updateCart(cart);
-        document.querySelector('.cart-count').innerHTML = count;
-        document.querySelector('.cart-modal').classList.add('open');
-        document.querySelector('.flex-container').classList.add('opacity');
       })
     });
   </script>
