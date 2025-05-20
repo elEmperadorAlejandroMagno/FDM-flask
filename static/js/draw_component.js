@@ -62,7 +62,9 @@ function drawSubtotal(cartCost) {
 
 function drawCartCount(cartCount) {
   const count = cartCount || 0;
-  document.querySelector('.cart-count').textContent = count;
+  if (count <= 0) {
+    return
+  } else document.querySelector('.cart-count').textContent = count;
 }
 
 export function updateCart(cart) {
