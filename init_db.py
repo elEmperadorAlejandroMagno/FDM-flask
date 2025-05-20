@@ -12,7 +12,10 @@ def main():
       price REAL NOT NULL,
       stock INTEGER DEFAULT 0,
       description TEXT,
-      category TEXT
+      category CHECK(category IN ('salsa', 'merch', 'otros')),
+      talla CHAR(10),
+      color TEXT,
+      spicy_level CHECK(spicy_level IN ('alto', 'medio', 'bajo', 'nada'))
   )
   ''')
 
@@ -38,7 +41,7 @@ def main():
       country TEXT DEFAULT 'Uruguay',
       status TEXT DEFAULT 'Pendiente',
       precio_total REAL,
-      timestamp TEXT
+      timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
   ''')
 

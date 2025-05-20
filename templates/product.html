@@ -58,6 +58,8 @@
 
       addToCartBtn.addEventListener('click', async () => {
         const productID = document.querySelector(".product-details").getAttribute("data-id");
+        // Abrir modal de carga
+        console.log("modal de carga abierto");
         const response = await fetch(`/get/${productID}`);
         if (response.ok) {
           const data = await response.json();
@@ -81,6 +83,8 @@
             console.log("Error al agregar un producto al carrito")
           }
           // El resto del código se ejecuta después de la respuesta exitosa
+          // cerrar modal de carga
+          console.log("modal de carga cerrado");
           document.querySelector('.cart-count').innerHTML = carrito.count;
           document.querySelector('.cart-modal').classList.add('open');
           document.querySelector('.flex-container').classList.add('opacity');

@@ -235,3 +235,22 @@ class Orders:
             return None
         order = Orders(row['id'], row['nombre'], row['email'], row['telefono'], row['envio'], row['direccion'], row['precio_total'], row['timestamp'], row['country'], row['status'])
         return order
+    
+
+class User:
+    def __init__(self, id, username, password, email, is_admin = 0):
+        self.id = id or str(uuid.uuid4())
+        self.username = username
+        self.password = password
+        self.email = email
+        self.is_admin = is_admin
+
+    def save_to_db(self):
+        exist_user = db.execute("SELECT * FROM users WHERE id = ?", self.id)
+        if exist_user:
+            db.execute("UPDATE users SET username = ?, password = ?, email = ?, is_admin = ? WHERE id = ?", 
+                    self.username, self.password, self.email, self.is_admin, self.id)
+        else:
+            db.execute('''INSERT INTO users (id, username, password, email, is_admin) 
+                    VALUES(?, ?, ?, ?, ?)''', 
+                    self.id, self.username, self.password, self.email, self.is_admin)

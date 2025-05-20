@@ -218,8 +218,8 @@ def login():
         return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
         session['user_id'] = user[0]['id']
-        session['user_role'] = user[0]['role']
-        if session.get('user_role') != 'admin':
+        session['user_role'] = user[0]['is_admin']
+        if session.get('user_role') != 1:
           return redirect('/myOrders')
         else:
           return redirect('/adminBoard')
@@ -237,7 +237,7 @@ def logout():
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
-  if session.get('user_role') != 'admin':
+  if session.get('user_role') != 1:
     return redirect('/myOrders')
   if request.method == 'GET':
       return render_template('panel.html', URL= URL)
@@ -246,7 +246,7 @@ def panel_admin():
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-    if session.get('user_role') != 'admin':
+    if session.get('user_role') != 1:
         return redirect('/myOrders')
     
     if request.method == 'GET':
@@ -344,7 +344,7 @@ def panel_orders():
 @app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
-  if session.get('user_role') != 'admin':
+  if session.get('user_role') != 1:
     return redirect('/myOrders')
   if request.method == 'GET':
     try:
@@ -436,7 +436,7 @@ def complete_order(id):
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
-  if session.get('user_role') != 'admin':
+  if session.get('user_role') != 1:
     return redirect('/myOrders')
   
   if request.method == 'GET':
@@ -465,7 +465,7 @@ def panel_products():
 @app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
-  if session.get('user_role') != 'admin':
+  if session.get('user_role') != 1:
     return redirect('/myOrders')
 
   if request.method == 'GET':
@@ -491,7 +491,7 @@ def panel_product_by_ID(id):
 @app.route('/adminBoard/product/<string:id>', methods = ['PUT'])
 @login_required
 def update_single_field(id):
-  if session.get('user_role') == 'admin':
+  if session.get('user_role') == 1:
     data = request.get_json()
     if data:
       is_updated = update_single_field(id, field = data['field'], value = data['value'])
