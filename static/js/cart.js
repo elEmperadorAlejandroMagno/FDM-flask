@@ -1,32 +1,3 @@
-function generateId() {
-  return '_' + Math.random().toString(36).substr(2, 9);
-}
-
-class Producto{
-  constructor(name, price, quantity) {
-    this.id = generateId(); //provisional, posible id repetido
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
-  }
-  showProducto(){
-    return `${this.name}, ${this.price}, ${this.quantity}`
-  }
-}
-
-class Comestible extends Producto{
-  constructor(name, price, quantity, spiciness) {
-    super(name, price, quantity);
-    this.spiciness = spiciness;
-  }
-}
-class Merch extends Producto{
-  constructor(name, price, quantity, size) {
-    super(name, price, quantity);
-    this.size = size;
-  }
-}
-
 class Carrito {
   constructor(plist= [], cost= 0, count= 0) {
     this.products = plist;

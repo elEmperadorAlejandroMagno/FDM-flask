@@ -107,12 +107,12 @@ header {
   padding-left: 20px;
   width: 55px;
   height: 55px;
-  background-image: url(../image/assets/iG-icon-white.png);
+  background-image: url(/static/images/assets/iG-icon-white.png);
   background-size: cover;
   transition: all 0.8s ease;
   &:hover {
     cursor: pointer;
-    background-image: url(../image/assets/IG-icon-green.png);
+    background-image: url(/static/images/assets/IG-icon-green.png);
   }
 }
 
@@ -205,7 +205,7 @@ header {
 }
 
 .tienda-container{
-  background-image: url(../image/backgrounds/Fondo_extendido.png);
+  background-image: url(/static/images/backgrounds/Fondo_extendido.png);
   background-size: cover;
   width: 100%;
   text-align: center;
@@ -471,6 +471,10 @@ hr {
     cursor: pointer;
   }
 }
+.full-cart-btn a {
+  text-decoration: none;
+  color: var(--black-text-color);
+}
 
 .cart-modal.open{
   right: 0;
@@ -574,6 +578,7 @@ hr {
   align-items: center;
 }
 
+/*! BOOK CSS */
 .book-container {
   width: 770px; /* Adjust width to account for book padding */
   height: 555px; /* Adjust height to account for book padding */
@@ -620,19 +625,19 @@ hr {
 
 #prev {
   margin-right: 20px;
-  background-image: url(/static/image/assets/Flechita\(2\).png);
+  background-image: url(/static/images/assets/Flechita\(2\).png);
   background-size: cover;
   &:hover {
-    background-image: url(/static/image/assets/Flechita\(2\)Hover.png);
+    background-image: url(/static/images/assets/Flechita\(2\)Hover.png);
   }
 }
 
 #next {
   margin-left: 20px;
-  background-image: url(/static/image/assets/Flechita\(1\).png);
+  background-image: url(/static/images/assets/Flechita\(1\).png);
   background-size: cover;
   &:hover {
-    background-image: url(/static/image/assets/Flechita\(1\)Hover.png);
+    background-image: url(/static/images/assets/Flechita\(1\)Hover.png);
   }
 }
 
