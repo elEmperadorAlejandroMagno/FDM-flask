@@ -54,66 +54,22 @@ export function parseCurrency(value) {
   return parseFloat(value.replace(/[^0-9.-]+/g,""));
 }
 
-export function getCount(cart) {
-  if (cart.length === 0) {
-    return 0;
-  }
-  return cart.reduce((acc, item) => {
-    const quantity = Number(item.quantity);
-    return acc + (isNaN(quantity) ? 0 : quantity);
-  }, 0);
+function drawSubtotal(cartCost) {
+  const subtotal = cartCost || 0;
+  let cartSubtotal = document.getElementById('subtotal');
+  cartSubtotal.innerHTML = formatCurrency(subtotal);
 }
 
-export function drawSubtotal(cart) {
-  let cartSubtotal = document.querySelector('#subtotal');
-  let subtotal = cart["cost"];
-  if (subtotal === null) {
-    subtotal = 0;
-  }
-  cartSubtotal.innerHTML = formatCurrency(subtotal);
-  return subtotal;
+function drawCartCount(cartCount) {
+  const count = cartCount || 0;
+  document.querySelector('.cart-count').textContent = count;
 }
 
 export function updateCart(cart) {
   cart = JSON.parse(localStorage.getItem('cart')) || [];
   drawCartModal(cart);
-  drawSubtotal(cart);
-  const count = cart["count"];
-  document.querySelector('.cart-count').textContent = count;
-  addInputEventListeners(cart);
-}
-
-function addInputEventListeners(cart) {
-  const inputNumElements = document.querySelectorAll('.input-num');
-  inputNumElements.forEach(inputNum => {
-    inputNum.addEventListener('change', () => {
-      const id = inputNum.closest('.table-item').dataset.id;
-      const product = cart.find(item => item.id === id);
-      if (product) {
-        product.quantity = parseInt(inputNum.value);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCart(cart);
-
-        // Actualizar la cookie en el servidor
-        const body = { id: id, quantity: product.quantity };
-        fetch('/update_cart', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body)
-        })
-        .then(response => response.json())
-        .then(data => {
-          document.querySelector('#subtotal').textContent = formatCurrency(data.subtotal);
-          document.querySelector('#total').textContent = formatCurrency(data.total);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-      }
-    });
-  });
+  drawSubtotal(cart["cost"]);
+  drawCartCount(cart["count"]);
 }
 
 //? ADMIN PANEL FUNCTIONS */
