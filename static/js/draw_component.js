@@ -1,37 +1,28 @@
+import {
+  createEmptyCartRow,
+  createCartItemRow,
+  createOrderRow,
+  createProductRow,
+  createAddProductForm,
+  createViewProductModal,
+  createEditProductForm,
+  createAddOrderForm,
+  createViewOrderModal,
+  createEditOrderForm
+} from './ui.js';
+
 //? CLIENT FUNCTIONS */
 export function drawCartModal(cart) {
   const cartTable = document.querySelector('.table-body');
+  cartTable.innerHTML = ''; // Limpia la tabla
+
   if (cart.length === 0) {
-    // const cartBody = document.querySelector('.article-container');
-    cartTable.innerHTML = `
-    <tr>
-      <td colspan="2">
-        <div class="empty-cart">
-          <h3>Tu carrito esta vacío</h3>
-        </div>
-      </td>
-    </tr>`;
+    cartTable.appendChild(createEmptyCartRow());
   } else {
-    const CART_ITEM = cart.map(item => `
-      <tr class="white-space"></tr>
-        <tr class="cart-item table-item" id="product-item" data-id="${item.id}">
-          <td>
-            <div class="imgCartModalContainer">
-              <img src="${item.image}" alt="${item.title}">
-            </div>
-          </td>
-          <td>
-            <div class="cart-modal-info">
-              <h3>${item.title}</h3>
-              <p>${formatCurrency(item.price)}</p>
-              <input class="input-num" type="number" min="1" max="9" value="${item.quantity}">
-            </div>
-          </td>
-        </tr>
-        <tr class="white-space"></tr>
-        <tr class="table-group-divider"></tr>
-      `).join('');
-    cartTable.innerHTML = CART_ITEM;
+    cart.forEach(item => {
+      const rows = createCartItemRow(item);
+      rows.forEach(row => cartTable.appendChild(row));
+    });
   }
 }
 
@@ -78,98 +69,202 @@ export function updateCart(cart) {
 
 export function drawOrdersTable(orders) {
   const ordersContainer = document.querySelector('.main');
-  orders ? orders : orders = [];
-  ordersContainer.innerHTML = `
-      <div class="table-container">
-          <div class="col">
-            <div class="header">
-              <button type="button" class="btn addBtn" id="addNewOrderBtn"><i class="fa-solid fa-plus"></i>Agregar Pedido</button>
-            </div>
-            ${orders.length === 0 
-              ? 
-              '<h3 style="text-align: center;">No hay pedidos</h3>' 
-              :
-              `<table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Corréo</th>
-                  <th scope="col">Productos</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Aquí van los pedidos -->
-                ${orders.map(order => `
-                    <tr>
-                      <th scope="row" class="table-id">${order.order_id}</th>
-                      <td>${order.nombre}</td>
-                      <td class="orderEmailTable custom-width">${order.email}</td>
-                      <td class="table-product-list">
-                      ${order.productos.map(producto => `<span class="orderProductTable"><p>${producto.product_title}</p><p>x${producto.cantidad}</p></span>`).join('')}
-                      </td>
-                      <td>${formatCurrency(order.precio_total)}</td>
-                      <td>${order.status}</td>
-                      <td>${order.fecha}</td>
-                      <td class="actions">
-                        ${order.status === 'pendiente' ? `<button type="button" class="finalBtn" id="completeOrder" data-id=${order.order_id}>Completar</button>` : ''}
-                        <button type="button" class="btn btn-danger" id="del-order" data-id=${order.order_id}><i class="fa-regular fa-trash-can"></i></button>
-                        <button type="button" class="btn btn-dark" id="viewOrderBtn" data-id=${order.order_id}>Abrir</button>
-                      </td>
-                    </tr>
-                `).join('')}
-              </tbody>
-            </table>` 
-            }
-          </div>
-        </div>
+  ordersContainer.innerHTML = '';
+
+  const tableContainer = document.createElement('div');
+  tableContainer.className = "table-container";
+  const col = document.createElement('div');
+  col.className = "col";
+
+  // Header
+  const header = document.createElement('div');
+  header.className = "header";
+  const addBtn = document.createElement('button');
+  addBtn.type = "button";
+  addBtn.className = "btn addBtn";
+  addBtn.id = "addNewOrderBtn";
+  addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>Agregar Pedido';
+  header.appendChild(addBtn);
+  col.appendChild(header);
+
+  if (!orders || orders.length === 0) {
+    const h3 = document.createElement('h3');
+    h3.style.textAlign = "center";
+    h3.textContent = "No hay pedidos";
+    col.appendChild(h3);
+  } else {
+    const table = document.createElement('table');
+    table.className = "table";
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Corréo</th>
+        <th scope="col">Productos</th>
+        <th scope="col">Total</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Acciones</th>
+      </tr>
     `;
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    orders.forEach(order => {
+      tbody.appendChild(createOrderRow(order, formatCurrency));
+    });
+    table.appendChild(tbody);
+    col.appendChild(table);
+  }
+
+  tableContainer.appendChild(col);
+  ordersContainer.appendChild(tableContainer);
 }
 
 export function drawProductsTable(products, url) {
   const productsContainer = document.querySelector('.main');
-  productsContainer.innerHTML = `
-    <div class="table-container">
-      <div class="col">
-        <div class="header">
-          <button type="button" class="btn addBtn" id="addNewProductBtn"><i class="fa-solid fa-plus"></i>Agregar Producto</button>
-        </div>
-        <table class="table">
-          <thead>
-            <tr class="align-content-center text-center">
-              <th scope="col">ID</th>
-              <th scope="col">Imagen</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Aquí van los productos -->
-            ${products.map(product => `
-              <tr class="product-row text-center">
-                <th scope="row" class="table-id align-content-center">${product.id}</th>
-                <td class="align-content-center">
-                  <div class="table-img"> 
-                    <img src="${url}${product.images.split(',')[0]}" alt="${product.title}">
-                  </div>
-                </td>
-                <td class="align-content-center">${product.title}</td>
-                <td class="align-content-center">${formatCurrency(product.price)}</td>
-                <td class="align-content-center">
-                  <button type="submit" class="btn btn-danger" id="del-product" data-id=${product.id}><i class="fa-regular fa-trash-can"></i></button>
-                  <button type="button" class="btn btn-dark" id="viewProductBtn" data-id=${product.id}>Abrir</button>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
+  productsContainer.innerHTML = '';
+
+  const tableContainer = document.createElement('div');
+  tableContainer.className = "table-container";
+  const col = document.createElement('div');
+  col.className = "col";
+
+  // Header
+  const header = document.createElement('div');
+  header.className = "header";
+  const addBtn = document.createElement('button');
+  addBtn.type = "button";
+  addBtn.className = "btn addBtn";
+  addBtn.id = "addNewProductBtn";
+  addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>Agregar Producto';
+  header.appendChild(addBtn);
+  col.appendChild(header);
+
+  const table = document.createElement('table');
+  table.className = "table";
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr class="align-content-center text-center">
+      <th scope="col">ID</th>
+      <th scope="col">Imagen</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Acciones</th>
+    </tr>
   `;
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  products.forEach(product => {
+    tbody.appendChild(createProductRow(product, url, formatCurrency));
+  });
+  table.appendChild(tbody);
+  col.appendChild(table);
+
+  tableContainer.appendChild(col);
+  productsContainer.appendChild(tableContainer);
 }
 
+/* PRODUCT MODAL */
+export function renderAddProductModal(modal, title, body) {
+    title.innerText = 'Add Product';
+    body.innerHTML = ''; // Limpia el contenido
+    const form = createAddProductForm();
+    body.appendChild(form);
+    modal.show();
+}
+export function renderViewProductModal(product, url, modal, title, body) {
+  title.innerText = 'Ver Productos';
+  body.innerHTML = '';
+  const viewModal = createViewProductModal(product, url, formatCurrency);
+  body.appendChild(viewModal);
+  modal.show();
+}
+export function renderEditProductModal(product, id, title, body) {
+    title.innerText = 'Editar Producto';
+    body.innerHTML = ''; // Limpia el contenido
+    const form = createEditProductForm(product, id);
+    body.appendChild(form);
+}
+
+/* ORDER MODAL */
+export function renderAddOrderModal(modal, title, body) {
+    title.innerText = 'Add Order';
+    body.innerHTML = '';
+    const form = createAddOrderForm();
+    body.appendChild(form);
+    modal.show();
+
+    // Delegación de eventos para agregar productos
+    body.addEventListener('click', (event) => {
+        if (event.target && event.target.id === 'addProductToOrder') {
+            const productListContainer = body.querySelector('.productListContainer');
+            const span = document.createElement('span');
+            const labelId = document.createElement('label');
+            labelId.className = "align-self-center";
+            labelId.textContent = "id";
+            const inputProductId = document.createElement('input');
+            inputProductId.type = "text";
+            inputProductId.className = "form-control";
+            inputProductId.name = "product_id[]";
+            inputProductId.placeholder = "Id del producto: 12fa12-asfaf-12";
+            inputProductId.required = true;
+            const inputProductQty = document.createElement('input');
+            inputProductQty.type = "number";
+            inputProductQty.className = "form-control";
+            inputProductQty.name = "product_quantity[]";
+            inputProductQty.min = 1;
+            inputProductQty.max = 9;
+            inputProductQty.value = 1;
+            span.appendChild(labelId);
+            span.appendChild(inputProductId);
+            span.appendChild(inputProductQty);
+            productListContainer.appendChild(span);
+        }
+    });
+}
+export function renderViewOrderModal(order, modal, title, body) {
+  title.innerText = 'Ver Orden';
+  body.innerHTML = '';
+  const viewOrderModal = createViewOrderModal(order, formatCurrency);
+  body.appendChild(viewOrderModal);
+  modal.show();
+}
+export function renderEditOrderModal(order, id, title, body) {
+    title.innerText = 'Editar Orden';
+    body.innerHTML = '';
+    const editOrderModal = createEditOrderForm(order, id);
+    body.appendChild(editOrderModal);
+
+    // Delegación de eventos para agregar productos
+    body.addEventListener('click', (event) => {
+        if (event.target && event.target.id === 'addProductToOrder') {
+            const productListContainer = body.querySelector('.productListContainer');
+            const span = document.createElement('span');
+            span.className = "d-flex justify-content-between";
+            const labelId = document.createElement('label');
+            labelId.className = "align-self-center";
+            labelId.textContent = "id";
+            const inputProductId = document.createElement('input');
+            inputProductId.className = "form-control text-center";
+            inputProductId.type = "text";
+            inputProductId.name = "product_id[]";
+            inputProductId.placeholder = "ej 456awd-4654awd-bdawr";
+            inputProductId.required = true;
+            const inputProductQty = document.createElement('input');
+            inputProductQty.className = "form-control";
+            inputProductQty.type = "number";
+            inputProductQty.name = "product_quantity[]";
+            inputProductQty.placeholder = "0";
+            inputProductQty.min = 1;
+            inputProductQty.max = 9;
+            inputProductQty.required = true;
+            span.appendChild(labelId);
+            span.appendChild(inputProductId);
+            span.appendChild(inputProductQty);
+            productListContainer.appendChild(span);
+        }
+    });
+}
