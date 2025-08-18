@@ -10,7 +10,7 @@ db = SQL(os.getenv('DATA_BASE'))
 
 class Product:
     
-    def _init_(self, id, name, price, stock, description, category):
+    def __init__(self, id, name, price, stock, description, category):
         self.id = id or str(uuid.uuid4())
         self.name = name
         self.price = price
@@ -19,8 +19,13 @@ class Product:
         self.category = category
         self.images = self.get_images()
 
-    def get_images(id):
-        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", id)
+    def get_images(self):
+        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", self.id)
+        return [image['image'] for image in images]
+        
+    @staticmethod
+    def get_images_static(product_id):
+        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", product_id)
         return [image['image'] for image in images]
 
     def add_image(self, image):
@@ -90,11 +95,12 @@ class Product:
                 products[row['id']] = {
                     'id': row['id'],
                     'name': row['name'],
+                    'title': row['name'],  # Mapeo para compatibilidad con template
                     'price': row['price'],
                     'stock': row['stock'],
                     'description': row['description'],
                     'category': row['category'],
-                    'images': Product.get_images(row['id'])
+                    'images': Product.get_images_static(row['id'])
                 }
         return list(products.values())
     @staticmethod
@@ -111,11 +117,12 @@ class Product:
                 products[row['id']] = {
                     'id': row['id'],
                     'name': row['name'],
+                    'title': row['name'],  # Mapeo para compatibilidad con template
                     'price': row['price'],
                     'stock': row['stock'],
                     'description': row['description'],
                     'category': row['category'],
-                    'images': Product.get_images(row['id'])
+                    'images': Product.get_images_static(row['id'])
                 }
         return list(products.values())
     @staticmethod
@@ -131,13 +138,14 @@ class Product:
             return None
         
         product = {
-                    'id': row['id'],
-                    'name': row['name'],
-                    'price': row['price'],
-                    'stock': row['stock'],
-                    'description': row['description'],
-                    'category': row['category'],
-                    'images': Product.get_images(row['id'])
+                    'id': row[0]['id'],
+                    'name': row[0]['name'],
+                    'title': row[0]['name'],  # Mapeo para compatibilidad con template
+                    'price': row[0]['price'],
+                    'stock': row[0]['stock'],
+                    'description': row[0]['description'],
+                    'category': row[0]['category'],
+                    'images': Product.get_images_static(row[0]['id'])
                 }
         return product
     

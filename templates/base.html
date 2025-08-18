@@ -95,6 +95,11 @@
   </section>
 </footer>
 </div>
+
+<!-- Loading overlay y toast -->
+<div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div></div>
+<div id="toast" class="toast"></div>
+
  <!-- Modal de carrito -->
 <div class="cart-modal">
   <div class="cart-modal-header">
@@ -134,8 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const URL = '{{ FDM_URL }}';
   
   // Renderizar cart modal
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  updateCart(cart);
+  updateCart();
 
   const userCurrentUrl = window.location.href;
   const HomeURL = `${URL}/home`;

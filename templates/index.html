@@ -34,28 +34,28 @@
           <div class="catalogo-salsas" id="salsas">
             {% for item in salsas %}
               <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
-              <div class="sauce-container producto" data-id="{{ item.id }}">
-                <div class="img-product-container"></div>
-                <img src="{{ 'obtener url de las imagenes' }}" alt="{{ item.title }}" data-images="{{ item.images }}" class="sauce-image">
+                <div class="sauce-container producto" data-id="{{ item.id }}">
+                  <div class="img-product-container">
+                  <img src="{{ item.images[0] }}" alt="{{ item.title }}" data-images="{{ item.images | join(',') }}" class="sauce-image">
+                  </div>
+                  <div class="detail-container" style="color: #000;">
+                    <h3 class="title">{{ item.title }}</h3>
+                    <div class="divHrLine">
+                      <hr class="hrLine">
+                    </div>
+                    <p class="price">{{ item.price | uru }}</p>
+                  </div>
                 </div>
-                <div class="detail-container" style="color: #000;">
-                <h3 class="title">{{ item.title }}</h3>
-                <div class="divHrLine">
-                  <hr class="hrLine">
-                </div>
-                <p class="price">{{ item.price | uru }}</p>
-                </div>
-              </div>
               </a>
             {% endfor %}
-            </div>
-      </div>
+          </div>
+        </div>
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merch">
           {% for item in merch %}
             <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
               <div class="merch-container producto" data-id="{{ item.id }}">
-                <img id="#a104" class="img-product-merchant" src="{{ 'obtener url de las imagenes' }}" alt="{{ item.title }}">
+                <img id="#a104" class="img-product-merchant" src="{{ item.images[0] }}" alt="{{ item.title }}">
                 <div class="title">{{ item.title }}</div>
                 <div class="divHrLine">
                   <hr class="hrLine">
@@ -182,15 +182,16 @@
       products.forEach(product => {
         const imgElement = product.querySelector('.sauce-image');
         const images = imgElement.dataset.images.split(',');
+        console.log(images);
 
         product.addEventListener('mouseenter', () => {
           if (images.length > 1) {
-            imgElement.src = FDM_URL + images[1];
+            imgElement.src = images[1];
           }
         });
 
         product.addEventListener('mouseleave', () => {
-          imgElement.src = FDM_URL + images[0];
+          imgElement.src = images[0];
         });
       });
 

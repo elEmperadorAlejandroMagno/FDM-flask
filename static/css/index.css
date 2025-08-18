@@ -349,6 +349,47 @@ hr {
 }
 
 
+/* FEEDBACK UI */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 11000;
+}
+.loading-overlay.open { display: flex; }
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid #eee;
+  border-top-color: var(--btn-background-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-family: SofiaSans;
+  opacity: 0;
+  transition: opacity .3s ease, bottom .3s ease;
+  z-index: 11001;
+}
+.toast.show { opacity: 1; bottom: 32px; }
+.toast.success { background: #198754; }
+.toast.error { background: #dc3545; }
+.toast.info { background: #222; }
+
 /* CART MODAL  */
 /*! PENDIENTE !*/
 

@@ -52,17 +52,22 @@ function drawSubtotal(cartCost) {
 }
 
 function drawCartCount(cartCount) {
-  const count = cartCount || 0;
+  const el = document.querySelector('.cart-count');
+  if (!el) return;
+  const count = Number(cartCount) || 0;
   if (count <= 0) {
-    return
-  } else document.querySelector('.cart-count').textContent = count;
+    el.textContent = '';
+  } else {
+    el.textContent = String(count);
+  }
 }
 
-export function updateCart(cart) {
-  cart = JSON.parse(localStorage.getItem('cart')) || [];
-  drawCartModal(cart);
-  drawSubtotal(cart["cost"]);
-  drawCartCount(cart["count"]);
+export function updateCart() {
+  const data = JSON.parse(localStorage.getItem('cart')) || { products: [], cost: 0, count: 0 };
+  const products = Array.isArray(data.products) ? data.products : [];
+  drawCartModal(products);
+  drawSubtotal(data.cost);
+  drawCartCount(data.count);
 }
 
 //? ADMIN PANEL FUNCTIONS */

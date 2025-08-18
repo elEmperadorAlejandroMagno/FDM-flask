@@ -4,11 +4,11 @@
   
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ url }}{{ product.images.split(',')[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ url }}{{ product.images.split(',')[0] }}">
+      <img src="{{ product.images[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ product.images[0] }}">
       <div class="extraImgs">
         {% if product.images %}
-          {% for img in product.images.split(',') %}
-            <img src="{{ url }}{{ img }}" alt="{{ product.title }}" class="extra-image">
+          {% for img in product.images %}
+            <img src="{{ img }}" alt="{{ product.title }}" class="extra-image">
           {% endfor %}
         {% endif %}
       </div>
@@ -30,8 +30,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
   <script type="module">
-    import { formatCurrency, parseCurrency, drawSubtotal, getCount, updateCart } from '../static/js/draw_component.js';
+    import { updateCart } from '../static/js/draw_component.js';
     import { Producto, Carrito } from '../static/js/cart.js';
+    import { showLoading, hideLoading, showToast } from '../static/js/feedback.js';
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -54,46 +55,56 @@
         });
       }
 
-      // Obtengo los datos del producto y creo un nuevo producto con class Producto
+      const addBtn = document.querySelector('.addBtn');
+      const qtyInput = document.querySelector('.product-details input[type="number"]');
+      const productID = document.querySelector('.product-details')?.getAttribute('data-id');
+      const URL = '{{ url }}';
 
-      addToCartBtn.addEventListener('click', async () => {
-        const productID = document.querySelector(".product-details").getAttribute("data-id");
-        // Abrir modal de carga
-        console.log("modal de carga abierto");
-        const response = await fetch(`/get/${productID}`);
-        if (response.ok) {
-          const data = await response.json();
-          // Aquí puedes crear el producto y agregarlo al carrito
-          let producto;
-          if (data.type === 'salsa') {
-            producto = new Salsa(data.id, data.title, data.price, 1);
-          } else if (data.type === 'merch') {
-            producto = new Merch(data.id, data.title, data.price, 1);
-          } else {
-            producto = new Producto(data.id, data.title, data.price, 1);
+      function syncWithServer(products) {
+        return fetch('/cart-page', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cart: products })
+        }).then(r => r.json());
+      }
+
+      if (addBtn && productID) {
+        addBtn.addEventListener('click', async () => {
+          showLoading();
+          const response = await fetch(`/product/${productID}`);
+          if (!response.ok) {
+            hideLoading();
+            showToast('No se pudo obtener el producto', 'error');
+            return;
           }
+          const result = await response.json();
+          if (result.status !== 'success' || !result.product) {
+            alert('Producto no encontrado.');
+            return;
+          }
+          const p = result.product;
+          const qty = Math.max(1, parseInt(qtyInput?.value || '1', 10) || 1);
+          const image = p.images ? (URL + p.images.split(',')[0]) : null;
+          const item = new Producto(p.id, p.title, p.price, qty, image);
 
-          const cartCookie = document.cookie.split('; ').find(row => row.startsWith('cart='));
-          const { products: cartProducts = [], cost: cartCost = 0, count: cartCount = 0 } = cartCookie ? JSON.parse(decodeURIComponent(cartCookie.split('=')[1])) : {};
-          const carrito = new Carrito(cartProducts, cartCost, cartCount);
+          const carrito = Carrito.fromStorage();
+          carrito.addItem(item);
+
+          // Sincronizar subtotal/total y refrescar UI
           try {
-            carrito.addItem(producto);
-          }
-          catch(e) {
-            console.log("Error al agregar un producto al carrito")
-          }
-          // El resto del código se ejecuta después de la respuesta exitosa
-          // cerrar modal de carga
-          console.log("modal de carga cerrado");
-          document.querySelector('.cart-count').innerHTML = carrito.count;
-          document.querySelector('.cart-modal').classList.add('open');
-          document.querySelector('.flex-container').classList.add('opacity');
-        } else {
-          // Manejar error si la petición falla
-          alert('No se pudo agregar el producto al carrito.');
-          return;
-        }
-      })
+            await syncWithServer(carrito.products);
+          } catch (e) {}
+
+          // Actualizar modal del header y abrir modal
+          updateCart();
+          const cartModal = document.querySelector('.cart-modal');
+          const flexContainer = document.querySelector('.flex-container');
+          cartModal?.classList.add('open');
+          flexContainer?.classList.add('opacity');
+          hideLoading();
+          showToast('Producto agregado al carrito', 'success');
+        });
+      }
     });
   </script>
 
