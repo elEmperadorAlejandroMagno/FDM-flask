@@ -94,6 +94,19 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: python3 scripts/seed_products.py <path_to_products_json>")
         sys.exit(1)
+    
+    if sys.argv[1] == '--delete':
+        print("Deleting all products and images...")
+        db_url = os.getenv('DATA_BASE')
+        if not db_url:
+            print("DATA_BASE environment variable is not set in .env")
+            sys.exit(1)
+        
+        db = SQL(db_url)
+        db.execute("DELETE FROM product_images")
+        db.execute("DELETE FROM products")
+        print("All products and images deleted.")
+        return
 
     json_path = sys.argv[1]
     if not os.path.isfile(json_path):
