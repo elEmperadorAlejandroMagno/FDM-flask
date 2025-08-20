@@ -11,6 +11,16 @@ import json
 import os
 from dotenv import load_dotenv
 
+# Cargar cupones desde un JSON como fuente simulada
+COUPONS_FILE = os.path.join(os.path.dirname(__file__), 'utils', 'coupons.json')
+
+def load_coupons():
+  try:
+    with open(COUPONS_FILE, 'r') as f:
+      return json.load(f)
+  except Exception:
+    return []
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -67,66 +77,54 @@ def products_by_category(category):
   PRODUCTS = get_products_by_category(category)
   return render_template(TEMPLATES.INDEX, products = PRODUCTS, url = URL)
 
-@app.route('/add_to_cart', methods=['POST'])
-def add_to_cart():
-    if request.method == 'POST':
-        product = request.get_json()
-        cart_cookie = request.cookies.get('cart', '[]')
-        CART_ITEMS = json.loads(cart_cookie)
-        for item in CART_ITEMS:
-            if item['id'] == product['id']:
-                product['quantity'] += item['quantity']
-                break
-        subtotal = sumItemPrices(CART_ITEMS)
-        response = jsonify({'status': 'success', 'subtotal': subtotal})
-        response.set_cookie('subtotal', json.dumps(subtotal))
-        response.set_cookie('cart', json.dumps(CART_ITEMS))
-        return response
-
-@app.route('/update_cart', methods=['POST', 'GET'])
-def update_cart():
-  if request.method == 'POST':
-      data = request.get_json()
-      cart_cookie = request.cookies.get('cart', '[]')
-      CART_ITEMS = json.loads(cart_cookie)
-      for item in CART_ITEMS:
-        if item['id'] == data['id']:
-          item['quantity'] = data['quantity']
-          break
-      response = jsonify({ 'subtotal': sumItemPrices(CART_ITEMS), 'total': sumItemPrices(CART_ITEMS) })
-      response.set_cookie('cart', json.dumps(CART_ITEMS))
-      return response
-  if request.method == 'GET':
-    cart_cookie = request.cookies.get('cart', '[]')
-    CART_ITEMS = json.loads(cart_cookie)
-    subtotal = sumItemPrices(CART_ITEMS)
-    response = jsonify({ 'subtotal': subtotal})
-    return response
-    
-@app.route('/remove_from_cart', methods=['POST'])
-def remove_from_cart():
-    if request.method == 'POST':
-        id = request.form.get('id')
-        cart_cookie = request.cookies.get('cart', '[]')
-        CART_ITEMS = json.loads(cart_cookie)
-        for item in CART_ITEMS:
-            if item['id'] == id:
-                CART_ITEMS.remove(item)
-                break
-        response = redirect('/cart-page')
-        response.set_cookie('cart', json.dumps(CART_ITEMS))
-        return response
+@app.route('/product/<string:id>', methods=['GET'])
+def api_get_product_by_id(id):
+    product = get_product_by_id(id)
+    if product:
+      return jsonify({'status': 'success', 'product': product})
+    else:
+      return jsonify({'status': 'error', 'message': 'Product not found'}), 404
 
 @app.route('/cart-page', methods = ['POST', 'GET'])
 def get_cart_info():
   if request.method == 'POST':
-
     data = request.get_json()
-    cart = data.get('cart')
-    subtotal = sumItemPrices(cart)
-    response = jsonify({'status': 'success'})
+    cart = data.get('cart', [])
+    subtotal_raw = sumItemPrices(cart)
+    # aplicar cupón si está presente (reemplazo, sin acumular)
+    coupon_code = request.cookies.get('coupon')
+    coupons = load_coupons()
+    discount = 0.0
+    free_shipping = False
+    if coupon_code:
+      coupon = next((c for c in coupons if c.get('code') == coupon_code), None)
+      if coupon:
+        if coupon['type'] == 'percent':
+          discount = subtotal_raw * (float(coupon['value']) / 100.0)
+        elif coupon['type'] == 'fixed':
+          discount = float(coupon['value'])
+        elif coupon['type'] == 'shipping':
+          free_shipping = True
+    subtotal = max(0.0, subtotal_raw - discount)
+
+    # conservar el valor de envío actual (si existe)
+    envio_cookie = request.cookies.get('envio', '0')
+    try:
+      envio_val = float(envio_cookie)
+      envio_text = None
+    except Exception:
+      envio_val = 0.0
+      envio_text = envio_cookie if envio_cookie in ['Free', 'Por definir'] else None
+
+    if free_shipping:
+      envio_text = 'Free'
+      envio_val = 0.0
+
+    total = subtotal + (0 if envio_text else envio_val)
+    response = jsonify({'status': 'success', 'subtotal': subtotal, 'envio': envio_val, 'envioText': envio_text, 'total': total})
     response.set_cookie('cart', json.dumps(cart))
     response.set_cookie('subtotal', str(subtotal))
+    # mantener cookie de cupón tal como esté; este flujo no la cambia
     return response
   elif request.method == 'GET':
     cart_cookie = request.cookies.get('cart', '[]')
@@ -141,32 +139,102 @@ def get_cart_info():
 def get_envio():
   if request.method == 'POST':
       data = request.get_json()
-      envio = data.get('envio')
+      envio_raw = data.get('envio')
       cart_cookie = request.cookies.get('cart', '[]')
       subtotal_cookie = request.cookies.get('subtotal', '0')
       subtotal = float(subtotal_cookie)
       CART_ITEMS = json.loads(cart_cookie)
-      total = subtotal
-      if envio and envio.isdigit():
-        envio = float(envio)
-      elif envio in ['Free', 'Por definir']:
-        envio = 0
+
+      # Normalizar envío
+      envio_val = 0.0
+      envio_text = None
+      if isinstance(envio_raw, str) and envio_raw.isdigit():
+        envio_val = float(envio_raw)
+      elif envio_raw in ['Free', 'Por definir']:
+        envio_text = envio_raw
       else:
-        envio = 0
-      total += envio
-      response = jsonify({'total': total, 'subtotal': subtotal, 'envio': envio})
-      response.set_cookie('envio', str(envio))
+        try:
+          envio_val = float(envio_raw)
+        except Exception:
+          envio_val = 0.0
+
+      total = subtotal + (0 if envio_text else envio_val)
+      response = jsonify({'total': total, 'subtotal': subtotal, 'envio': envio_val, 'envioText': envio_text})
+      # Persistir cookie de envío como texto si aplica, numérico en caso contrario
+      response.set_cookie('envio', envio_text if envio_text else str(envio_val))
       return response
   elif request.method == 'GET':
       cart_cookie = request.cookies.get('cart', '[]')
       subtotal_cookie = request.cookies.get('subtotal', '0')
       subtotal = float(subtotal_cookie)
       CART_ITEMS = json.loads(cart_cookie)
-      total = subtotal
-      envio = request.cookies.get('envio', '0')
-      return render_template(TEMPLATES.CARRITO, cart=CART_ITEMS, envio=envio, options_envio=LISTA_ENVIOS, subtotal=subtotal, total=total)
+      envio_cookie = request.cookies.get('envio', '0')
+      try:
+        envio_val = float(envio_cookie)
+        total = subtotal + envio_val
+        envio_context = envio_val
+      except Exception:
+        # Texto 'Free' o 'Por definir'
+        total = subtotal
+        envio_context = envio_cookie
+      return render_template(TEMPLATES.CARRITO, cart=CART_ITEMS, envio=envio_context, options_envio=LISTA_ENVIOS, subtotal=subtotal, total=total)
       
    
+@app.route('/coupon', methods=['POST'])
+def apply_coupon():
+  data = request.get_json()
+  code = (data or {}).get('code', '').strip().upper()
+  cart_cookie = request.cookies.get('cart', '[]')
+  envio_cookie = request.cookies.get('envio', '0')
+  try:
+    cart_items = json.loads(cart_cookie)
+  except Exception:
+    cart_items = []
+  # Subtotal base SIEMPRE desde los items del carrito para reemplazar cupón anterior
+  subtotal = sumItemPrices(cart_items)
+
+  # resolver envío actual
+  try:
+    envio_val = float(envio_cookie)
+    envio_text = None
+  except Exception:
+    envio_val = 0.0
+    envio_text = envio_cookie if envio_cookie in ['Free', 'Por definir'] else None
+
+  coupons = load_coupons()
+  coupon = next((c for c in coupons if c.get('code') == code), None)
+  if not coupon:
+    return jsonify({ 'status': 'error', 'message': 'Cupón inválido' }), 400
+
+  discount = 0.0
+  free_shipping = False
+  if coupon['type'] == 'percent':
+    discount = subtotal * (float(coupon['value']) / 100.0)
+  elif coupon['type'] == 'fixed':
+    discount = float(coupon['value'])
+  elif coupon['type'] == 'shipping':
+    free_shipping = True
+  else:
+    return jsonify({ 'status': 'error', 'message': 'Tipo de cupón no soportado' }), 400
+
+  new_subtotal = max(0.0, subtotal - discount)
+  new_envio_text = 'Free' if free_shipping else envio_text
+  new_envio_val = 0.0 if free_shipping else (envio_val if not new_envio_text else 0.0)
+  total = new_subtotal + (0 if new_envio_text else new_envio_val)
+
+  response = jsonify({
+    'status': 'success',
+    'subtotal': new_subtotal,
+    'envio': new_envio_val,
+    'envioText': new_envio_text,
+    'total': total
+  })
+  # Persistir cookies subtotal/envio y cupón aplicado (reemplaza si ya había otro)
+  response.set_cookie('subtotal', str(new_subtotal))
+  response.set_cookie('envio', new_envio_text if new_envio_text else str(new_envio_val))
+  response.set_cookie('coupon', code)
+  return response
+
 @app.route('/checkout', methods=['POST', 'GET'])
 def checkout():
   if request.method == 'GET':
@@ -260,8 +328,10 @@ def login():
         return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
         session['user_id'] = user[0]['id']
-        session['user_role'] = user[0]['role']
-        if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+        session['user_role'] = user[0]['is_admin']
+        if session.get('user_role') != 1:
+>>>>>>> features
           return redirect('/myOrders')
         else:
           return redirect('/adminBoard')
@@ -279,7 +349,9 @@ def logout():
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
-  if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+  if session.get('user_role') != 1:
+>>>>>>> features
     return redirect('/myOrders')
   if request.method == 'GET':
       return render_template('panel.html', URL= URL)
@@ -288,7 +360,9 @@ def panel_admin():
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-    if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+    if session.get('user_role') != 1:
+>>>>>>> features
         return redirect('/myOrders')
     
     if request.method == 'GET':
@@ -386,7 +460,9 @@ def panel_orders():
 @app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
-  if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+  if session.get('user_role') != 1:
+>>>>>>> features
     return redirect('/myOrders')
   if request.method == 'GET':
     try:
@@ -478,7 +554,9 @@ def complete_order(id):
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
-  if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+  if session.get('user_role') != 1:
+>>>>>>> features
     return redirect('/myOrders')
   
   if request.method == 'GET':
@@ -507,7 +585,9 @@ def panel_products():
 @app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
-  if session.get('user_role') != 'admin':
+<<<<<<< HEAD
+  if session.get('user_role') != 1:
+>>>>>>> features
     return redirect('/myOrders')
 
   if request.method == 'GET':
@@ -533,11 +613,11 @@ def panel_product_by_ID(id):
 @app.route('/adminBoard/product/<string:id>', methods = ['PUT'])
 @login_required
 def update_single_field(id):
-  if session.get('user_role') == 'admin':
+<<<<<<< HEAD
+  if session.get('user_role') == 1:
     data = request.get_json()
     if data:
       is_updated = update_single_field(id, field = data['field'], value = data['value'])
       if not is_updated:
         return jsonify({'status': 'error', 'message': 'Error trying to update '})
       return jsonify({'status': 'success', 'message': 'Product updated successfully'})
-    

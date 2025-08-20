@@ -32,35 +32,35 @@
     </div>
       <div id="tienda" class="tienda-container">
           <div class="catalogo-salsas" id="salsas">
-            {% for sauce in sauces %}
-              <a class="productLink" href="{{ FDM_URL }}/product-page/{{ sauce.id }}">
-              <div class="sauce-container producto" data-id="{{ sauce.id }}">
+            {% for item in salsas %}
+              <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
+                <div class="sauce-container producto" data-id="{{ item.id }}">
                   <div class="img-product-container">
-                    <img src="{{ API_URL }}{{ sauce.images[0] }}" alt="{{ sauce.title }}" data-images="{{ sauce.images | join(',')}}" class="sauce-image">
+                  <img src="{{ item.images[0] }}" alt="{{ item.title }}" data-images="{{ item.images | join(',') }}" class="sauce-image">
                   </div>
                   <div class="detail-container" style="color: #000;">
-                    <h3 class="title">{{ sauce.title }}</h3>
+                    <h3 class="title">{{ item.title }}</h3>
                     <div class="divHrLine">
-                        <hr class="hrLine">
+                      <hr class="hrLine">
                     </div>
-                    <p class="price">{{ sauce.price | uru }}</p>
+                    <p class="price">{{ item.price | uru }}</p>
                   </div>
                 </div>
               </a>
             {% endfor %}
           </div>
-      </div>
+        </div>
       <div class="tienda-merchant">
         <div class="catalogo-merchant" id="merch">
-          {% for merch in merchandising %}
-            <a class="productLink" href="{{ FDM_URL }}/product-page/{{ merch.id }}">
-              <div class="merch-container producto" data-id="{{ merch.id }}">
-                <img id="#a104" class="img-product-merchant" src="{{ API_URL }}{{ merch.images[0] }}" alt="{{ merch.title }}">
-                <div class="title">{{ merch.title }}</div>
+          {% for item in merch %}
+            <a class="productLink" href="{{ FDM_URL }}/product-page/{{ item.id }}">
+              <div class="merch-container producto" data-id="{{ item.id }}">
+                <img id="#a104" class="img-product-merchant" src="{{ item.images[0] }}" alt="{{ item.title }}">
+                <div class="title">{{ item.title }}</div>
                 <div class="divHrLine">
                   <hr class="hrLine">
                 </div>
-                <div class="price">{{ merch.price | uru }}</div>
+                <div class="price">{{ item.price | uru }}</div>
               </div>
             </a>
           {% endfor %}
@@ -175,22 +175,23 @@
   {% endblock %}
   {% block script %}
   <script>
-      const API_URL = '{{ API_URL }}';
+      const FDM_URL = '{{ FDM_URL }}';
       // cambio de imagen de productos
       const products = document.querySelectorAll('.sauce-container');
 
       products.forEach(product => {
         const imgElement = product.querySelector('.sauce-image');
         const images = imgElement.dataset.images.split(',');
+        console.log(images);
 
         product.addEventListener('mouseenter', () => {
           if (images.length > 1) {
-            imgElement.src = API_URL + images[1];
+            imgElement.src = images[1];
           }
         });
 
         product.addEventListener('mouseleave', () => {
-          imgElement.src = API_URL + images[0];
+          imgElement.src = images[0];
         });
       });
 

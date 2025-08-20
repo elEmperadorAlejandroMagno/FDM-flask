@@ -111,6 +111,7 @@
               <input id="code" type="text" placeholder="Ingresa un código de promoción válido">
               <button class="btn-accept">ACEPTAR</button>
             </span>
+            <p id="appliedCouponLabel" class="applied-coupon d-none">Cupón aplicado: <strong id="appliedCouponCode"></strong></p>
           </div>
           <div class="user-note">
             <p><i class="fa-regular fa-clipboard"></i>Agregar una nota</p>
@@ -129,67 +130,193 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
   <script type="module">
-    import { formatCurrency, parseCurrency } from '../static/js/utils.js';
+    import { formatCurrency } from '../static/js/draw_component.js';
+    import { Carrito } from '../static/js/cart.js';
+    import { showLoading, hideLoading, showToast } from '../static/js/feedback.js';
 
     const URL = '{{ FDM_URL }}';
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function syncWithServer(products) {
+      return fetch('/cart-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart: products })
+      }).then(r => r.json());
+    }
 
-      let btnDanger = document.querySelectorAll('.btn-danger')
-      if (btnDanger) {
-        btnDanger.forEach(button => {
-          button.addEventListener('click', () => {
-            // delete item from cart 
-            const ID = button.closest('.table-item').dataset.id;
-            console.log(ID);
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let itemToRemove = cart.findIndex(item => item.id === ID);
-            if (itemToRemove !== -1) {
-              cart.splice(itemToRemove, 1);
-              localStorage.setItem('cart', JSON.stringify(cart));
-            }
-          });
+    function setDisabled(disabled) {
+      document.querySelectorAll('.btn-danger, .input-num, #inputEnvio, .finalBtn').forEach(el => {
+        if (!el) return;
+        if (disabled) {
+          el.setAttribute('disabled', 'true');
+        } else {
+          el.removeAttribute('disabled');
+        }
+      });
+    }
+
+    function refreshSummary(data) {
+      if (!data) return;
+      const subtotalEl = document.querySelector('#subtotal');
+      const envioEl = document.querySelector('#envio');
+      const totalEl = document.querySelector('#total');
+      if (subtotalEl) subtotalEl.textContent = formatCurrency(data.subtotal || 0);
+      if (envioEl) {
+        if (data.envioText) {
+          envioEl.textContent = data.envioText;
+        } else if (typeof data.envio !== 'undefined') {
+          envioEl.textContent = formatCurrency(data.envio);
+        }
+      }
+      if (totalEl) totalEl.textContent = formatCurrency(data.total || data.subtotal || 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let carrito = Carrito.fromStorage();
+
+      // Sincronizar al cargar
+      showLoading();
+      setDisabled(true);
+      // Mostrar cupón aplicado si existe en cookie
+      const couponCookie = document.cookie.split('; ').find(r => r.startsWith('coupon='));
+      if (couponCookie) {
+        const code = decodeURIComponent(couponCookie.split('=')[1]);
+        const label = document.getElementById('appliedCouponLabel');
+        const codeEl = document.getElementById('appliedCouponCode');
+        if (label && codeEl && code) {
+          label.classList.remove('d-none');
+          codeEl.textContent = code;
+        }
+      }
+      syncWithServer(carrito.products)
+        .then(data => refreshSummary(data))
+        .catch(() => showToast('No se pudo sincronizar el carrito', 'error'))
+        .finally(() => { hideLoading(); setDisabled(false); });
+
+      // Manejar eliminación
+      document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          const row = button.closest('.table-item');
+          const ID = row?.dataset.id;
+          if (!ID) return;
+          carrito.removeItem(ID);
+          row.remove();
+          // Sincronizar y refrescar totales
+          showLoading();
+          setDisabled(true);
+          syncWithServer(carrito.products)
+            .then(data => {
+              refreshSummary(data);
+              showToast('Producto eliminado', 'success');
+            })
+            .catch(() => showToast('No se pudo actualizar el carrito', 'error'))
+            .finally(() => { hideLoading(); setDisabled(false); });
+        });
+      });
+
+      // Manejar cambios de cantidad
+      document.querySelectorAll('.table-item .input-num').forEach(input => {
+        input.addEventListener('change', () => {
+          const row = input.closest('.table-item');
+          const ID = row?.dataset.id;
+          let value = parseInt(input.value || '1', 10);
+          if (isNaN(value) || value < 1) value = 1;
+          input.value = value;
+          carrito.updateQuantity(ID, value);
+          // actualizar precio por fila
+          const priceCell = row.querySelector('.price-pack');
+          const unitPriceText = row.querySelector('.info-item p')?.textContent || '';
+          const unitPrice = Number(unitPriceText.replace(/[^0-9.-]+/g, '')) || 0;
+          if (priceCell) priceCell.textContent = formatCurrency(unitPrice * value);
+          // Sincronizar y refrescar totales
+          showLoading();
+          setDisabled(true);
+          syncWithServer(carrito.products)
+            .then(data => {
+              refreshSummary(data);
+              showToast('Cantidad actualizada', 'success');
+            })
+            .catch(() => showToast('No se pudo actualizar el carrito', 'error'))
+            .finally(() => { hideLoading(); setDisabled(false); });
+        });
+      });
+
+      // Envío
+      const envioSelect = document.querySelector('#inputEnvio');
+      if (envioSelect) {
+        // Preseleccionar valor de envío guardado en cookie
+        const cookieEnvio = document.cookie.split('; ').find(r => r.startsWith('envio='));
+        if (cookieEnvio) {
+          const stored = decodeURIComponent(cookieEnvio.split('=')[1]);
+          // si es número y existe opción con ese value, seleccionarla; si es texto, solo mantenemos texto en el resumen
+          const opt = [...envioSelect.options].find(o => o.value === stored);
+          if (opt) opt.selected = true;
+        }
+
+        envioSelect.addEventListener('change', () => { 
+          const envioValue  = envioSelect.value;
+        showLoading();
+        setDisabled(true);
+        fetch('/envio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ envio: envioValue })
+          })
+          .then(response => response.json())
+          .then(data => {
+            refreshSummary(data);
+            showToast('Envío actualizado', 'success');
+          })
+          .catch(() => showToast('No se pudo actualizar el envío', 'error'))
+          .finally(() => { hideLoading(); setDisabled(false); });
         });
       }
 
-      const promoCode = document.querySelector('.promo-code p');
-      promoCode.addEventListener('click', () => {
-        document.querySelector('.code').classList.toggle('d-none');
-        // Add promo code to the cart
-      });
-      const userNote = document.querySelector('.user-note p');
-      userNote.addEventListener('click', () => {
-        document.querySelector('.note').classList.toggle('d-none');
-        // Add note to the cart
-      });
-
-      const envioSelect = document.querySelector('#inputEnvio');
-      if (envioSelect) {
-        envioSelect.addEventListener('change', () => { 
-        // Update envio value y actualizar el total
-        const envioValue  = envioSelect.value;
-        fetch('/envio', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ envio: envioValue })
-        })
-        .then(response => response.json())
-        .then(data => {
-          document.querySelector('#subtotal').textContent = formatCurrency(data.subtotal);
-          if (document.querySelector('#inputEnvio').value === "Free" || document.querySelector('#inputEnvio').value === "Por definir") {
-            document.querySelector('#envio').textContent = document.querySelector('#inputEnvio').value;
-          } else document.querySelector('#envio').textContent = formatCurrency(data.envio);
-          document.querySelector('#total').textContent = formatCurrency(data.total);
-        })
-      });
+      // Cupón promocional
+      const promoBtn = document.querySelector('.code .btn-accept');
+      const codeInput = document.getElementById('code');
+      if (promoBtn && codeInput) {
+        promoBtn.addEventListener('click', () => {
+          const code = (codeInput.value || '').trim();
+          if (!code) {
+            showToast('Ingresa un código de promoción', 'info');
+            return;
+          }
+          showLoading();
+          setDisabled(true);
+          fetch('/coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'success') {
+              refreshSummary(data);
+              // Mostrar etiqueta de cupón aplicado
+              const label = document.getElementById('appliedCouponLabel');
+              const codeEl = document.getElementById('appliedCouponCode');
+              if (label && codeEl) {
+                label.classList.remove('d-none');
+                codeEl.textContent = code.toUpperCase();
+              }
+              showToast('Cupón aplicado', 'success');
+            } else {
+              showToast(data.message || 'Cupón inválido', 'error');
+            }
+          })
+          .catch(() => showToast('No se pudo aplicar el cupón', 'error'))
+          .finally(() => { hideLoading(); setDisabled(false); });
+        });
       }
 
       const finalBtn = document.querySelector('.finalBtn');
-      finalBtn.addEventListener('click', () => {
-        window.location.href = URL + '/checkout';
-      });
+      if (finalBtn) {
+        finalBtn.addEventListener('click', () => {
+          window.location.href = URL + '/checkout';
+        });
+      }
     });
   </script>
   

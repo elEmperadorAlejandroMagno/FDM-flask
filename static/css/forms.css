@@ -38,8 +38,16 @@ header {
   align-items: center;
 }
 
-ul li {
+.nav-list {
+  display: flex;
+  gap: 60px;
+}
+.nav-list li {
   list-style-type: none;
+}
+.nav-list li a {
+  color: #eee;
+  text-decoration: none;
 }
 
 .img-container {

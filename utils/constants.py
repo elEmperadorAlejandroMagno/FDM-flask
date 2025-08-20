@@ -38,6 +38,11 @@ TEMPLATES = DotDict({
   "MY_ORDERS": "user_panel/myOrders.html",
   "ORDERS": "admin_panel/orders.html",
   "PRODUCTS": "admin_panel/products.html",
+<<<<<<< HEAD
   "LOGIN": "login.html",
   "REGISTER": "register.html",
+=======
+  "LOGIN": "auth/login.html",
+  "REGISTER": "auth/register.html",
+>>>>>>> features
 })

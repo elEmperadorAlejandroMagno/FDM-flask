@@ -1,0 +1,160 @@
+[
+  {
+    "id": "",
+    "name": "Salsa Chipotle",
+    "price": 250,
+    "stock": 100,
+    "description": "Salsa ahumada de chipotle con sabor intenso y textura suave",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "medio",
+    "images": ["Chipotle-frente-transp.png", "Chipotle-lado-transp.png"]
+  },
+  {
+    "id": "",
+    "name": "Remera Morrones",
+    "price": 780,
+    "stock": 30,
+    "description": "Remera con diseño de morrones, perfecta para los amantes de las salsas suaves",
+    "category": "merch",
+    "talla": "M",
+    "color": "rojo",
+    "spicy_level": null,
+    "images": ["Morrones_edited.jpg"]
+  },
+  {
+    "id": "",
+    "name": "Remera Amigo del Diablo",
+    "price": 850,
+    "stock": 20,
+    "description": "Remera con el diseño diabólico de nuestra salsa más picante, para los más valientes",
+    "category": "merch",
+    "talla": "M",
+    "color": "negro",
+    "spicy_level": null,
+    "images": ["AmigoDelDiablo.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa Habanero",
+    "price": 280,
+    "stock": 85,
+    "description": "Salsa picante de habanero con sabor frutal y nivel de picor alto",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "alto",
+    "images": ["Habanero-frente-transp.png", "Habanero-lado-transp.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa Jalapeño",
+    "price": 220,
+    "stock": 120,
+    "description": "Salsa verde de jalapeño con sabor fresco y picor moderado",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "bajo",
+    "images": ["Jalapeno-frente-transp.png", "Jalapeno-lado-transp.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa Carolina Reaper",
+    "price": 350,
+    "stock": 50,
+    "description": "Salsa extremadamente picante hecha con Carolina Reaper, el chile más picante del mundo",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "alto",
+    "images": ["Reaper-frente-transp.png", "Reaper-fladotransp.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa Mango Habanero",
+    "price": 290,
+    "stock": 75,
+    "description": "Salsa dulce y picante con mango y habanero, perfecta combinación tropical",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "medio",
+    "images": ["Mango-frente-transp.png", "Mango-lado-transp.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa Gota de Fuego",
+    "price": 260,
+    "stock": 90,
+    "description": "Salsa picante concentrada, unas pocas gotas bastan para darle sabor a tus comidas",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "alto",
+    "images": ["Gota-frente-Transp.png", "Gota-lado-Transp.png"]
+  },
+  {
+    "id": "",
+    "name": "Ketchup Picante",
+    "price": 200,
+    "stock": 110,
+    "description": "Ketchup tradicional con un toque picante, perfecto para acompañar tus comidas favoritas",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "bajo",
+    "images": ["Ketchup-Fondo-transparente.png"]
+  },
+  {
+    "id": "",
+    "name": "Habanero Chocolate",
+    "price": 320,
+    "stock": 60,
+    "description": "Salsa gourmet de habanero chocolate con sabor único y sofisticado",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "alto",
+    "images": ["habanero-choco-transp_edited_edited_edited_edited.png"]
+  },
+  {
+    "id": "",
+    "name": "Salsa de Arándanos",
+    "price": 310,
+    "stock": 70,
+    "description": "Salsa agridulce de arándanos con un toque picante, ideal para carnes y quesos",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": "bajo",
+    "images": ["Arándanos-fondo-transp_edited_edited.png"]
+  },
+  {
+    "id": "",
+    "name": "Pack Completo de Salsas",
+    "price": 1200,
+    "stock": 30,
+    "description": "Pack completo con todas nuestras variedades de salsas picantes",
+    "category": "salsa",
+
+    "talla": null,
+    "color": null,
+    "spicy_level": null,
+    "images": ["Pack-completo-transp_edited.png"]
+  },
+  {
+    "id": "",
+    "name": "Pack Chico de Salsas",
+    "price": 650,
+    "stock": 45,
+    "description": "Pack con 3 de nuestras salsas más populares, perfecto para probar",
+    "category": "salsa",
+    "talla": null,
+    "color": null,
+    "spicy_level": null,
+    "images": ["Pack-chico-transp_edited.png"]
+  }
+]
+

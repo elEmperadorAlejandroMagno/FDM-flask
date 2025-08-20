@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/panel.css') }}">
+{% endblock %}
 {% block main %}
 
-<div class="row">
+<div class="orders-container">
   <div class="col">
+    <span>
+      <form action="/logout" method="POST">
+        <button type="submit" class="finalBtn">cerrar sesión</button>
+      </form>
+    </span>
     <h2>Pedidos</h2>
     <table class="table">
       <thead>
@@ -40,8 +48,6 @@
 {% endblock %}
 
 {% block script %}
-  <link rel="stylesheet" href="../static/css/myOrders.css">
   <script>
-
   </script>
 {% endblock %}

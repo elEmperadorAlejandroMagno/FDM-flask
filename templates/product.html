@@ -4,11 +4,11 @@
   
   <div class="product-page-container">
     <div class="img-container">
-      <img src="{{ url }}{{ product.images[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ url }}{{ product.images[0] }}">
+      <img src="{{ product.images[0] }}" alt="{{ product.title }}" class="main-image" data-main-img="{{ product.images[0] }}">
       <div class="extraImgs">
-        {% if product.images | length > 1 %}
+        {% if product.images %}
           {% for img in product.images %}
-            <img src="{{ url }}{{ img }}" alt="{{ product.title }}" class="extra-image">
+            <img src="{{ img }}" alt="{{ product.title }}" class="extra-image">
           {% endfor %}
         {% endif %}
       </div>
@@ -30,9 +30,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
 
   <script type="module">
-    import { formatCurrency, parseCurrency, drawSubtotal, getCount, updateCart } from '../static/js/utils.js';
-
-
+    import { updateCart } from '../static/js/draw_component.js';
+    import { Producto, Carrito } from '../static/js/cart.js';
+    import { showLoading, hideLoading, showToast } from '../static/js/feedback.js';
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -55,42 +55,56 @@
         });
       }
 
-      const addToCartBtn = document.querySelector('.addBtn');
-      const quantity = document.querySelector('.product-details input');
-      const img = document.querySelector('.main-image').src;
-      const price = parseFloat(parseCurrency(document.querySelector('.price').textContent));
+      const addBtn = document.querySelector('.addBtn');
+      const qtyInput = document.querySelector('.product-details input[type="number"]');
+      const productID = document.querySelector('.product-details')?.getAttribute('data-id');
+      const URL = '{{ url }}';
 
-      addToCartBtn.addEventListener('click', () => {
-        const PRODUCT = {
-          id: document.querySelector('.product-details').dataset.id,
-          title: document.querySelector('.title').textContent,
-          price: price,
-          quantity: parseInt(quantity.value),
-          image: img
-        }
-
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingProductIndex = cart.findIndex(item => item.id === PRODUCT.id);
-        
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].quantity += PRODUCT.quantity;
-        } else {
-          cart.push(PRODUCT);
-        }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        const updateCookie = fetch('/add_to_cart', {
+      function syncWithServer(products) {
+        return fetch('/cart-page', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(PRODUCT)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cart: products })
+        }).then(r => r.json());
+      }
+
+      if (addBtn && productID) {
+        addBtn.addEventListener('click', async () => {
+          showLoading();
+          const response = await fetch(`/product/${productID}`);
+          if (!response.ok) {
+            hideLoading();
+            showToast('No se pudo obtener el producto', 'error');
+            return;
+          }
+          const result = await response.json();
+          if (result.status !== 'success' || !result.product) {
+            alert('Producto no encontrado.');
+            return;
+          }
+          const p = result.product;
+          const qty = Math.max(1, parseInt(qtyInput?.value || '1', 10) || 1);
+          const image = p.images ? (URL + p.images.split(',')[0]) : null;
+          const item = new Producto(p.id, p.title, p.price, qty, image);
+
+          const carrito = Carrito.fromStorage();
+          carrito.addItem(item);
+
+          // Sincronizar subtotal/total y refrescar UI
+          try {
+            await syncWithServer(carrito.products);
+          } catch (e) {}
+
+          // Actualizar modal del header y abrir modal
+          updateCart();
+          const cartModal = document.querySelector('.cart-modal');
+          const flexContainer = document.querySelector('.flex-container');
+          cartModal?.classList.add('open');
+          flexContainer?.classList.add('opacity');
+          hideLoading();
+          showToast('Producto agregado al carrito', 'success');
         });
-        let count = getCount(cart);
-        updateCart(cart);
-        document.querySelector('.cart-count').innerHTML = count;
-        document.querySelector('.cart-modal').classList.add('open');
-        document.querySelector('.flex-container').classList.add('opacity');
-      })
+      }
     });
   </script>
 

@@ -1,0 +1,47 @@
+AmigoDelDiablo.png
+Arándanos-fondo-transp_edited_edited.png
+Chipotle-frente-transp.png
+Chipotle-lado-transp.png
+ElNegocioDelPicante.png
+Gota-frente-Transp.png
+Gota-lado-Transp.png
+Habanero-frente-transp.png
+Habanero-lado-transp.png
+Jalapeno-frente-transp.png
+Jalapeno-lado-transp.png
+Ketchup-Fondo-transparente.png
+Mango-frente-transp.png
+Mango-lado-transp.png
+Morrones_edited.jpg
+Pack-chico-transp_edited.png
+Pack-completo-transp_edited.png
+Reaper-fladotransp.png
+Reaper-frente-transp.png
+habanero-choco-transp_edited_edited_edited_edited.png
+
+CREATE TABLE products (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      price REAL NOT NULL,
+      stock INTEGER DEFAULT 0,
+      description TEXT,
+      category CHECK(category IN ('salsa', 'merch', 'otros')),
+      talla CHAR(10),
+      color TEXT,
+      spicy_level CHECK(spicy_level IN ('alto', 'medio', 'bajo', 'nada'))
+  );
+
+CREATE TABLE product_images (
+      id TEXT PRIMARY KEY,
+      product_id TEXT NOT NULL,
+      image TEXT,
+      FOREIGN KEY(product_id) REFERENCES products(id)
+  );
+
+CREATE TABLE usuarios (
+    id TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    is_admin BOOLEAN NOT NULL CHECK (is_admin IN (0, 1))
+);

@@ -55,11 +55,11 @@
   border-radius: 10px;
 }
 
-
 .product-details {
   display: flex;
   flex-direction: column;
 }
+
 .product-details .title {
   margin-bottom: 5px;
   font-family: SofiaSans;
@@ -74,6 +74,7 @@
   font-weight: 800;
 }
 .product-details .description {
+  max-width: 250px;
   font-family: SofiaSansItalic;
   font-size: 20px;
 }

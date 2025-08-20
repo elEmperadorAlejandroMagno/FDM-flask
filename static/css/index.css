@@ -20,8 +20,7 @@ html{
   scroll-padding-top: 100px;
 }
 body{
-  background-color: light-dark(var(--primary-background-color), var(--secondary-background-color));
-  color: light-dark(var(--black-text-color), var(--white-text-color));
+  background-color: var(--primary-background-color);
 }
 
 .table-group-divider {
@@ -108,12 +107,12 @@ header {
   padding-left: 20px;
   width: 55px;
   height: 55px;
-  background-image: url(../image/assets/iG-icon-white.png);
+  background-image: url(/static/images/assets/iG-icon-white.png);
   background-size: cover;
   transition: all 0.8s ease;
   &:hover {
     cursor: pointer;
-    background-image: url(../image/assets/IG-icon-green.png);
+    background-image: url(/static/images/assets/IG-icon-green.png);
   }
 }
 
@@ -206,7 +205,7 @@ header {
 }
 
 .tienda-container{
-  background-image: url(../image/backgrounds/Fondo_extendido.png);
+  background-image: url(/static/images/backgrounds/Fondo_extendido.png);
   background-size: cover;
   width: 100%;
   text-align: center;
@@ -350,6 +349,47 @@ hr {
 }
 
 
+/* FEEDBACK UI */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 11000;
+}
+.loading-overlay.open { display: flex; }
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid #eee;
+  border-top-color: var(--btn-background-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-family: SofiaSans;
+  opacity: 0;
+  transition: opacity .3s ease, bottom .3s ease;
+  z-index: 11001;
+}
+.toast.show { opacity: 1; bottom: 32px; }
+.toast.success { background: #198754; }
+.toast.error { background: #dc3545; }
+.toast.info { background: #222; }
+
 /* CART MODAL  */
 /*! PENDIENTE !*/
 
@@ -467,28 +507,14 @@ hr {
   border-radius: 25px;
   color: var(--black-text-color);
   background-color: var(--btn-background-color);
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   &:hover {
     background-color: #b7ff4c;
     cursor: pointer;
   }
+}
+.full-cart-btn a {
+  text-decoration: none;
+  color: var(--black-text-color);
 }
 
 .cart-modal.open{
@@ -516,7 +542,7 @@ hr {
 }
 
 .info{
-  background-color: var(--main-background-color);
+  background-color: var(--secondary-background-color);
   color: var(--black-text-color);
   width: 100%;
 }
@@ -593,6 +619,7 @@ hr {
   align-items: center;
 }
 
+/*! BOOK CSS */
 .book-container {
   width: 770px; /* Adjust width to account for book padding */
   height: 555px; /* Adjust height to account for book padding */
@@ -639,19 +666,19 @@ hr {
 
 #prev {
   margin-right: 20px;
-  background-image: url(/static/image/assets/Flechita\(2\).png);
+  background-image: url(/static/images/assets/Flechita\(2\).png);
   background-size: cover;
   &:hover {
-    background-image: url(/static/image/assets/Flechita\(2\)Hover.png);
+    background-image: url(/static/images/assets/Flechita\(2\)Hover.png);
   }
 }
 
 #next {
   margin-left: 20px;
-  background-image: url(/static/image/assets/Flechita\(1\).png);
+  background-image: url(/static/images/assets/Flechita\(1\).png);
   background-size: cover;
   &:hover {
-    background-image: url(/static/image/assets/Flechita\(1\)Hover.png);
+    background-image: url(/static/images/assets/Flechita\(1\)Hover.png);
   }
 }
 
