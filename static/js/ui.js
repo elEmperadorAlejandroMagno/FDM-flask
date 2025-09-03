@@ -1,3 +1,5 @@
+import { formatCurrency } from './draw_component.js';
+
 export function createEmptyCartRow() {
   const tr = document.createElement('tr');
   const td = document.createElement('td');
@@ -44,7 +46,7 @@ export function createCartItemRow(item) {
   const h3 = document.createElement('h3');
   h3.textContent = item.title;
   const p = document.createElement('p');
-  p.textContent = item.price;
+  p.textContent = formatCurrency(item.price);
   const input = document.createElement('input');
   input.className = 'input-num';
   input.type = 'number';
@@ -172,7 +174,7 @@ export function createProductRow(product, url, formatCurrency) {
   const divImg = document.createElement('div');
   divImg.className = "table-img";
   const img = document.createElement('img');
-  img.src = url + product.images.split(',')[0];
+  img.src = url + (Array.isArray(product.images) ? product.images[0] : product.images.split(',')[0]);
   img.alt = product.title;
   divImg.appendChild(img);
   tdImg.appendChild(divImg);
@@ -399,7 +401,7 @@ export function createViewProductModal(product, url, formatCurrency) {
     imgsContainer.style.display = "grid";
     imgsContainer.style.gridTemplateColumns = "repeat(auto-fit, 200px)";
     imgsContainer.style.gap = "1rem";
-    product.images.split(',').forEach(image => {
+    (Array.isArray(product.images) ? product.images : product.images.split(',')).forEach(image => {
         const img = document.createElement('img');
         img.src = url + image;
         img.alt = "product image";

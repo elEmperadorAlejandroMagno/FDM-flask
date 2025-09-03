@@ -85,8 +85,4 @@ def delete_product(id):
     
     product = Product(**PRODUCT_DATA)
     product.delete_from_db()
-<<<<<<< HEAD
     return True
-=======
-    return True
->>>>>>> features

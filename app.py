@@ -328,10 +328,11 @@ def login():
         return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
         session['user_id'] = user[0]['id']
-<<<<<<< HEAD
+
         session['user_role'] = user[0]['is_admin']
+
         if session.get('user_role') != 1:
->>>>>>> features
+
           return redirect('/myOrders')
         else:
           return redirect('/adminBoard')
@@ -349,9 +350,9 @@ def logout():
 @app.route('/adminBoard')
 @login_required
 def panel_admin():
-<<<<<<< HEAD
+
   if session.get('user_role') != 1:
->>>>>>> features
+
     return redirect('/myOrders')
   if request.method == 'GET':
       return render_template('panel.html', URL= URL)
@@ -360,9 +361,9 @@ def panel_admin():
 @app.route('/adminBoard/orders', methods=['GET', 'POST'])
 @login_required
 def panel_orders():
-<<<<<<< HEAD
+    
     if session.get('user_role') != 1:
->>>>>>> features
+        
         return redirect('/myOrders')
     
     if request.method == 'GET':
@@ -372,16 +373,16 @@ def panel_orders():
             if filter:
                 orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
-                                       FROM orders o
-                                       INNER JOIN order_productos op ON o.id = op.order_id
-                                       WHERE o.status = ?
-                                       ORDER BY o.timestamp DESC''', filter)
+                                    FROM orders o
+                                    INNER JOIN order_productos op ON o.id = op.order_id
+                                    WHERE o.status = ?
+                                    ORDER BY o.timestamp DESC''', filter)
             else:
                 orders = db.execute('''SELECT o.id AS order_id, o.nombre, o.email, o.telefono, o.envio, o.direccion, o.precio_total, o.status, o.timestamp,
                                               op.product_id, op.cantidad
-                                       FROM orders o
-                                       INNER JOIN order_productos op ON o.id = op.order_id
-                                       ORDER BY o.timestamp DESC''')
+                                      FROM orders o
+                                      INNER JOIN order_productos op ON o.id = op.order_id
+                                      ORDER BY o.timestamp DESC''')
 
             if not orders:
                 return jsonify({'status': 'success', 'orders': [], 'message': 'No orders found'})
@@ -440,13 +441,13 @@ def panel_orders():
             return jsonify({'status': 'error', 'message': 'Los datos no coninciden'})
           
           db.execute("INSERT INTO orders (nombre, email, telefono, envio, direccion, precio_total) VALUES (?, ?, ?, ?, ?, ?)", 
-                     (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
+                    (data['nombre'][0], data['email'][0], data['telefono'][0], data['envio'][0], data['direccion'][0], data['total'][0]))
           
           order_id = db.execute("SELECT id FROM orders ORDER BY id DESC LIMIT 1")['id']
 
           for i in range(len(lista_productos)):
             db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?, ?, ?)", 
-                       (order_id, lista_productos[i], cantidad_productos[i]))
+                      (order_id, lista_productos[i], cantidad_productos[i]))
       
           return jsonify({'status': 'success'})
         except Exception as e:
@@ -460,9 +461,9 @@ def panel_orders():
 @app.route('/adminBoard/order/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @login_required
 def panel_order_by_ID(id):
-<<<<<<< HEAD
+
   if session.get('user_role') != 1:
->>>>>>> features
+
     return redirect('/myOrders')
   if request.method == 'GET':
     try:
@@ -521,13 +522,13 @@ def panel_order_by_ID(id):
         cantidad_productos = data.get('product_quantity[]', [])
 
         db.execute("UPDATE orders SET nombre = ?, email = ?, telefono = ?, envio = ?, precio_total = ?, direccion = ? WHERE id = ?", 
-                   (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
+                  (data['name'], data['email'], data['phone'], data['envio'], data['total'], data['address'], id))
 
         db.execute("DELETE FROM order_productos WHERE order_id = ?", (id,))
 
         for i in range(len(lista_productos)):
           db.execute("INSERT INTO order_productos (order_id, product_id, cantidad) VALUES (?,?,?)", 
-                     (id, lista_productos[i], cantidad_productos[i]))
+                    (id, lista_productos[i], cantidad_productos[i]))
 
         return jsonify({'status': 'success'})
       except Exception as e:
@@ -543,7 +544,7 @@ def complete_order(id):
     if data:
       try:
         db.execute("UPDATE orders SET status = ? WHERE id = ?", 
-                   (data['status'], id))
+                  (data['status'], id))
 
         return jsonify({'status': 'success'})
       except Exception as e:
@@ -554,9 +555,9 @@ def complete_order(id):
 @app.route('/adminBoard/products', methods = ['GET', 'POST'])
 @login_required  
 def panel_products():
-<<<<<<< HEAD
+
   if session.get('user_role') != 1:
->>>>>>> features
+
     return redirect('/myOrders')
   
   if request.method == 'GET':
@@ -585,9 +586,9 @@ def panel_products():
 @app.route('/adminBoard/product/<string:id>', methods = ['GET', 'DELETE', 'PUT'])
 @login_required  
 def panel_product_by_ID(id):
-<<<<<<< HEAD
+
   if session.get('user_role') != 1:
->>>>>>> features
+
     return redirect('/myOrders')
 
   if request.method == 'GET':
@@ -613,7 +614,7 @@ def panel_product_by_ID(id):
 @app.route('/adminBoard/product/<string:id>', methods = ['PUT'])
 @login_required
 def update_single_field(id):
-<<<<<<< HEAD
+
   if session.get('user_role') == 1:
     data = request.get_json()
     if data:

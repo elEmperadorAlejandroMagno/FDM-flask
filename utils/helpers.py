@@ -60,6 +60,4 @@ def save_images(files, upload_folder):
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-<<<<<<< HEAD
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
->>>>>>> features

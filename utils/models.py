@@ -10,11 +10,7 @@ db = SQL(os.getenv('DATA_BASE'))
 
 class Product:
     
-<<<<<<< HEAD
-    def _init_(self, name, price, stock, description, category, id):
-=======
     def __init__(self, id, name, price, stock, description, category):
->>>>>>> features
         self.id = id or str(uuid.uuid4())
         self.name = name
         self.price = price
@@ -23,10 +19,6 @@ class Product:
         self.category = category
         self.images = self.get_images()
 
-<<<<<<< HEAD
-    def get_images(id):
-        images = db.execute("SELECT * FROM product_images WHERE product_id = ?", id)
-=======
     def get_images(self):
         images = db.execute("SELECT * FROM product_images WHERE product_id = ?", self.id)
         return [image['image'] for image in images]
@@ -34,7 +26,6 @@ class Product:
     @staticmethod
     def get_images_static(product_id):
         images = db.execute("SELECT * FROM product_images WHERE product_id = ?", product_id)
->>>>>>> features
         return [image['image'] for image in images]
 
     def add_image(self, image):
@@ -49,8 +40,8 @@ class Product:
                     self.name, self.price, self.stock, self.description, self.category, self.id)
         else:
             db.execute('''INSERT INTO products (id, name, price, stock, description, category) 
-                    VALUES(?, ?, ?, ?, ?, ?, ?)''', 
-                    self.id, self.name, self.price, self.stock, self.description, self.images, self.category)
+                    VALUES(?, ?, ?, ?, ?, ?)''', 
+                    self.id, self.name, self.price, self.stock, self.description, self.category)
 
     def update_name(self, new_name):
         self.name = new_name
@@ -104,19 +95,12 @@ class Product:
                 products[row['id']] = {
                     'id': row['id'],
                     'name': row['name'],
-<<<<<<< HEAD
-=======
                     'title': row['name'],  # Mapeo para compatibilidad con template
->>>>>>> features
                     'price': row['price'],
                     'stock': row['stock'],
                     'description': row['description'],
                     'category': row['category'],
-<<<<<<< HEAD
-                    'images': Product.get_images(row['id'])
-=======
                     'images': Product.get_images_static(row['id'])
->>>>>>> features
                 }
         return list(products.values())
     @staticmethod
@@ -133,19 +117,12 @@ class Product:
                 products[row['id']] = {
                     'id': row['id'],
                     'name': row['name'],
-<<<<<<< HEAD
-=======
                     'title': row['name'],  # Mapeo para compatibilidad con template
->>>>>>> features
                     'price': row['price'],
                     'stock': row['stock'],
                     'description': row['description'],
                     'category': row['category'],
-<<<<<<< HEAD
-                    'images': Product.get_images(row['id'])
-=======
                     'images': Product.get_images_static(row['id'])
->>>>>>> features
                 }
         return list(products.values())
     @staticmethod
@@ -161,17 +138,6 @@ class Product:
             return None
         
         product = {
-<<<<<<< HEAD
-                    'id': row['id'],
-                    'name': row['name'],
-                    'price': row['price'],
-                    'stock': row['stock'],
-                    'description': row['description'],
-                    'category': row['category'],
-                    'images': Product.get_images(row['id'])
-                }
-        return product
-=======
                     'id': row[0]['id'],
                     'name': row[0]['name'],
                     'title': row[0]['name'],  # Mapeo para compatibilidad con template
@@ -184,16 +150,16 @@ class Product:
         return product
     
 class Salsa(Product):
-        def __init__(self, id, name, price, stock, description, category="Salsa", spicy_level=None):
-            super().__init__(name, price, stock, description, category, id)
-            self.spicy_level = spicy_level
+    def __init__(self, id, name, price, stock, description, category="Salsa", spicy_level=None):
+        super().__init__(id, name, price, stock, description, category)
+        self.spicy_level = spicy_level
 
-        def update_spicy_level(self, new_level):
-            self.spicy_level = new_level
+    def update_spicy_level(self, new_level):
+        self.spicy_level = new_level
 
 class Merch(Product):
     def __init__(self, id, name, price, stock, description, category="Merch", talla=None, color=None):
-        super().__init__(name, price, stock, description, category, id)
+        super().__init__(id, name, price, stock, description, category)
         self.talla = talla
         self.color = color
 
@@ -202,7 +168,6 @@ class Merch(Product):
 
     def update_color(self, nuevo_color):
         self.color = nuevo_color
->>>>>>> features
 
 class Orders:
     def __init__(self, id, nombre, email, telefono, envio, direccion, precio_total, timestamp = None, country = 'Uruguay', status = 'Pendiente'):
@@ -231,13 +196,8 @@ class Orders:
     def get_products(self):
         rows = db.execute('''
                 SELECT op.product_id, op.cantidad, p.name, p.price FROM order_products op
-<<<<<<< HEAD
-                          JOIN products p ON op.product_id = p.id
-                          WHERE op.order_id = ?
-=======
                         JOIN products p ON op.product_id = p.id
                         WHERE op.order_id = ?
->>>>>>> features
                 ''', self.id)
         return [{'product_id': row['product_id'], 'cantidad': row['cantidad'], 'name': row['name'], 'price': row['price']} for row in rows]
 
@@ -282,9 +242,6 @@ class Orders:
         if not row:
             return None
         order = Orders(row['id'], row['nombre'], row['email'], row['telefono'], row['envio'], row['direccion'], row['precio_total'], row['timestamp'], row['country'], row['status'])
-<<<<<<< HEAD
-        return order
-=======
         return order
     
 
@@ -305,4 +262,3 @@ class User:
             db.execute('''INSERT INTO users (id, username, password, email, is_admin) 
                     VALUES(?, ?, ?, ?, ?)''', 
                     self.id, self.username, self.password, self.email, self.is_admin)
->>>>>>> features
