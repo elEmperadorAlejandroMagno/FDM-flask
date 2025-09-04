@@ -52,9 +52,13 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-@app.route('/')
+@app.route('/helloworld')
 def hello():
   return "Hello, world!"
+
+@app.route('/')
+def root():
+  return redirect('/home')
 
 @app.route('/home', methods=['GET'])
 def home():
@@ -276,7 +280,7 @@ def checkout():
         else:
           return jsonify({'status': 'error', 'message': 'No user data provided'})
       else:
-         return jsonify({'status': 'error', 'message': 'No purchase data found'})
+        return jsonify({'status': 'error', 'message': 'No purchase data found'})
       
 @app.route('/myOrders', methods=['GET'])
 @login_required

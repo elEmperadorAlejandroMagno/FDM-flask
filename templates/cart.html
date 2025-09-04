@@ -274,6 +274,13 @@
       }
 
       // Cupón promocional
+      const promoToggle = document.querySelector('.promo-code p');
+      if (promoToggle) {
+        promoToggle.addEventListener('click', () => {
+          const codeSpan = document.querySelector('.promo-code .code');
+          if (codeSpan) codeSpan.classList.toggle('d-none');
+        });
+      }
       const promoBtn = document.querySelector('.code .btn-accept');
       const codeInput = document.getElementById('code');
       if (promoBtn && codeInput) {
@@ -308,6 +315,40 @@
           })
           .catch(() => showToast('No se pudo aplicar el cupón', 'error'))
           .finally(() => { hideLoading(); setDisabled(false); });
+        });
+      }
+
+      // Nota para el vendedor
+      const noteToggle = document.querySelector('.user-note p');
+      if (noteToggle) {
+        noteToggle.addEventListener('click', () => {
+          const noteSpan = document.querySelector('.user-note .note');
+          if (noteSpan) noteSpan.classList.toggle('d-none');
+        });
+      }
+      const noteBtn = document.querySelector('.note .btn-accept');
+      const noteInput = document.getElementById('note');
+      if (noteBtn && noteInput) {
+        noteBtn.addEventListener('click', () => {
+          const note = (noteInput.value || '').trim();
+          showLoading();
+          setDisabled(true);
+          fetch('/note', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ note })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'success') {
+              showToast('Nota guardada', 'success');
+            } else {
+              showToast(data.message || 'No se pudo guardar la nota', 'error');
+            }
+          })
+          .catch(() => showToast('No se pudo guardar la nota', 'error'))
+          .finally(() => { hideLoading(); setDisabled(false);
+          });
         });
       }
 

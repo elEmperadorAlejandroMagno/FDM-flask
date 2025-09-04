@@ -81,12 +81,6 @@ export class Carrito {
     }
   }
 
-  //! provisional
-  showCarrito() {
-    let productList = this.products.map(product => `${product.title}: $${product.price}, ${product.quantity}`).join("\n");
-    return `${productList}\nTotal Cost: $${this.cost}\n----------------`;
-  }
-
   saveToStorage() {
     const DATA = {
       products: this.products,
