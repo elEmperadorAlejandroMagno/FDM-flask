@@ -327,7 +327,7 @@ def login():
     if not username or not password:
       return render_template(TEMPLATES.LOGIN, message = "The from cannot be empty")
     try:
-      user = db.execute("SELECT id, role, password FROM users WHERE username = ?", (username,))
+      user = db.execute("SELECT id, is_admin, password FROM users WHERE username = ?", (username))
       if len(user) != 1 or not check_password_hash(user[0]['password'], password):
         return render_template(TEMPLATES.LOGIN, message = "Invalid credentials")
       else:
