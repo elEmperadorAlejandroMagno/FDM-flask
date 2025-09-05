@@ -88,6 +88,16 @@ export class Carrito {
       count: this.count
     };
     localStorage.setItem('cart', JSON.stringify(DATA));
+    
+    // Dispatch custom event for cart updates
+    const cartUpdateEvent = new CustomEvent('cartUpdated', {
+      detail: {
+        products: this.products,
+        cost: this.cost,
+        count: this.count
+      }
+    });
+    window.dispatchEvent(cartUpdateEvent);
   }
 
   static fromStorage() {

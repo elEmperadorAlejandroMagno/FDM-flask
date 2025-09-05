@@ -21,6 +21,24 @@ def load_coupons():
   except Exception:
     return []
 
+def parse_shipping_value(envio_raw):
+  """Parse shipping value and return cost and display text"""
+  from utils.constants import LISTA_ENVIOS
+  
+  # Find the shipping option that matches the raw value
+  for envio_option in LISTA_ENVIOS:
+    if str(envio_option['valor_select']) == str(envio_raw):
+      if envio_option['es_texto']:
+        return 0.0, envio_option['texto_mostrar']
+      else:
+        return float(envio_option['costo']), None
+  
+  # Fallback: try to parse as number
+  try:
+    return float(envio_raw), None
+  except:
+    return 0.0, str(envio_raw) if envio_raw in ['Free', 'Por definir'] else None
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -111,14 +129,9 @@ def get_cart_info():
           free_shipping = True
     subtotal = max(0.0, subtotal_raw - discount)
 
-    # conservar el valor de envío actual (si existe)
+    # conservar el valor de envío actual (si existe) usando helper
     envio_cookie = request.cookies.get('envio', '0')
-    try:
-      envio_val = float(envio_cookie)
-      envio_text = None
-    except Exception:
-      envio_val = 0.0
-      envio_text = envio_cookie if envio_cookie in ['Free', 'Por definir'] else None
+    envio_val, envio_text = parse_shipping_value(envio_cookie)
 
     if free_shipping:
       envio_text = 'Free'
@@ -149,18 +162,8 @@ def get_envio():
       subtotal = float(subtotal_cookie)
       CART_ITEMS = json.loads(cart_cookie)
 
-      # Normalizar envío
-      envio_val = 0.0
-      envio_text = None
-      if isinstance(envio_raw, str) and envio_raw.isdigit():
-        envio_val = float(envio_raw)
-      elif envio_raw in ['Free', 'Por definir']:
-        envio_text = envio_raw
-      else:
-        try:
-          envio_val = float(envio_raw)
-        except Exception:
-          envio_val = 0.0
+      # Normalizar envío usando la nueva función helper
+      envio_val, envio_text = parse_shipping_value(envio_raw)
 
       total = subtotal + (0 if envio_text else envio_val)
       response = jsonify({'total': total, 'subtotal': subtotal, 'envio': envio_val, 'envioText': envio_text})
@@ -173,14 +176,9 @@ def get_envio():
       subtotal = float(subtotal_cookie)
       CART_ITEMS = json.loads(cart_cookie)
       envio_cookie = request.cookies.get('envio', '0')
-      try:
-        envio_val = float(envio_cookie)
-        total = subtotal + envio_val
-        envio_context = envio_val
-      except Exception:
-        # Texto 'Free' o 'Por definir'
-        total = subtotal
-        envio_context = envio_cookie
+      envio_val, envio_text = parse_shipping_value(envio_cookie)
+      total = subtotal + envio_val
+      envio_context = envio_text if envio_text else envio_val
       return render_template(TEMPLATES.CARRITO, cart=CART_ITEMS, envio=envio_context, options_envio=LISTA_ENVIOS, subtotal=subtotal, total=total)
       
    
@@ -197,13 +195,8 @@ def apply_coupon():
   # Subtotal base SIEMPRE desde los items del carrito para reemplazar cupón anterior
   subtotal = sumItemPrices(cart_items)
 
-  # resolver envío actual
-  try:
-    envio_val = float(envio_cookie)
-    envio_text = None
-  except Exception:
-    envio_val = 0.0
-    envio_text = envio_cookie if envio_cookie in ['Free', 'Por definir'] else None
+  # resolver envío actual usando la función helper
+  envio_val, envio_text = parse_shipping_value(envio_cookie)
 
   coupons = load_coupons()
   coupon = next((c for c in coupons if c.get('code') == code), None)
@@ -246,10 +239,13 @@ def checkout():
     subtotal_cookie = request.cookies.get('subtotal', '0')
     envio_cookie = request.cookies.get('envio', '0')
 
+    # Parse shipping value correctly
+    envio_val, envio_text = parse_shipping_value(envio_cookie)
+    
     purchase = {
       'cart': json.loads(cart_cookie),
       'subtotal': float(subtotal_cookie),
-      'envio': float(envio_cookie)
+      'envio': envio_val
     }
 
     response = make_response(render_template(TEMPLATES.CHECKOUT, purchase = purchase))

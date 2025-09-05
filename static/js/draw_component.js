@@ -10,6 +10,7 @@ import {
   createViewOrderModal,
   createEditOrderForm
 } from './ui.js';
+import { Carrito } from './cart.js';
 
 //? CLIENT FUNCTIONS */
 export function drawCartModal(cart) {
@@ -34,7 +35,8 @@ export function formatCurrency(value) {
       }
       return `$U${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
     } catch (error) {
-      return value;
+      console.warn('formatCurrency error:', error);
+      return `$U0.00`; // Return a default value instead of undefined
     }
 }
 
@@ -47,8 +49,13 @@ export function parseCurrency(value) {
 
 function drawSubtotal(cartCost) {
   const subtotal = cartCost || 0;
-  let cartSubtotal = document.getElementById('subtotal');
-  cartSubtotal.innerHTML = formatCurrency(subtotal);
+  let cartSubtotal = document.getElementById('cart-modal-subtotal');
+  if (cartSubtotal) {
+    const formattedCurrency = formatCurrency(subtotal);
+    cartSubtotal.innerHTML = formattedCurrency;
+  } else {
+    console.warn('Cart modal subtotal element not found');
+  }
 }
 
 function drawCartCount(cartCount) {
@@ -65,9 +72,35 @@ function drawCartCount(cartCount) {
 export function updateCart() {
   const data = JSON.parse(localStorage.getItem('cart')) || { products: [], cost: 0, count: 0 };
   const products = Array.isArray(data.products) ? data.products : [];
+  
+  // Recalculate cost to ensure it's accurate
+  const carrito = Carrito.fromStorage();
+  const actualCost = carrito.getCost();
+  const actualCount = carrito.getCount();
+  
+  // Ensure DOM is ready before updating
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      performCartUpdate(products, actualCost, actualCount);
+    });
+  } else {
+    performCartUpdate(products, actualCost, actualCount);
+  }
+}
+
+function performCartUpdate(products, cost, count) {
   drawCartModal(products);
-  drawSubtotal(data.cost);
-  drawCartCount(data.count);
+  drawCartCount(count);
+  
+  // Double-check the cost calculation
+  if (products.length > 0) {
+    const recalculatedCost = products.reduce((total, item) => {
+      return total + (Number(item.price) * Number(item.quantity));
+    }, 0);
+    drawSubtotal(recalculatedCost);
+  } else {
+    drawSubtotal(0);
+  }
 }
 
 //? ADMIN PANEL FUNCTIONS */

@@ -32,7 +32,7 @@
                               <img src="{{ item.image }}" alt="{{ item.title }}">
                             </td>
                             <td class="align-top info-item">
-                              <h3>{{ item.title }}</h3>
+                              <h3><a href="/product-page/{{ item.id }}" style="text-decoration: none; color: inherit;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ item.title }}</a></h3>
                               <p>{{ item.price | uru }}</p>
                             </td>
                             <td class="align-top num-item"><input class="input-num" type="number" min="1" max="9" value="{{ item.quantity }}"></td>
@@ -79,7 +79,7 @@
                           <select name="envio" id="inputEnvio">
                               <option value="0" selected disabled>Selecciona el envío</option>
                               {% for envio in options_envio %}
-                                <option value="{{ envio.costo }}">{{ envio.lugar }}</option>
+                                <option value="{{ envio.valor_select }}">{{ envio.lugar }}</option>
                               {% endfor %}
                           </select>
                         </form>
@@ -173,6 +173,50 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       let carrito = Carrito.fromStorage();
+      
+      // Listen for cart updates from other components (like cart modal)
+      window.addEventListener('cartUpdated', (event) => {
+        const updatedCarrito = Carrito.fromStorage();
+        // Check if there are differences
+        if (JSON.stringify(carrito.products) !== JSON.stringify(updatedCarrito.products)) {
+          // Update the local carrito reference
+          carrito = updatedCarrito;
+          
+          // Sync with server and refresh UI
+          showLoading();
+          setDisabled(true);
+          syncWithServer(carrito.products)
+            .then(data => {
+              refreshSummary(data);
+              // If cart is now empty, reload to show empty state
+              if (carrito.products.length === 0) {
+                setTimeout(() => window.location.reload(), 500);
+              } else {
+                // Remove items that no longer exist in the cart
+                const currentRows = document.querySelectorAll('.table-item');
+                currentRows.forEach(row => {
+                  const rowId = row.dataset.id;
+                  const itemExists = carrito.products.some(item => item.id === rowId);
+                  if (!itemExists) {
+                    row.remove();
+                    // Also remove the associated spacing and divider rows
+                    const nextSibling = row.nextElementSibling;
+                    if (nextSibling && nextSibling.classList.contains('white-space')) {
+                      nextSibling.remove();
+                      const divider = nextSibling.nextElementSibling;
+                      if (divider && divider.classList.contains('table-group-divider')) {
+                        divider.remove();
+                      }
+                    }
+                  }
+                });
+                showToast('Carrito actualizado', 'success');
+              }
+            })
+            .catch(() => showToast('Error al sincronizar', 'error'))
+            .finally(() => { hideLoading(); setDisabled(false); });
+        }
+      });
 
       // Sincronizar al cargar
       showLoading();
@@ -278,7 +322,17 @@
       if (promoToggle) {
         promoToggle.addEventListener('click', () => {
           const codeSpan = document.querySelector('.promo-code .code');
-          if (codeSpan) codeSpan.classList.toggle('d-none');
+          if (codeSpan) {
+            if (codeSpan.classList.contains('d-none')) {
+              codeSpan.classList.remove('d-none');
+              // Trigger animation by adding show class after a brief delay
+              setTimeout(() => codeSpan.classList.add('show'), 10);
+            } else {
+              codeSpan.classList.remove('show');
+              // Hide after animation completes
+              setTimeout(() => codeSpan.classList.add('d-none'), 300);
+            }
+          }
         });
       }
       const promoBtn = document.querySelector('.code .btn-accept');
@@ -323,7 +377,17 @@
       if (noteToggle) {
         noteToggle.addEventListener('click', () => {
           const noteSpan = document.querySelector('.user-note .note');
-          if (noteSpan) noteSpan.classList.toggle('d-none');
+          if (noteSpan) {
+            if (noteSpan.classList.contains('d-none')) {
+              noteSpan.classList.remove('d-none');
+              // Trigger animation by adding show class after a brief delay
+              setTimeout(() => noteSpan.classList.add('show'), 10);
+            } else {
+              noteSpan.classList.remove('show');
+              // Hide after animation completes
+              setTimeout(() => noteSpan.classList.add('d-none'), 300);
+            }
+          }
         });
       }
       const noteBtn = document.querySelector('.note .btn-accept');

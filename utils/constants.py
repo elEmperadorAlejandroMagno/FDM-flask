@@ -2,18 +2,28 @@ LISTA_ENVIOS = [
       {
         "lugar": "Montevideo",
         "costo": 50,
+        "valor_select": "50",
+        "es_texto": False
       },
       {
         "lugar": "Ciudad de la costa",
         "costo": 50,
+        "valor_select": "50",
+        "es_texto": False
       },
       {
         "lugar": "Resto del país",
-        "costo": "Por definir",
+        "costo": 0,
+        "valor_select": "Por definir",
+        "es_texto": True,
+        "texto_mostrar": "Por definir"
       },
       {
         "lugar": "Retiro en local",
-        "costo": "Free",
+        "costo": 0,
+        "valor_select": "Free",
+        "es_texto": True,
+        "texto_mostrar": "Free"
       }
 ]
 

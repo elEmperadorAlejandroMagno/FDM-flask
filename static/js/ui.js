@@ -43,22 +43,48 @@ export function createCartItemRow(item) {
   const tdInfo = document.createElement('td');
   const divInfo = document.createElement('div');
   divInfo.className = 'cart-modal-info';
+  
+  // Product title as link
   const h3 = document.createElement('h3');
-  h3.textContent = item.title;
+  const titleLink = document.createElement('a');
+  titleLink.href = `/product-page/${item.id}`;
+  titleLink.textContent = item.title;
+  titleLink.style.textDecoration = 'none';
+  titleLink.style.color = 'inherit';
+  titleLink.addEventListener('mouseenter', () => {
+    titleLink.style.textDecoration = 'underline';
+  });
+  titleLink.addEventListener('mouseleave', () => {
+    titleLink.style.textDecoration = 'none';
+  });
+  h3.appendChild(titleLink);
+  
   const p = document.createElement('p');
   p.textContent = formatCurrency(item.price);
   const input = document.createElement('input');
   input.className = 'input-num';
   input.type = 'number';
   input.value = item.quantity;
-  input.readOnly;
+  input.readOnly = true;
   divInfo.appendChild(h3);
   divInfo.appendChild(p);
   divInfo.appendChild(input);
   tdInfo.appendChild(divInfo);
+  
+  // Remove button
+  const tdRemove = document.createElement('td');
+  tdRemove.className = 'remove-item-td';
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'cart-remove-btn-modal';
+  removeBtn.innerHTML = '×';
+  removeBtn.title = 'Eliminar producto';
+  removeBtn.dataset.id = item.id;
+
+  tdRemove.appendChild(removeBtn);
 
   tr.appendChild(tdImg);
   tr.appendChild(tdInfo);
+  tr.appendChild(tdRemove);
 
   // Espacio en blanco después
   const trSpace2 = document.createElement('tr');

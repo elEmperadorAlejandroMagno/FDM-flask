@@ -1,5 +1,4 @@
 import { drawOrdersTable, drawProductsTable }  from "./draw_component.js";
-import { API_URL } from "./constants.js";
 
 export function fetchOrders(filter) {
   if (filter != null) {
@@ -21,13 +20,13 @@ export function fetchOrders(filter) {
     .catch(error => console.error('Error:', error));
 };
 
-export function fetchProducts(url, filter) {
+export function fetchProducts(filter) {
   if (filter != null) {
     fetch(`/adminBoard/products?filter=${filter}`)
       .then(response => response.json())
       .then(data => {
         const products = data.products;
-        drawProductsTable(products, url);
+        drawProductsTable(products);
       })
       .catch(error => console.error('Error:', error));
     return;
@@ -36,7 +35,7 @@ export function fetchProducts(url, filter) {
     .then(response => response.json())
     .then(data => {
       const products = data.products;
-      drawProductsTable(products, url);
+      drawProductsTable(products);
   }).catch(error => console.error('Error:', error));
 };
 
@@ -106,7 +105,7 @@ if (adminPanel != null) {
     if (target.id === 'del-product') {
 
       deleteProduct(target.dataset.id);
-      fetchProducts(API_URL);
+      fetchProducts();
     }
     else if (target.id === 'del-order') {
 

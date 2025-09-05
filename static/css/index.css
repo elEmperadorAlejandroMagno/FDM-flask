@@ -386,21 +386,21 @@ hr {
   z-index: 11001;
 }
 .toast.show { opacity: 1; bottom: 32px; }
-.toast.success { background: #198754; }
-.toast.error { background: #dc3545; }
+.toast.success { background: var(--btn-background-color); color: var(--black-text-color); }
+.toast.error { background: var(--secondary-background-color); color: var(--white-text-color); }
 .toast.info { background: #222; }
 
 /* CART MODAL  */
 /*! PENDIENTE !*/
 
 .cart-modal {
-  width: 350px;
+  width: 380px;
   height: 100vh;
   overflow: auto;
   display: block;
   position: fixed;
   top: 0;
-  right: -350px;
+  right: -380px;
   z-index: 10000;
   background-color: #fff;
   transition: all 1s ease;
@@ -452,7 +452,7 @@ hr {
 }
 
 .custom-width {
-  width: 310px;
+  width: 340px;
 }
 
 .cart-item {
@@ -475,12 +475,13 @@ hr {
 .cart-modal-info h3 {
   max-width: 150px;
   font-family: SofiaSans;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 800;
 }
 .cart-modal-info p {
   font-family: Oswald;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
 }
 .cart-modal-info input {
   text-align: center;
@@ -489,12 +490,48 @@ hr {
   width: 50px;
 }
 
+/* Cart modal remove button styles */
+.remove-item-td {
+  width: 30px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.cart-remove-btn-modal {
+  background: none ;
+  border: none ;
+  font-size: 20px ;
+  color: #444;
+  cursor: pointer ;
+  padding: 5px ;
+  width: 25px ;
+  height: 25px ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  transition: all 0.2s ease ;
+}
+
+.cart-remove-btn-modal:hover {
+  background-color: #444 ;
+  color: white ;
+  transform: scale(1.1);
+}
+
 .total-amount {
-  text-align: justify;
-  font-size: 24px;
-  font-family: SofiaSans;
+  display: flex;
+  justify-content: space-between;
   line-height: normal;
-  padding: 10px 0 0 30px;
+  padding: 10px 10px 0 10px;
+}
+.total-amount p {
+  text-align: justify;
+  font-size: 20px;
+  font-family: SofiaSans;
+}
+#subtotal {
+  font-weight: 600;
+  font-size: 22px;
 }
 
 .full-cart-btn {

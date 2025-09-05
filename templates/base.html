@@ -117,8 +117,8 @@
   </div>
   <div class="cart-modal-footer" style="text-align: center;">
     <div class="total-amount">
-      <p>Subtotal</p>
-      <p class="cart-subtotal" id="subtotal"></p>
+      <p>Total estimado</p>
+      <p id="cart-modal-subtotal"></p>
     </div>
     <hr style="border-color: #cccc;">
     <button class="full-cart-btn"><a href="/cart-page">Ver carrito completo</a></button>
@@ -127,6 +127,8 @@
 </body>
 <script type="module">
   import { updateCart } from '../static/js/draw_component.js';
+  import { Carrito } from '../static/js/cart.js';
+  import { showToast } from '../static/js/feedback.js';
 document.addEventListener('DOMContentLoaded', function() {
 // Adapted from https://stackoverflow.com/a/10162353
   const html = '<!DOCTYPE ' +
@@ -140,6 +142,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Renderizar cart modal
   updateCart();
+  
+  // Listen for cart updates from other components
+  window.addEventListener('cartUpdated', (event) => {
+    // Update cart modal display when cart changes from other sources
+    updateCart();
+  });
 
   const userCurrentUrl = window.location.href;
   const HomeURL = `${URL}/home`;
@@ -169,6 +177,33 @@ document.addEventListener('DOMContentLoaded', function() {
   closeCartModal.addEventListener('click', () => {
     cartModal.classList.remove('open');
     flexContainer.classList.remove('opacity');
+  });
+  
+  // Event delegation for cart modal remove buttons
+  cartModal.addEventListener('click', (event) => {
+    if (event.target && event.target.classList.contains('cart-remove-btn')) {
+      const productId = event.target.dataset.id;
+      const carrito = Carrito.fromStorage();
+      
+      // Remove item from cart
+      carrito.removeItem(productId);
+      
+      // Update cart display
+      updateCart();
+      
+      // Show success message
+      if (showToast) {
+        showToast('Producto eliminado del carrito', 'success');
+      }
+      
+      // If cart is empty, close modal
+      if (carrito.products.length === 0) {
+        setTimeout(() => {
+          cartModal.classList.remove('open');
+          flexContainer.classList.remove('opacity');
+        }, 1000);
+      }
+    }
   });
 });
 </script>
